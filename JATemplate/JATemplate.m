@@ -84,7 +84,9 @@ NSString *JAExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSSt
 	NSCParameterAssert(names != nil);
 	NSCParameterAssert(objects != NULL);
 	
-	if (expectedCount == 0)  return templateString;
+	/*	Non-optimization: it's tempting to short-circuit here if there are no
+		parameters, but that breaks if there are {(} escapes.
+	*/
 	
 	// Parse <names> into an array of identifiers. This also strips boxing @() syntax.
 	NSArray *parameterNames = JATemplateParseNames(names, expectedCount);
@@ -190,6 +192,12 @@ static NSArray *JATemplateParseNames(NSString *nameString, NSUInteger expectedCo
 
 static NSArray *JATemplateParseNamesUncached(NSString *nameString, NSUInteger expectedCount)
 {
+	if (expectedCount == 0)
+	{
+		NSCParameterAssert(nameString.length == 0);
+		return @[];
+	}
+	
 	NSArray *components = [nameString componentsSeparatedByString:@","];
 	NSCAssert(components.count == expectedCount, @"Expected %lu variable names in template expansion, got %lu. The problem name string is: \"%@\".", expectedCount, components.count, nameString);
 	
