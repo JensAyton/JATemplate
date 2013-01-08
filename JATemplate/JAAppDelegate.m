@@ -31,6 +31,9 @@
 	// Test brace escapes.
 	JALog(@"Braces: int main() {(} return 0; {)}");
 	
+	// Test localization.
+	NSString *localizationFile = @"Localizable.strings";
+	JALogLocalized(@"This is a template in the source code, not from {localizationFile}.", localizationFile);
 	
 	[NSApp terminate:nil];
 }

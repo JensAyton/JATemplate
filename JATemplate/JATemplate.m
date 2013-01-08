@@ -78,7 +78,7 @@ static bool IsValidIdentifier(NSString *candidate);
 		  <names>, but we use a value calculated using the preprocessor for
 		  sanity checking.
 */
-NSString *JAExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSString *names, __strong id objects[], NSUInteger expectedCount)
+NSString *JAExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSString *names, __unsafe_unretained id objects[], NSUInteger expectedCount)
 {
 	NSCParameterAssert(templateString != nil);
 	NSCParameterAssert(names != nil);
@@ -129,6 +129,22 @@ NSString *JAExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSSt
 	{
 		if (useHeapAllocation)  free(stringBuffer);
 	}
+}
+
+
+/*
+	JALocalizeAndExpandTemplateUsingMacroKeysAndValues(...)
+	
+	Equivalent to using one of the NSLocalizedString macro family before calling
+	JAExpandTemplateUsingMacroKeysAndValues().
+*/
+NSString *JALocalizeAndExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSBundle *bundle, NSString *localizationTable, NSString *names, __unsafe_unretained id paddedObjectArray[], NSUInteger count)
+{
+	// Perform the equivalent of NSLocalizedString*().
+	if (bundle == nil)  bundle = [NSBundle mainBundle];
+	templateString = [bundle localizedStringForKey:templateString value:@"" table:localizationTable];
+	
+	return JAExpandTemplateUsingMacroKeysAndValues(templateString, names, paddedObjectArray, count);
 }
 
 

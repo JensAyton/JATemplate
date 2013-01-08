@@ -19,6 +19,7 @@
 		1ABDBA9D169AFF0200846E17 /* JATemplateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ABDBA9C169AFF0200846E17 /* JATemplateTests.m */; };
 		1ABDBAA8169B019000846E17 /* JATemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ABDBAA7169B019000846E17 /* JATemplate.m */; };
 		1ABDBAA9169B019000846E17 /* JATemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ABDBAA7169B019000846E17 /* JATemplate.m */; };
+		1AF27505169CD60100831BDB /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1AF27503169CD60100831BDB /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,7 @@
 		1ABDBA9C169AFF0200846E17 /* JATemplateTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JATemplateTests.m; sourceTree = "<group>"; };
 		1ABDBAA6169B019000846E17 /* JATemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JATemplate.h; sourceTree = "<group>"; };
 		1ABDBAA7169B019000846E17 /* JATemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JATemplate.m; sourceTree = "<group>"; };
+		1AF27504169CD60100831BDB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -132,6 +134,7 @@
 			isa = PBXGroup;
 			children = (
 				1ABDBA7A169AFF0100846E17 /* JATemplate-Info.plist */,
+				1AF27503169CD60100831BDB /* Localizable.strings */,
 				1ABDBA7B169AFF0100846E17 /* InfoPlist.strings */,
 				1ABDBA7E169AFF0100846E17 /* main.m */,
 				1ABDBA80169AFF0100846E17 /* JATemplate-Prefix.pch */,
@@ -234,6 +237,7 @@
 				1ABDBA7D169AFF0100846E17 /* InfoPlist.strings in Resources */,
 				1ABDBA83169AFF0100846E17 /* Credits.rtf in Resources */,
 				1ABDBA89169AFF0100846E17 /* MainMenu.xib in Resources */,
+				1AF27505169CD60100831BDB /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -324,6 +328,14 @@
 				1ABDBA99169AFF0200846E17 /* en */,
 			);
 			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		1AF27503169CD60100831BDB /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1AF27504169CD60100831BDB /* en */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -455,6 +467,7 @@
 				1ABDBAA2169AFF0200846E17 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		1ABDBAA3169AFF0200846E17 /* Build configuration list for PBXNativeTarget "JATemplateTests" */ = {
 			isa = XCConfigurationList;
@@ -463,6 +476,7 @@
 				1ABDBAA5169AFF0200846E17 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

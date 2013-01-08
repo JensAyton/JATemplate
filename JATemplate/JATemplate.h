@@ -9,19 +9,36 @@
 #import <Foundation/Foundation.h>
 
 
-#define JAExpand(TEMPLATE, ...)
-#define JAExpandLiteral(TEMPLATE, ...)  JAExpandTemplateUsingMacroKeysAndValues(TEMPLATE, @#__VA_ARGS__, (__strong id[]){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
-#define JAExpandFromTable(TEMPLATE, TABLE, ...)
-#define JAExpandFromTableInBundle(TEMPLATE, TABLE, BUNDLE, ...)
+#define JAExpand(TEMPLATE, ...) \
+	JALocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, nil, nil, \
+	@#__VA_ARGS__, (__unsafe_unretained id[]){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
+
+#define JAExpandLiteral(TEMPLATE, ...) \
+	JAExpandTemplateUsingMacroKeysAndValues(TEMPLATE, \
+	@#__VA_ARGS__, (__unsafe_unretained id[]){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
+
+#define JAExpandFromTable(TEMPLATE, TABLE, ...) \
+	JALocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, nil, TABLE, \
+	@#__VA_ARGS__, (__unsafe_unretained id[]){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
+
+#define JAExpandFromTableInBundle(TEMPLATE, TABLE, BUNDLE, ...) \
+	JALocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, BUNDLE, TABLE, \
+	@#__VA_ARGS__, (__unsafe_unretained id[]){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
+
 #define JALog(TEMPLATE, ...)  NSLog(@"%@", JAExpandLiteral(TEMPLATE, __VA_ARGS__))
+
+#define JALogLocalized(TEMPLATE, ...)  NSLog(@"%@", JAExpand(TEMPLATE, __VA_ARGS__))
 
 
 /*
 	JAExpandTemplateUsingMacroKeysAndValues()
+	JALocalizeAndExpandTemplateUsingMacroKeysAndValues()
 	
-	Implementation detail, do not call directly.
+	Implementation details, do not call directly.
 */
-NSString *JAExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSString *names, __strong id paddedObjectArray[], NSUInteger count);
+NSString *JAExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSString *names, __unsafe_unretained id paddedObjectArray[], NSUInteger count);
+
+NSString *JALocalizeAndExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSBundle *bundle, NSString *localizationTable, NSString *names, __unsafe_unretained id paddedObjectArray[], NSUInteger count);
 
 
 /*
