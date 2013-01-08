@@ -7,6 +7,46 @@
 //
 
 #import <Foundation/Foundation.h>
+/*
+	The notional interface for the expansion system is as follows. The actual
+	implementations are macros defined below.
+	
+	NSString *JAExpand(NSString *template, ...)
+		Look up <template> in the bundle's Localizable.strings, if possible,
+		otherwise use it as-is. Replace all substitution expressions in the
+		template string with corresponding named variable. For example,
+		NSString *foo = @"banana"; JAExpand(@"test: {foo}", foo); returns
+		@"test: banana" (unless of course the template is localized).
+		
+		Parameters must be variables of object type, not expressions, except
+		that the boxing syntax for numbers and C strings is supported: for
+		example, int bar = 5; JAExpand(@"A number: {bar}", @(bar)); works.
+	
+	NSString *JAExpandLiteral(NSString *template, ...)
+		Like JAExpand(), but without the Localizable.strings lookup.
+	
+	NSString *JAExpandLiteral(NSString *template, NSString *table, ...)
+		Like JAExpand(), but allows you to specify a strings file other than
+		Localizable.strings. The table name should be specified without the
+		.strings extension. Compare NSLocalizedStringFromTable().
+	
+	NSString *JAExpandFromTable(NSString *template, NSString *table, ...)
+		Like JAExpand(), but allows you to specify a strings file other than
+		Localizable.strings. The table name should be specified without the
+		.strings extension. Compare NSLocalizedStringFromTable().
+	
+	JAExpandFromTableInBundle(NSString *template, NSString *table, NSBundle *bundle, ...)
+		Like JAExpandFromTable(), but additionally allows you to specify a
+		bundle other than the main bundle. Compare
+		NSLocalizedStringFromTableInBundle().
+	
+	void JALog(NSString *message, ...)
+		Combines JAExpandLiteral() with NSLog() in the obvious way.
+	
+	void JALogLocalized(NSString *message, ...)
+		Combines JAExpand() with NSLog() in the obvious way.
+*/
+
 
 
 #define JAExpand(TEMPLATE, ...) \
