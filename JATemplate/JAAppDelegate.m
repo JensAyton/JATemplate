@@ -7,12 +7,17 @@
 //
 
 #import "JAAppDelegate.h"
+#import "JATemplate.h"
+
 
 @implementation JAAppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-	// Insert code here to initialize your application
+	JALog(@"Trivial");
+	id foo = @"sausage";
+	int bar = 7;
+	JALog(@"foo: {foo}, test 1: {}, test 1B: {(}{)}, test 2: {nonesuch}, bar: {bar}, formatting: {bar|num:spellout}", foo, @( bar ) );
 }
 
 @end

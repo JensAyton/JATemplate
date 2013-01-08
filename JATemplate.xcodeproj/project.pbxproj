@@ -17,6 +17,8 @@
 		1ABDBA92169AFF0200846E17 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABDBA72169AFF0100846E17 /* Cocoa.framework */; };
 		1ABDBA9A169AFF0200846E17 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1ABDBA98169AFF0200846E17 /* InfoPlist.strings */; };
 		1ABDBA9D169AFF0200846E17 /* JATemplateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ABDBA9C169AFF0200846E17 /* JATemplateTests.m */; };
+		1ABDBAA8169B019000846E17 /* JATemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ABDBAA7169B019000846E17 /* JATemplate.m */; };
+		1ABDBAA9169B019000846E17 /* JATemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ABDBAA7169B019000846E17 /* JATemplate.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +51,8 @@
 		1ABDBA99169AFF0200846E17 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1ABDBA9B169AFF0200846E17 /* JATemplateTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JATemplateTests.h; sourceTree = "<group>"; };
 		1ABDBA9C169AFF0200846E17 /* JATemplateTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JATemplateTests.m; sourceTree = "<group>"; };
+		1ABDBAA6169B019000846E17 /* JATemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JATemplate.h; sourceTree = "<group>"; };
+		1ABDBAA7169B019000846E17 /* JATemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JATemplate.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +120,8 @@
 			children = (
 				1ABDBA84169AFF0100846E17 /* JAAppDelegate.h */,
 				1ABDBA85169AFF0100846E17 /* JAAppDelegate.m */,
+				1ABDBAA6169B019000846E17 /* JATemplate.h */,
+				1ABDBAA7169B019000846E17 /* JATemplate.m */,
 				1ABDBA87169AFF0100846E17 /* MainMenu.xib */,
 				1ABDBA79169AFF0100846E17 /* Supporting Files */,
 			);
@@ -264,6 +270,7 @@
 			files = (
 				1ABDBA7F169AFF0100846E17 /* main.m in Sources */,
 				1ABDBA86169AFF0100846E17 /* JAAppDelegate.m in Sources */,
+				1ABDBAA8169B019000846E17 /* JATemplate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -272,6 +279,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1ABDBA9D169AFF0200846E17 /* JATemplateTests.m in Sources */,
+				1ABDBAA9169B019000846E17 /* JATemplate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
