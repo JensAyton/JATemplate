@@ -86,6 +86,14 @@
 }
 
 
+- (void) testBraceExpansion
+{
+	NSString *expansion = JATExpand(@"{(} {)}");
+	
+	STAssertEqualObjects(expansion, @"{ }", @"Brace escape handling failed.");
+}
+
+
 - (void) testMultipleOperators
 {
 	NSString *foo = @"frob";
