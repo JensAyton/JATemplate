@@ -630,6 +630,7 @@ static void Warn(const unichar characters[], NSUInteger length, NSString *format
 	}
 	else
 	{
+		Warn(NULL, 0, @"Unknown operator \"%@\" in template expansion.", operator);
 		return nil;
 	}
 }
