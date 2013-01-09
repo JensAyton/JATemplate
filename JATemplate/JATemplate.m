@@ -81,7 +81,7 @@ static bool ScanIdentifier(const unichar characters[], NSUInteger length, NSUInt
 		  <names>, but we use a value calculated using the preprocessor for
 		  sanity checking.
 */
-NSString *JAExpandTemplateUsingMacroKeysAndValues(NSString *template, NSString *names, __unsafe_unretained id objects[], NSUInteger expectedCount)
+NSString *JAExpandTemplateUsingMacroKeysAndValues(NSString *template, NSString *names, JAParameterArray objects, NSUInteger expectedCount)
 {
 	NSCParameterAssert(template != nil);
 	NSCParameterAssert(names != nil);
@@ -112,13 +112,13 @@ NSString *JAExpandTemplateUsingMacroKeysAndValues(NSString *template, NSString *
 	Equivalent to using one of the NSLocalizedString macro family before calling
 	JAExpandTemplateUsingMacroKeysAndValues().
 */
-NSString *JALocalizeAndExpandTemplateUsingMacroKeysAndValues(NSString *template, NSBundle *bundle, NSString *localizationTable, NSString *names, __unsafe_unretained id paddedObjectArray[], NSUInteger count)
+NSString *JALocalizeAndExpandTemplateUsingMacroKeysAndValues(NSString *template, NSBundle *bundle, NSString *localizationTable, NSString *names, JAParameterArray objects, NSUInteger count)
 {
 	// Perform the equivalent of NSLocalizedString*().
 	if (bundle == nil)  bundle = [NSBundle mainBundle];
 	template = [bundle localizedStringForKey:template value:@"" table:localizationTable];
 	
-	return JAExpandTemplateUsingMacroKeysAndValues(template, names, paddedObjectArray, count);
+	return JAExpandTemplateUsingMacroKeysAndValues(template, names, objects, count);
 }
 
 
@@ -455,6 +455,11 @@ static NSString *JAExpandOneFancyPantsSub(const unichar characters[], NSUInteger
 	}
 	
 	id value = parameters[identifier];
+	if (value == nil)
+	{
+		Warn(characters, length, @"Template substitution uses unknown key \"%@\".", identifier);
+		return nil;
+	}
 	
 	while (value != nil && characters[cursor] == '|')
 	{
@@ -584,7 +589,7 @@ static void Warn(const unichar characters[], NSUInteger length, NSString *format
 	
 	if (characters != NULL)
 	{
-		message = [NSString stringWithFormat:@"%@ (Template: %@)", message, [NSString stringWithCharacters:characters length:length]];
+		message = [NSString stringWithFormat:@"%@ (Template: \"%@\")", message, [NSString stringWithCharacters:characters length:length]];
 	}
 	
 	NSLog(@"%@", message);

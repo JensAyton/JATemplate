@@ -15,7 +15,7 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
 	// Test that it works with no parameters.
-	JALog(@"Trivial");
+	JALog(@"Trivial string");
 	
 	// Test substitution.
 	id foo = @"sausage";

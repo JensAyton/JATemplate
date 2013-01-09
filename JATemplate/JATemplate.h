@@ -144,21 +144,24 @@
 		and "diacritics".
 */
 
+typedef __strong id JAParameterArray[];
+
+
 #define JAExpand(TEMPLATE, ...) \
 	JALocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, nil, nil, \
-	@#__VA_ARGS__, (__unsafe_unretained id[]){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
+	@#__VA_ARGS__, (JAParameterArray){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
 
 #define JAExpandLiteral(TEMPLATE, ...) \
 	JAExpandTemplateUsingMacroKeysAndValues(TEMPLATE, \
-	@#__VA_ARGS__, (__unsafe_unretained id[]){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
+	@#__VA_ARGS__, (JAParameterArray){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
 
 #define JAExpandFromTable(TEMPLATE, TABLE, ...) \
 	JALocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, nil, TABLE, \
-	@#__VA_ARGS__, (__unsafe_unretained id[]){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
+	@#__VA_ARGS__, (JAParameterArray){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
 
 #define JAExpandFromTableInBundle(TEMPLATE, TABLE, BUNDLE, ...) \
 	JALocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, BUNDLE, TABLE, \
-	@#__VA_ARGS__, (__unsafe_unretained id[]){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
+	@#__VA_ARGS__, (JAParameterArray){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
 
 #define JAExpandWithParameters(TEMPLATE, PARAMETERS) \
 	JAExpandFromTableInBundleWithParameters(TEMPLATE, nil, nil, PARAMETERS)
@@ -235,9 +238,9 @@ NSString *JAExpandFromTableInBundleWithParameters(NSString *templateString, NSSt
 	
 	Implementation details, do not call directly.
 */
-NSString *JAExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSString *names, __unsafe_unretained id paddedObjectArray[], NSUInteger count);
+NSString *JAExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSString *names, JAParameterArray objects, NSUInteger count);
 
-NSString *JALocalizeAndExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSBundle *bundle, NSString *localizationTable, NSString *names, __unsafe_unretained id paddedObjectArray[], NSUInteger count);
+NSString *JALocalizeAndExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSBundle *bundle, NSString *localizationTable, NSString *names, JAParameterArray objects, NSUInteger count);
 
 
 /*
