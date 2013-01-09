@@ -649,6 +649,16 @@ static void Warn(const unichar characters[], NSUInteger length, NSString *format
 }
 
 
+- (NSNumber *) jatemplateCoerceToBoolean
+{
+	if ([self respondsToSelector:@selector(boolValue)])
+	{
+		return @([(id)self boolValue]);
+	}
+	return nil;
+}
+
+
 #ifndef JATEMPLATE_SUPPRESS_DEFAULT_OPERATORS
 
 - (id) jatemplatePerform_num_withArgument:(NSString *)argument variables:(NSDictionary *)variables
@@ -712,14 +722,10 @@ static void Warn(const unichar characters[], NSUInteger length, NSString *format
 	}
 	
 	NSArray *components = [argument componentsSeparatedByString:@";"];
-	NSUInteger count = components.count;
-	if (count > 3)
-	{
-		Warn(NULL, 0, @"Template operator plural: requires one to three arguments.");
-	}
 	
 	bool isPlural = ![value isEqual:@(1)];
 	
+	NSUInteger count = components.count;
 	if (count == 1)
 	{
 		// One argument: use argument for plural, empty string for singular.
@@ -743,8 +749,72 @@ static void Warn(const unichar characters[], NSUInteger length, NSString *format
 			return components[2];
 		}
 	}
+	else
+	{
+		Warn(NULL, 0, @"Template operator plural: requires one to three arguments, got \"%@\".", argument);
+		return nil;
+	}
+}
+
+
+- (id) jatemplatePerform_not_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+{
+	NSNumber *value = [self jatemplateCoerceToBoolean];
+	if (value == nil)  return nil;
 	
-	return nil;
+	return @(!value.boolValue);
+}
+
+
+- (id) jatemplatePerform_if_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+{
+	NSNumber *value = [self jatemplateCoerceToBoolean];
+	if (value == nil)  return nil;
+	
+	if (argument == nil)
+	{
+		Warn(NULL, 0, @"Template operator if: used with no argument.");
+	}
+	
+	NSArray *components = [argument componentsSeparatedByString:@";"];
+	
+	id trueValue = components[0], falseValue = @"";
+	if (components.count > 1)  falseValue = components[1];
+	
+	return value.boolValue ? trueValue : falseValue;
+}
+
+
+- (id) jatemplatePerform_ifuse_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+{
+	NSNumber *value = [self jatemplateCoerceToBoolean];
+	if (value == nil)  return nil;
+	
+	if (argument == nil)
+	{
+		Warn(NULL, 0, @"Template operator ifuse: used with no argument.");
+	}
+	
+	NSArray *components = [argument componentsSeparatedByString:@";"];
+	
+	NSString *trueKey = components[0], *falseKey = nil;
+	if (components.count > 1)  falseKey = components[1];
+	
+	NSString *selectedKey = value.boolValue ? trueKey : falseKey;
+	
+	if (selectedKey != nil)
+	{
+		NSString *result = variables[selectedKey];
+		if (result == nil)
+		{
+			Warn(NULL, 0, @"Template substitution uses unknown key \"%@\" in ifuse: operator.", selectedKey);
+		}
+		return result;
+	}
+	else
+	{
+		return @"";
+	}
 }
 
 

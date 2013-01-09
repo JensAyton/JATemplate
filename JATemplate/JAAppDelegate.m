@@ -28,6 +28,12 @@
 	// Test formatting operators. Also a redundant parameter, and reuse of a cached parameter list parse.
 	JALog(@"Fancy bar: {bar|num:spellout|capitalize}", foo, @(bar));
 	
+	// Test booleans.
+	NSNumber *boolValue = @(NO);
+	NSString *trueString = @"yes";
+	NSString *falseString = @"no";
+	JALog(@"Boolean: {boolValue|if:true;false}, inverted: {boolValue|not|ifuse:trueString;falseString}", boolValue, trueString, falseString);
+	
 	// Test byte size formatting.
 	NSUInteger byteSize = 65536;
 	JALog(@"File bytes: {byteSize|num:filebytes}; memory bytes: {byteSize|num:memorybytes}", @(byteSize));

@@ -112,6 +112,20 @@
 		for exactly two items) and the third is plural.
 		Example: "I have {gooseCount} {gooseCount|plural:goose;geese}.".
 		
+		not
+		Coerces the value to a boolean and returns its negation.
+		
+		if:
+		Takes one or two arguments separated by semicolons. If the value, as a
+		boolean, is true, returns the first argument. Otherwise returns the
+		second argument (or the empty string if none).
+		Example: "The flag is {flag|if:set;not set}."
+		
+		ifuse:
+		Like if:, but treats its arguments as parameter keys:
+		Example: "If the flag is true, \"{flag|ifuse:trueString:falseString}
+		is {trueString}, otherwise it's {falseString}."
+		
 		uppercase
 		Locale-sensitive conversion to uppercase using uppercaseStringWithLocale:.
 		
@@ -228,6 +242,18 @@ NSString *JAExpandFromTableInBundleWithParameters(NSString *templateString, NSSt
 	Overriden for NSNumber to return self.
 */
 - (NSNumber *) jatemplateCoerceToNumber;
+
+
+/*	- (NSNumber *) jatemplateCoerceToBoolean
+	
+	Convert reciever to an boolean NSNumber. May return nil on failure. Used
+	by default template operators that expect a boolean, and should be used for
+	custom template operators in the same way.
+	
+	The default implementation attempts to call boolValue. If this is not
+	implemented, it returns nil.
+*/
+- (NSNumber *) jatemplateCoerceToBoolean;
 
 @end
 
