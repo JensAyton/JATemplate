@@ -48,6 +48,10 @@
 	NSString *localizationFile = @"Localizable.strings";
 	JALogLocalized(@"This is a template in the source code, not from {localizationFile}.", localizationFile);
 	
+	// Test Boring Mode.
+	NSString *boring = JAExpandWithParameters(@"boring_mode_test", @{ @"boring": @"SUPER EXCITING!" });
+	NSLog(@"%@", boring);
+	
 	[NSApp terminate:nil];
 }
 

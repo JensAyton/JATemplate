@@ -67,12 +67,12 @@ static bool IsValidIdentifier(NSString *candidate);
 static bool ScanIdentifier(const unichar characters[], NSUInteger length, NSUInteger start, NSUInteger *outEnd);
 
 
-#pragma mark - Template parsing
+#pragma mark - Public
 
 /*
-	JAExpandTemplateUsingMacroKeysAndValues(templateString, names, paddedObjectArray, expectedCount)
+	JAExpandTemplateUsingMacroKeysAndValues(template, names, paddedObjectArray, expectedCount)
 	
-		- templateString is the string to expand - for example, @"foo = {foo}, bar = {bar}".
+		- template is the string to expand - for example, @"foo = {foo}, bar = {bar}".
 		- names is the preprocessor stringification of the parameter list -
 		  for example, "foo, @(bar)". Note that the preprocessor will remove
 		  comments for us.
@@ -81,9 +81,9 @@ static bool ScanIdentifier(const unichar characters[], NSUInteger length, NSUInt
 		  <names>, but we use a value calculated using the preprocessor for
 		  sanity checking.
 */
-NSString *JAExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSString *names, __unsafe_unretained id objects[], NSUInteger expectedCount)
+NSString *JAExpandTemplateUsingMacroKeysAndValues(NSString *template, NSString *names, __unsafe_unretained id objects[], NSUInteger expectedCount)
 {
-	NSCParameterAssert(templateString != nil);
+	NSCParameterAssert(template != nil);
 	NSCParameterAssert(names != nil);
 	NSCParameterAssert(objects != NULL);
 	
@@ -93,7 +93,7 @@ NSString *JAExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSSt
 	
 	// Parse <names> into an array of identifiers. This also strips boxing @() syntax.
 	NSArray *parameterNames = JATemplateParseNames(names, expectedCount);
-	if (parameterNames == nil)  return templateString;
+	if (parameterNames == nil)  return template;
 	
 	// Stick parameter values in an array.
 	NSArray *parameterValues = [NSArray arrayWithObjects:objects count:expectedCount];
@@ -101,11 +101,34 @@ NSString *JAExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSSt
 	// Build dictionary of parameters.
 	NSDictionary *parameters = [NSDictionary dictionaryWithObjects:parameterValues forKeys:parameterNames];
 	
+	// Hand off to Boring Mode.
+	return JAExpandLiteralWithParameters(template, parameters);
+}
+
+
+/*
+	JALocalizeAndExpandTemplateUsingMacroKeysAndValues(...)
+	
+	Equivalent to using one of the NSLocalizedString macro family before calling
+	JAExpandTemplateUsingMacroKeysAndValues().
+*/
+NSString *JALocalizeAndExpandTemplateUsingMacroKeysAndValues(NSString *template, NSBundle *bundle, NSString *localizationTable, NSString *names, __unsafe_unretained id paddedObjectArray[], NSUInteger count)
+{
+	// Perform the equivalent of NSLocalizedString*().
+	if (bundle == nil)  bundle = [NSBundle mainBundle];
+	template = [bundle localizedStringForKey:template value:@"" table:localizationTable];
+	
+	return JAExpandTemplateUsingMacroKeysAndValues(template, names, paddedObjectArray, count);
+}
+
+
+NSString *JAExpandLiteralWithParameters(NSString *template, NSDictionary *parameters)
+{
 	/*
 		Extract template string into a buffer on the stack or, if it's big,
 		a malloced buffer.
 	*/
-	NSUInteger length = templateString.length;
+	NSUInteger length = template.length;
 	NSUInteger bufferSize = length;
 	bool useHeapAllocation = length > kStackStringLimit;
 	if (useHeapAllocation)  bufferSize = 1;
@@ -123,7 +146,7 @@ NSString *JAExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSSt
 	
 	@try
 	{
-		[templateString getCharacters:stringBuffer];
+		[template getCharacters:stringBuffer];
 		
 		// Do the work.
 		return JAExpandInternal(stringBuffer, length, parameters);
@@ -135,20 +158,17 @@ NSString *JAExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSSt
 }
 
 
-/*
-	JALocalizeAndExpandTemplateUsingMacroKeysAndValues(...)
-	
-	Equivalent to using one of the NSLocalizedString macro family before calling
-	JAExpandTemplateUsingMacroKeysAndValues().
-*/
-NSString *JALocalizeAndExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSBundle *bundle, NSString *localizationTable, NSString *names, __unsafe_unretained id paddedObjectArray[], NSUInteger count)
+NSString *JAExpandFromTableInBundleWithParameters(NSString *template, NSString *localizationTable, NSBundle *bundle, NSDictionary *parameters)
 {
 	// Perform the equivalent of NSLocalizedString*().
 	if (bundle == nil)  bundle = [NSBundle mainBundle];
-	templateString = [bundle localizedStringForKey:templateString value:@"" table:localizationTable];
+	template = [bundle localizedStringForKey:template value:@"" table:localizationTable];
 	
-	return JAExpandTemplateUsingMacroKeysAndValues(templateString, names, paddedObjectArray, count);
+	return JAExpandLiteralWithParameters(template, parameters);
 }
+
+
+#pragma mark - Name string parsing
 
 
 /*
@@ -262,6 +282,9 @@ static NSString *JATemplateParseOneName(NSString *name)
 	
 	return name;
 }
+
+
+#pragma mark - Template parsing
 
 
 /*

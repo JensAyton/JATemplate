@@ -8,3 +8,5 @@
 
 
 "This is a template in the source code, not from {localizationFile}." = "This is a template from {localizationFile}, not the one in the source code.";
+
+"boring_mode_test" = "This is a localized template expanded in {boring} mode.";

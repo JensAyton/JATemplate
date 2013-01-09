@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 /*
 	The notional interface for the expansion system is as follows. The actual
-	implementations are macros defined below.
+	implementations are mostly macros as defined below.
 	
 	NSString *JAExpand(NSString *template, ...)
 		Look up <template> in the bundle's Localizable.strings, if possible,
@@ -50,6 +50,26 @@
 		Like JAExpandFromTable(), but additionally allows you to specify a
 		bundle other than the main bundle. Compare
 		NSLocalizedStringFromTableInBundle().
+	
+	
+	NSString *JAExpandWithParameters(NSString *template, NSDictionary *parameters)
+		Allows the template system to be used the old-fashioned way: values
+		are looked up in <parameters> instead of using variables. Attempts to
+		localize using Localizable.strings.
+	
+	NSString *JAExpandLiteralWithParameters(NSString *template, NSDictionary *parameters)
+		Like JAExpandWithParameters(), but without the Localizable.strings lookup.
+	
+	NSString *JAExpandFromTableWithParameters(NSString *template, NSString *table, NSDictionary *parameters)
+		Like JAExpandWithParameters(), but allows you to specify a strings file
+		other than Localizable.strings. The table name should be specified
+		without the .strings extension. Compare JAExpandFromTable().
+	
+	NSString *JAExpandFromTableInBundleWithParameters(NSString *template, NSString *table, NSBundle *bundle, NSDictionary *parameters)
+		Like JAExpandFromTableWithParameters(), but additionally allows you to
+		specify a bundle other than the main bundle. Compare
+		JAExpandFromTableInBundle().
+	
 	
 	void JALog(NSString *message, ...)
 		Combines JAExpandLiteral() with NSLog() in the obvious way.
@@ -139,6 +159,16 @@
 #define JAExpandFromTableInBundle(TEMPLATE, TABLE, BUNDLE, ...) \
 	JALocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, BUNDLE, TABLE, \
 	@#__VA_ARGS__, (__unsafe_unretained id[]){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
+
+#define JAExpandWithParameters(TEMPLATE, PARAMETERS) \
+	JAExpandFromTableInBundleWithParameters(TEMPLATE, nil, nil, PARAMETERS)
+
+NSString *JAExpandLiteralWithParameters(NSString *templateString, NSDictionary *parameters);
+
+#define JAExpandFromTableWithParameters(TEMPLATE, TABLE, PARAMETERS) \
+	JAExpandFromTableInBundleWithParameters(TEMPLATE, TABLE, nil, PARAMETERS)
+
+NSString *JAExpandFromTableInBundleWithParameters(NSString *templateString, NSString *localizationTable, NSBundle *bundle, NSDictionary *parameters);
 
 #define JALog(TEMPLATE, ...)  NSLog(@"%@", JAExpandLiteral(TEMPLATE, __VA_ARGS__))
 
