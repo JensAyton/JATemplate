@@ -50,6 +50,10 @@
 	NSString *boring = JATExpandWithParameters(@"boring_mode_test", @{ @"boring": @"SUPER EXCITING!" });
 	NSLog(@"%@", boring);
 	
+	// Test debugdesc.
+	NSArray *array = @[@"foo", @36, @YES];
+	JATLog(@"Debug description: {array|debugdesc}", array);
+	
 	[NSApp terminate:nil];
 }
 

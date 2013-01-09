@@ -157,6 +157,10 @@
 		stringByFoldingWithOptions:locale:. The argument is a comma-separated
 		list of options. The currently supported options are "case", "width"
 		and "diacritics".
+		
+		debugdesc
+		Calls -debugDescription on the value if implemented, otherwise
+		-description. (Try it on some Foundation collections.)
 */
 
 typedef __strong id JATParameterArray[];

@@ -936,6 +936,19 @@ static void Warn(const unichar characters[], NSUInteger length, NSString *format
 	return [value stringByFoldingWithOptions:optionMask locale:NSLocale.currentLocale];
 }
 
+
+- (id) jatemplatePerform_debugdesc_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+{
+	if ([self respondsToSelector:@selector(debugDescription)])
+	{
+		return [self debugDescription];
+	}
+	else
+	{
+		return [self description];
+	}
+}
+
 #endif
 
 @end
