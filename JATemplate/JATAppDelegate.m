@@ -11,7 +11,7 @@
 	
 	// Test substitution.
 	id foo = @"sausage";
-	int bar = 7;
+	int bar = 76;
 	JATLog(@"foo: {foo}; bar: {bar}", foo, @(bar));
 	
 	// Test unknown parameter. Template system should log a warning before this line.

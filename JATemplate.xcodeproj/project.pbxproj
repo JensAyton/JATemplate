@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1A304A59169E17F300DB0DF0 /* JATemplateOperatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A304A58169E17F300DB0DF0 /* JATemplateOperatorTests.m */; };
 		1ABDBA73169AFF0100846E17 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABDBA72169AFF0100846E17 /* Cocoa.framework */; };
 		1ABDBA7D169AFF0100846E17 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1ABDBA7B169AFF0100846E17 /* InfoPlist.strings */; };
 		1ABDBA7F169AFF0100846E17 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ABDBA7E169AFF0100846E17 /* main.m */; };
@@ -33,6 +34,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1A304A57169E17F300DB0DF0 /* JATemplateOperatorTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JATemplateOperatorTests.h; sourceTree = "<group>"; };
+		1A304A58169E17F300DB0DF0 /* JATemplateOperatorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JATemplateOperatorTests.m; sourceTree = "<group>"; };
 		1ABDBA6E169AFF0100846E17 /* JATemplate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JATemplate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1ABDBA72169AFF0100846E17 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		1ABDBA75169AFF0100846E17 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -148,6 +151,8 @@
 			children = (
 				1ABDBA9B169AFF0200846E17 /* JATemplateTests.h */,
 				1ABDBA9C169AFF0200846E17 /* JATemplateTests.m */,
+				1A304A57169E17F300DB0DF0 /* JATemplateOperatorTests.h */,
+				1A304A58169E17F300DB0DF0 /* JATemplateOperatorTests.m */,
 				1ABDBA96169AFF0200846E17 /* Supporting Files */,
 			);
 			path = JATemplateTests;
@@ -284,6 +289,7 @@
 			files = (
 				1ABDBA9D169AFF0200846E17 /* JATemplateTests.m in Sources */,
 				1ABDBAA9169B019000846E17 /* JATemplate.m in Sources */,
+				1A304A59169E17F300DB0DF0 /* JATemplateOperatorTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
