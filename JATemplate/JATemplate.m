@@ -52,10 +52,10 @@ static NSArray *JATemplateParseNames(NSString *nameString, NSUInteger expectedCo
 static NSArray *JATemplateParseNamesUncached(NSString *nameString, NSUInteger expectedCount);
 static NSString *JATemplateParseOneName(NSString *name);
 
-static NSString *JAExpandInternal(const unichar *stringBuffer, NSUInteger length, NSDictionary *parameters);
-static NSString *JAExpandOneSub(const unichar characters[], NSUInteger length, NSUInteger idx, NSUInteger *replaceLength, NSDictionary *parameters);
-static NSString *JAExpandOneSimpleSub(const unichar characters[], NSUInteger length, NSUInteger keyStart, NSUInteger keyLength, NSDictionary *parameters);
-static NSString *JAExpandOneFancyPantsSub(const unichar characters[], NSUInteger length, NSUInteger keyStart, NSUInteger keyLength, NSDictionary *parameters);
+static NSString *JATExpandInternal(const unichar *stringBuffer, NSUInteger length, NSDictionary *parameters);
+static NSString *JATExpandOneSub(const unichar characters[], NSUInteger length, NSUInteger idx, NSUInteger *replaceLength, NSDictionary *parameters);
+static NSString *JATExpandOneSimpleSub(const unichar characters[], NSUInteger length, NSUInteger keyStart, NSUInteger keyLength, NSDictionary *parameters);
+static NSString *JATExpandOneFancyPantsSub(const unichar characters[], NSUInteger length, NSUInteger keyStart, NSUInteger keyLength, NSDictionary *parameters);
 
 static void JATemplateAppendCharacters(NSMutableString *buffer, const unichar characters[], NSUInteger length, NSUInteger start, NSUInteger end);
 
@@ -70,7 +70,7 @@ static bool ScanIdentifier(const unichar characters[], NSUInteger length, NSUInt
 #pragma mark - Public
 
 /*
-	JAExpandTemplateUsingMacroKeysAndValues(template, names, paddedObjectArray, expectedCount)
+	JATExpandTemplateUsingMacroKeysAndValues(template, names, paddedObjectArray, expectedCount)
 	
 		- template is the string to expand - for example, @"foo = {foo}, bar = {bar}".
 		- names is the preprocessor stringification of the parameter list -
@@ -81,7 +81,7 @@ static bool ScanIdentifier(const unichar characters[], NSUInteger length, NSUInt
 		  <names>, but we use a value calculated using the preprocessor for
 		  sanity checking.
 */
-NSString *JAExpandTemplateUsingMacroKeysAndValues(NSString *template, NSString *names, JAParameterArray objects, NSUInteger expectedCount)
+NSString *JATExpandTemplateUsingMacroKeysAndValues(NSString *template, NSString *names, JATParameterArray objects, NSUInteger expectedCount)
 {
 	NSCParameterAssert(template != nil);
 	NSCParameterAssert(names != nil);
@@ -117,27 +117,27 @@ NSString *JAExpandTemplateUsingMacroKeysAndValues(NSString *template, NSString *
 	NSDictionary *parameters = [NSDictionary dictionaryWithObjects:parameterValues forKeys:parameterNames];
 	
 	// Hand off to Boring Mode.
-	return JAExpandLiteralWithParameters(template, parameters);
+	return JATExpandLiteralWithParameters(template, parameters);
 }
 
 
 /*
-	JALocalizeAndExpandTemplateUsingMacroKeysAndValues(...)
+	JATLocalizeAndExpandTemplateUsingMacroKeysAndValues(...)
 	
 	Equivalent to using one of the NSLocalizedString macro family before calling
-	JAExpandTemplateUsingMacroKeysAndValues().
+	JATExpandTemplateUsingMacroKeysAndValues().
 */
-NSString *JALocalizeAndExpandTemplateUsingMacroKeysAndValues(NSString *template, NSBundle *bundle, NSString *localizationTable, NSString *names, JAParameterArray objects, NSUInteger count)
+NSString *JATLocalizeAndExpandTemplateUsingMacroKeysAndValues(NSString *template, NSBundle *bundle, NSString *localizationTable, NSString *names, JATParameterArray objects, NSUInteger count)
 {
 	// Perform the equivalent of NSLocalizedString*().
 	if (bundle == nil)  bundle = [NSBundle mainBundle];
 	template = [bundle localizedStringForKey:template value:@"" table:localizationTable];
 	
-	return JAExpandTemplateUsingMacroKeysAndValues(template, names, objects, count);
+	return JATExpandTemplateUsingMacroKeysAndValues(template, names, objects, count);
 }
 
 
-NSString *JAExpandLiteralWithParameters(NSString *template, NSDictionary *parameters)
+NSString *JATExpandLiteralWithParameters(NSString *template, NSDictionary *parameters)
 {
 	/*
 		Extract template string into a buffer on the stack or, if it's big,
@@ -164,7 +164,7 @@ NSString *JAExpandLiteralWithParameters(NSString *template, NSDictionary *parame
 		[template getCharacters:stringBuffer];
 		
 		// Do the work.
-		return JAExpandInternal(stringBuffer, length, parameters);
+		return JATExpandInternal(stringBuffer, length, parameters);
 	}
 	@finally
 	{
@@ -173,13 +173,13 @@ NSString *JAExpandLiteralWithParameters(NSString *template, NSDictionary *parame
 }
 
 
-NSString *JAExpandFromTableInBundleWithParameters(NSString *template, NSString *localizationTable, NSBundle *bundle, NSDictionary *parameters)
+NSString *JATExpandFromTableInBundleWithParameters(NSString *template, NSString *localizationTable, NSBundle *bundle, NSDictionary *parameters)
 {
 	// Perform the equivalent of NSLocalizedString*().
 	if (bundle == nil)  bundle = [NSBundle mainBundle];
 	template = [bundle localizedStringForKey:template value:@"" table:localizationTable];
 	
-	return JAExpandLiteralWithParameters(template, parameters);
+	return JATExpandLiteralWithParameters(template, parameters);
 }
 
 
@@ -196,7 +196,7 @@ NSString *JAExpandFromTableInBundleWithParameters(NSString *template, NSString *
 	stripped, but with whitespace otherwise intact.
 	
 	If an item is wrapped in @(), this is removed, allowing boxing expressions
-	to be used directly. For example, JAExpand(@"{foo}{bar}", foo, @(bar))
+	to be used directly. For example, JATExpand(@"{foo}{bar}", foo, @(bar))
 	produces @"foo, @( bar )", which is mapped to @[@"foo", @"bar"].
 	
 	It is asserted that the string contains the correct number of items and
@@ -303,12 +303,12 @@ static NSString *JATemplateParseOneName(NSString *name)
 
 
 /*
-	JAExpandInternal(characters, length, parameters)
+	JATExpandInternal(characters, length, parameters)
 	
 	Parse a template string and substitute the parameters. In other words, do
 	the actual work after the faffing about parsing names and so forth.
 */
-static NSString *JAExpandInternal(const unichar characters[], NSUInteger length, NSDictionary *parameters)
+static NSString *JATExpandInternal(const unichar characters[], NSUInteger length, NSDictionary *parameters)
 {
 	NSCParameterAssert(characters != NULL);
 	
@@ -333,7 +333,7 @@ static NSString *JAExpandInternal(const unichar characters[], NSUInteger length,
 		
 		if (thisChar == '{')
 		{
-			replacement = JAExpandOneSub(characters, length, idx, &replaceLength, parameters);
+			replacement = JATExpandOneSub(characters, length, idx, &replaceLength, parameters);
 		}
 		// Other types of replacement can easily be chained here.
 		
@@ -358,7 +358,7 @@ static NSString *JAExpandInternal(const unichar characters[], NSUInteger length,
 }
 
 
-static NSString *JAExpandOneSub(const unichar characters[], NSUInteger length, NSUInteger idx, NSUInteger *replaceLength, NSDictionary *parameters)
+static NSString *JATExpandOneSub(const unichar characters[], NSUInteger length, NSUInteger idx, NSUInteger *replaceLength, NSDictionary *parameters)
 {
 	NSCParameterAssert(characters != NULL);
 	NSCParameterAssert(idx < length - 1);
@@ -396,21 +396,21 @@ static NSString *JAExpandOneSub(const unichar characters[], NSUInteger length, N
 	
 	if (isIdentifier)
 	{
-		return JAExpandOneSimpleSub(characters, length, keyStart, keyLength, parameters);
+		return JATExpandOneSimpleSub(characters, length, keyStart, keyLength, parameters);
 	}
 	else
 	{
-		return JAExpandOneFancyPantsSub(characters, length, keyStart, keyLength, parameters);
+		return JATExpandOneFancyPantsSub(characters, length, keyStart, keyLength, parameters);
 	}
 }
 
 
 /*
-	JAExpandOneSimpleSub()
+	JATExpandOneSimpleSub()
 	
 	Handles cases where the substitution token is a simple identifier.
 */
-static NSString *JAExpandOneSimpleSub(const unichar characters[], NSUInteger length, NSUInteger keyStart, NSUInteger keyLength, NSDictionary *parameters)
+static NSString *JATExpandOneSimpleSub(const unichar characters[], NSUInteger length, NSUInteger keyStart, NSUInteger keyLength, NSDictionary *parameters)
 {
 	NSCParameterAssert(characters != NULL);
 	NSCParameterAssert(keyStart < length);
@@ -427,12 +427,12 @@ static NSString *JAExpandOneSimpleSub(const unichar characters[], NSUInteger len
 
 
 /*
-	JAExpandOneFancyPantsSub()
+	JATExpandOneFancyPantsSub()
 	
 	Handles cases where the substitution token is something other than a simple
 	identifier. Length is guaranteed not to be zero.
 */
-static NSString *JAExpandOneFancyPantsSub(const unichar characters[], NSUInteger length, NSUInteger keyStart, NSUInteger keyLength, NSDictionary *parameters)
+static NSString *JATExpandOneFancyPantsSub(const unichar characters[], NSUInteger length, NSUInteger keyStart, NSUInteger keyLength, NSDictionary *parameters)
 {
 	NSCParameterAssert(characters != NULL);
 	NSCParameterAssert(keyStart < length);
@@ -614,12 +614,12 @@ static void Warn(const unichar characters[], NSUInteger length, NSString *format
 
 #pragma mark - Operators
 
-@implementation NSObject (JATemplateOperators)
+@implementation NSObject (JATTemplateOperators)
 
 - (id) jatemplatePerformOperator:(NSString *)operator withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	// Dogfood note: it would be a bad idea to use an operator in this template.
-	NSString *opImplementationName = JAExpandLiteral(@"jatemplatePerform_{operator}_withArgument:variables:", operator);
+	NSString *opImplementationName = JATExpandLiteral(@"jatemplatePerform_{operator}_withArgument:variables:", operator);
 	SEL selector = NSSelectorFromString(opImplementationName);
 	
 	if ([self respondsToSelector:selector])
@@ -941,7 +941,7 @@ static void Warn(const unichar characters[], NSUInteger length, NSString *format
 @end
 
 
-@implementation NSString (JATemplateOperators)
+@implementation NSString (JATTemplateOperators)
 
 - (NSString *) jatemplateCoerceToString
 {
@@ -951,7 +951,7 @@ static void Warn(const unichar characters[], NSUInteger length, NSString *format
 @end
 
 
-@implementation NSNull (JATemplateOperators)
+@implementation NSNull (JATTemplateOperators)
 
 - (NSString *) jatemplateCoerceToString
 {
@@ -967,7 +967,7 @@ static void Warn(const unichar characters[], NSUInteger length, NSString *format
 @end
 
 
-@implementation NSNumber (JATemplateOperators)
+@implementation NSNumber (JATTemplateOperators)
 
 - (NSNumber *) jatemplateCoerceToNumber
 {

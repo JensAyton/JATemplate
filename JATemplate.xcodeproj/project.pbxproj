@@ -11,7 +11,7 @@
 		1ABDBA7D169AFF0100846E17 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1ABDBA7B169AFF0100846E17 /* InfoPlist.strings */; };
 		1ABDBA7F169AFF0100846E17 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ABDBA7E169AFF0100846E17 /* main.m */; };
 		1ABDBA83169AFF0100846E17 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 1ABDBA81169AFF0100846E17 /* Credits.rtf */; };
-		1ABDBA86169AFF0100846E17 /* JAAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ABDBA85169AFF0100846E17 /* JAAppDelegate.m */; };
+		1ABDBA86169AFF0100846E17 /* JATAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ABDBA85169AFF0100846E17 /* JATAppDelegate.m */; };
 		1ABDBA89169AFF0100846E17 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1ABDBA87169AFF0100846E17 /* MainMenu.xib */; };
 		1ABDBA91169AFF0200846E17 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABDBA90169AFF0200846E17 /* SenTestingKit.framework */; };
 		1ABDBA92169AFF0200846E17 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABDBA72169AFF0100846E17 /* Cocoa.framework */; };
@@ -43,8 +43,8 @@
 		1ABDBA7E169AFF0100846E17 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		1ABDBA80169AFF0100846E17 /* JATemplate-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "JATemplate-Prefix.pch"; sourceTree = "<group>"; };
 		1ABDBA82169AFF0100846E17 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
-		1ABDBA84169AFF0100846E17 /* JAAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JAAppDelegate.h; sourceTree = "<group>"; };
-		1ABDBA85169AFF0100846E17 /* JAAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JAAppDelegate.m; sourceTree = "<group>"; };
+		1ABDBA84169AFF0100846E17 /* JATAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JATAppDelegate.h; sourceTree = "<group>"; };
+		1ABDBA85169AFF0100846E17 /* JATAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JATAppDelegate.m; sourceTree = "<group>"; };
 		1ABDBA88169AFF0100846E17 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		1ABDBA8F169AFF0200846E17 /* JATemplateTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JATemplateTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1ABDBA90169AFF0200846E17 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
@@ -120,8 +120,8 @@
 		1ABDBA78169AFF0100846E17 /* JATemplate */ = {
 			isa = PBXGroup;
 			children = (
-				1ABDBA84169AFF0100846E17 /* JAAppDelegate.h */,
-				1ABDBA85169AFF0100846E17 /* JAAppDelegate.m */,
+				1ABDBA84169AFF0100846E17 /* JATAppDelegate.h */,
+				1ABDBA85169AFF0100846E17 /* JATAppDelegate.m */,
 				1ABDBAA6169B019000846E17 /* JATemplate.h */,
 				1ABDBAA7169B019000846E17 /* JATemplate.m */,
 				1ABDBA87169AFF0100846E17 /* MainMenu.xib */,
@@ -273,7 +273,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1ABDBA7F169AFF0100846E17 /* main.m in Sources */,
-				1ABDBA86169AFF0100846E17 /* JAAppDelegate.m in Sources */,
+				1ABDBA86169AFF0100846E17 /* JATAppDelegate.m in Sources */,
 				1ABDBAA8169B019000846E17 /* JATemplate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

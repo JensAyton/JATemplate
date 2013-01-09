@@ -11,16 +11,16 @@
 	The notional interface for the expansion system is as follows. The actual
 	implementations are mostly macros as defined below.
 	
-	NSString *JAExpand(NSString *template, ...)
+	NSString *JATExpand(NSString *template, ...)
 		Look up <template> in the bundle's Localizable.strings, if possible,
 		otherwise use it as-is. Replace all substitution expressions in the
 		template string with corresponding named variable. For example,
-		NSString *foo = @"banana"; JAExpand(@"test: {foo}", foo); returns
+		NSString *foo = @"banana"; JATExpand(@"test: {foo}", foo); returns
 		@"test: banana" (unless of course the template is localized).
 		
 		Parameters must be variables of object type, not expressions, except
 		that the boxing syntax for numbers and C strings is supported: for
-		example, int bar = 5; JAExpand(@"A number: {bar}", @(bar)); works.
+		example, int bar = 5; JATExpand(@"A number: {bar}", @(bar)); works.
 		Nils are replaced with NSNull (which is printed as "(null)").
 		
 		Parameters may be modified using modifiers, which are specified using
@@ -34,49 +34,49 @@
 		Template syntax is quite strict. In particular, there is no optional
 		whitespace.
 	
-	NSString *JAExpandLiteral(NSString *template, ...)
-		Like JAExpand(), but without the Localizable.strings lookup.
+	NSString *JATExpandLiteral(NSString *template, ...)
+		Like JATExpand(), but without the Localizable.strings lookup.
 	
-	NSString *JAExpandLiteral(NSString *template, NSString *table, ...)
-		Like JAExpand(), but allows you to specify a strings file other than
+	NSString *JATExpandLiteral(NSString *template, NSString *table, ...)
+		Like JATExpand(), but allows you to specify a strings file other than
 		Localizable.strings. The table name should be specified without the
 		.strings extension. Compare NSLocalizedStringFromTable().
 	
-	NSString *JAExpandFromTable(NSString *template, NSString *table, ...)
-		Like JAExpand(), but allows you to specify a strings file other than
+	NSString *JATExpandFromTable(NSString *template, NSString *table, ...)
+		Like JATExpand(), but allows you to specify a strings file other than
 		Localizable.strings. The table name should be specified without the
 		.strings extension. Compare NSLocalizedStringFromTable().
 	
-	JAExpandFromTableInBundle(NSString *template, NSString *table, NSBundle *bundle, ...)
-		Like JAExpandFromTable(), but additionally allows you to specify a
+	JATExpandFromTableInBundle(NSString *template, NSString *table, NSBundle *bundle, ...)
+		Like JATExpandFromTable(), but additionally allows you to specify a
 		bundle other than the main bundle. Compare
 		NSLocalizedStringFromTableInBundle().
 	
 	
-	NSString *JAExpandWithParameters(NSString *template, NSDictionary *parameters)
+	NSString *JATExpandWithParameters(NSString *template, NSDictionary *parameters)
 		Allows the template system to be used the old-fashioned way: values
 		are looked up in <parameters> instead of using variables. Attempts to
 		localize using Localizable.strings.
 	
-	NSString *JAExpandLiteralWithParameters(NSString *template, NSDictionary *parameters)
-		Like JAExpandWithParameters(), but without the Localizable.strings lookup.
+	NSString *JATExpandLiteralWithParameters(NSString *template, NSDictionary *parameters)
+		Like JATExpandWithParameters(), but without the Localizable.strings lookup.
 	
-	NSString *JAExpandFromTableWithParameters(NSString *template, NSString *table, NSDictionary *parameters)
-		Like JAExpandWithParameters(), but allows you to specify a strings file
+	NSString *JATExpandFromTableWithParameters(NSString *template, NSString *table, NSDictionary *parameters)
+		Like JATExpandWithParameters(), but allows you to specify a strings file
 		other than Localizable.strings. The table name should be specified
-		without the .strings extension. Compare JAExpandFromTable().
+		without the .strings extension. Compare JATExpandFromTable().
 	
-	NSString *JAExpandFromTableInBundleWithParameters(NSString *template, NSString *table, NSBundle *bundle, NSDictionary *parameters)
-		Like JAExpandFromTableWithParameters(), but additionally allows you to
+	NSString *JATExpandFromTableInBundleWithParameters(NSString *template, NSString *table, NSBundle *bundle, NSDictionary *parameters)
+		Like JATExpandFromTableWithParameters(), but additionally allows you to
 		specify a bundle other than the main bundle. Compare
-		JAExpandFromTableInBundle().
+		JATExpandFromTableInBundle().
 	
 	
-	void JALog(NSString *message, ...)
-		Combines JAExpandLiteral() with NSLog() in the obvious way.
+	void JATLog(NSString *message, ...)
+		Combines JATExpandLiteral() with NSLog() in the obvious way.
 	
-	void JALogLocalized(NSString *message, ...)
-		Combines JAExpand() with NSLog() in the obvious way.
+	void JATLogLocalized(NSString *message, ...)
+		Combines JATExpand() with NSLog() in the obvious way.
 	
 	
 	The following operators are built in. They can be suppressed by defining
@@ -159,41 +159,41 @@
 		and "diacritics".
 */
 
-typedef __strong id JAParameterArray[];
+typedef __strong id JATParameterArray[];
 
 
-#define JAExpand(TEMPLATE, ...) \
-	JALocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, nil, nil, \
-	@#__VA_ARGS__, (JAParameterArray){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
+#define JATExpand(TEMPLATE, ...) \
+	JATLocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, nil, nil, \
+	@#__VA_ARGS__, (JATParameterArray){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
 
-#define JAExpandLiteral(TEMPLATE, ...) \
-	JAExpandTemplateUsingMacroKeysAndValues(TEMPLATE, \
-	@#__VA_ARGS__, (JAParameterArray){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
+#define JATExpandLiteral(TEMPLATE, ...) \
+	JATExpandTemplateUsingMacroKeysAndValues(TEMPLATE, \
+	@#__VA_ARGS__, (JATParameterArray){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
 
-#define JAExpandFromTable(TEMPLATE, TABLE, ...) \
-	JALocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, nil, TABLE, \
-	@#__VA_ARGS__, (JAParameterArray){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
+#define JATExpandFromTable(TEMPLATE, TABLE, ...) \
+	JATLocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, nil, TABLE, \
+	@#__VA_ARGS__, (JATParameterArray){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
 
-#define JAExpandFromTableInBundle(TEMPLATE, TABLE, BUNDLE, ...) \
-	JALocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, BUNDLE, TABLE, \
-	@#__VA_ARGS__, (JAParameterArray){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
+#define JATExpandFromTableInBundle(TEMPLATE, TABLE, BUNDLE, ...) \
+	JATLocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, BUNDLE, TABLE, \
+	@#__VA_ARGS__, (JATParameterArray){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
 
-#define JAExpandWithParameters(TEMPLATE, PARAMETERS) \
-	JAExpandFromTableInBundleWithParameters(TEMPLATE, nil, nil, PARAMETERS)
+#define JATExpandWithParameters(TEMPLATE, PARAMETERS) \
+	JATExpandFromTableInBundleWithParameters(TEMPLATE, nil, nil, PARAMETERS)
 
-NSString *JAExpandLiteralWithParameters(NSString *templateString, NSDictionary *parameters);
+NSString *JATExpandLiteralWithParameters(NSString *templateString, NSDictionary *parameters);
 
-#define JAExpandFromTableWithParameters(TEMPLATE, TABLE, PARAMETERS) \
-	JAExpandFromTableInBundleWithParameters(TEMPLATE, TABLE, nil, PARAMETERS)
+#define JATExpandFromTableWithParameters(TEMPLATE, TABLE, PARAMETERS) \
+	JATExpandFromTableInBundleWithParameters(TEMPLATE, TABLE, nil, PARAMETERS)
 
-NSString *JAExpandFromTableInBundleWithParameters(NSString *templateString, NSString *localizationTable, NSBundle *bundle, NSDictionary *parameters);
+NSString *JATExpandFromTableInBundleWithParameters(NSString *templateString, NSString *localizationTable, NSBundle *bundle, NSDictionary *parameters);
 
-#define JALog(TEMPLATE, ...)  NSLog(@"%@", JAExpandLiteral(TEMPLATE, __VA_ARGS__))
+#define JATLog(TEMPLATE, ...)  NSLog(@"%@", JATExpandLiteral(TEMPLATE, __VA_ARGS__))
 
-#define JALogLocalized(TEMPLATE, ...)  NSLog(@"%@", JAExpand(TEMPLATE, __VA_ARGS__))
+#define JATLogLocalized(TEMPLATE, ...)  NSLog(@"%@", JATExpand(TEMPLATE, __VA_ARGS__))
 
 
-@interface NSObject (JATemplateOperators)
+@interface NSObject (JATTemplateOperators)
 
 /*	-jatemplatePerformOperator:argument:variables: implements formatting
 	operators in template substitutions. The default implementation builds and
@@ -202,7 +202,7 @@ NSString *JAExpandFromTableInBundleWithParameters(NSString *templateString, NSSt
 	
 	Argument is the string following a colon in the operator expression, or nil
 	if there is no colon. Variables is a dictionary of all the variables passed
-	to JAExpand*().
+	to JATExpand*().
 	
 	For example, a substitution of the form {foo|num:spellout} is turned into
 	a call to -jatemplatePerform_num_withArgument:@"spellout" variables:variables.
@@ -261,14 +261,14 @@ NSString *JAExpandFromTableInBundleWithParameters(NSString *templateString, NSSt
 
 
 /*
-	JAExpandTemplateUsingMacroKeysAndValues()
-	JALocalizeAndExpandTemplateUsingMacroKeysAndValues()
+	JATExpandTemplateUsingMacroKeysAndValues()
+	JATLocalizeAndExpandTemplateUsingMacroKeysAndValues()
 	
 	Implementation details, do not call directly.
 */
-NSString *JAExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSString *names, JAParameterArray objects, NSUInteger count);
+NSString *JATExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSString *names, JATParameterArray objects, NSUInteger count);
 
-NSString *JALocalizeAndExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSBundle *bundle, NSString *localizationTable, NSString *names, JAParameterArray objects, NSUInteger count);
+NSString *JATLocalizeAndExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSBundle *bundle, NSString *localizationTable, NSString *names, JATParameterArray objects, NSUInteger count);
 
 
 /*
