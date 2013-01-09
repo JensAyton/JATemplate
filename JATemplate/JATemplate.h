@@ -22,6 +22,14 @@
 		that the boxing syntax for numbers and C strings is supported: for
 		example, int bar = 5; JAExpand(@"A number: {bar}", @(bar)); works.
 		
+		Parameters may be modified using modifiers, which are specified using
+		a vertical bar. Operators may optionally have a parameter, seperated
+		by a colon. Several operators may be chained. Examples:
+			{foo|uppercase}
+			{bar|num:$#,##0.00}
+			{baz|num:spellout|capitalize}
+		More information about operators is found further down the header.
+		
 		Template syntax is quite strict. In particular, there is no optional
 		whitespace.
 	
@@ -73,8 +81,7 @@
 
 @interface NSObject (JATemplateOperators)
 
-/*
-	-jatemplatePerformOperator:argument: implements formatting operators in
+/*	-jatemplatePerformOperator:argument: implements formatting operators in
 	template substitutions. The default implementation builds and calls a
 	selector based on the operator name according to the following pattern:
 		- (id) jatemplatePerform_{operator}_withArgument:(NSString *)argument;
@@ -90,12 +97,68 @@
 	
 	If no operator implementation is found, the default implementation of
 	-jatemplatePerformOperator:withArgument: returns nil.
+	
+	
+	The following operators are built in. They can be suppressed by defining
+	JATEMPLATE_SUPPRESS_DEFAULT_OPERATORS.
+	
+		num:
+		Format numbers. The argument may be an NSNumberFormatter format string,
+		or one of the following constants for locale-sensitive formatting:
+		- decimal or dec
+		  Decimal formatting using NSNumberFormatterDecimalStyle.
+		- currency or cur
+		  Currency formatting using NSNumberFormatterCurrencyStyle.
+		- percent or pct
+		  Percentage formatting using NSNumberFormatterPercentStyle.
+		- scientific or sci
+		  Scientific formatting using NSNumberFormatterScientificStyle.
+		- spellout
+		  Textual formatting using NSNumberFormatterSpellOutStyle.
+		- filebytes, file or bytes
+		  Byte count formatting using NSByteCountFormatterCountStyleFile.
+		- memorybytes or memory
+		  Byte count formatting using NSByteCountFormatterCountStyleMemory.
+		- decimalbytes
+		  Byte count formatting using NSByteCountFormatterCountStyleDecimal.
+		- binarybytes
+		  Byte count formatting using NSByteCountFormatterCountStyleBinary.
+		
+		uppercase
+		Locale-sensitive conversion to uppercase using uppercaseStringWithLocale:.
+		
+		lowercase
+		Locale-sensitive conversion to lowercase using lowercaseStringWithLocale:.
+		
+		capitalize
+		Locale-sensitive conversion to lowercase using capitalizedStringWithLocale:.
+		
+		uppercase_noloc
+		Locale-insensitive canonical conversion to uppercase using uppercaseString.
+		
+		lowercase_noloc
+		Locale-insensitive canonical conversion to lowercase using lowercaseString.
+		
+		capitalize_noloc
+		Locale-insensitive canonical conversion to lowercase using capitalizedString.
+		
+		trim
+		Remove leading and trailing whitespace and newlines.
+		
+		length
+		String length. (If the object is not a string, it will be coerced to a
+		string and its length will be used.)
+		
+		fold:
+		Locale-sensitive removal of lesser character distinctions using
+		stringByFoldingWithOptions:locale:. The argument is a comma-separated
+		list of options. The currently supported options are "case", "width"
+		and "diacritics".
 */
 - (id) jatemplatePerformOperator:(NSString *)op withArgument:(NSString *)argument;
 
 
-/*
-	- (NSNumber *) jatemplateCoerceToString
+/*	- (NSNumber *) jatemplateCoerceToString
 	
 	Convert reciever to an NSString. May return nil on failure. Used by default
 	template operators that expect a string, and should be used for custom
@@ -108,8 +171,7 @@
 - (NSString *) jatemplateCoerceToString;
 
 
-/*
-	- (NSNumber *) jatemplateCoerceToNumber
+/*	- (NSNumber *) jatemplateCoerceToNumber
 	
 	Convert reciever to an NSNumber. May return nil on failure. Used by default
 	template operators that expect a number, and should be used for custom
