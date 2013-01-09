@@ -464,7 +464,7 @@ static NSString *JAExpandOneFancyPantsSub(const unichar characters[], NSUInteger
 			argument = [NSString stringWithCharacters:characters + argStart length:cursor - argStart];
 		}
 		
-		value = [value jatemplatePerformOperator:operator withArgument:argument];
+		value = [value jatemplatePerformOperator:operator withArgument:argument variables:parameters];
 	}
 	
 	return [value jatemplateCoerceToString];
@@ -573,17 +573,17 @@ static void Warn(const unichar characters[], NSUInteger length, NSString *format
 
 @implementation NSObject (JATemplateOperators)
 
-- (id) jatemplatePerformOperator:(NSString *)operator withArgument:(NSString *)argument
+- (id) jatemplatePerformOperator:(NSString *)operator withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	// Dogfood note: it would be a bad idea to use an operator in this template.
-	NSString *opImplementationName = JAExpandLiteral(@"jatemplatePerform_{operator}_withArgument:", operator);
+	NSString *opImplementationName = JAExpandLiteral(@"jatemplatePerform_{operator}_withArgument:variables:", operator);
 	SEL selector = NSSelectorFromString(opImplementationName);
 	
 	if ([self respondsToSelector:selector])
 	{
-		typedef id (*OperatorIMP)(id, SEL, NSString *);
+		typedef id (*OperatorIMP)(id, SEL, NSString *, NSDictionary *);
 		OperatorIMP imp = (OperatorIMP)[self methodForSelector:selector];
-		return imp(self, selector, argument);
+		return imp(self, selector, argument, variables);
 	}
 	else
 	{
@@ -623,7 +623,7 @@ static void Warn(const unichar characters[], NSUInteger length, NSString *format
 
 #ifndef JATEMPLATE_SUPPRESS_DEFAULT_OPERATORS
 
-- (id) jatemplatePerform_num_withArgument:(NSString *)argument
+- (id) jatemplatePerform_num_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	NSNumber *value = [self jatemplateCoerceToNumber];
 	if (value == nil)  return nil;
@@ -673,7 +673,7 @@ static void Warn(const unichar characters[], NSUInteger length, NSString *format
 }
 
 
-- (id) jatemplatePerform_uppercase_withArgument:(NSString *)argument
+- (id) jatemplatePerform_uppercase_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	NSString *value = [self jatemplateCoerceToString];
 	if (value == nil)  return nil;
@@ -682,7 +682,7 @@ static void Warn(const unichar characters[], NSUInteger length, NSString *format
 }
 
 
-- (id) jatemplatePerform_lowercase_withArgument:(NSString *)argument
+- (id) jatemplatePerform_lowercase_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	NSString *value = [self jatemplateCoerceToString];
 	if (value == nil)  return nil;
@@ -691,7 +691,7 @@ static void Warn(const unichar characters[], NSUInteger length, NSString *format
 }
 
 
-- (id) jatemplatePerform_capitalize_withArgument:(NSString *)argument
+- (id) jatemplatePerform_capitalize_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	NSString *value = [self jatemplateCoerceToString];
 	if (value == nil)  return nil;
@@ -700,7 +700,7 @@ static void Warn(const unichar characters[], NSUInteger length, NSString *format
 }
 
 
-- (id) jatemplatePerform_uppercase_noloc_withArgument:(NSString *)argument
+- (id) jatemplatePerform_uppercase_noloc_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	NSString *value = [self jatemplateCoerceToString];
 	if (value == nil)  return nil;
@@ -709,7 +709,7 @@ static void Warn(const unichar characters[], NSUInteger length, NSString *format
 }
 
 
-- (id) jatemplatePerform_lowercase_noloc_withArgument:(NSString *)argument
+- (id) jatemplatePerform_lowercase_noloc_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	NSString *value = [self jatemplateCoerceToString];
 	if (value == nil)  return nil;
@@ -718,7 +718,7 @@ static void Warn(const unichar characters[], NSUInteger length, NSString *format
 }
 
 
-- (id) jatemplatePerform_capitalize_noloc_withArgument:(NSString *)argument
+- (id) jatemplatePerform_capitalize_noloc_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	NSString *value = [self jatemplateCoerceToString];
 	if (value == nil)  return nil;
@@ -727,7 +727,7 @@ static void Warn(const unichar characters[], NSUInteger length, NSString *format
 }
 
 
-- (id) jatemplatePerform_trim_withArgument:(NSString *)argument
+- (id) jatemplatePerform_trim_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	NSString *value = [self jatemplateCoerceToString];
 	if (value == nil)  return nil;
@@ -736,7 +736,7 @@ static void Warn(const unichar characters[], NSUInteger length, NSString *format
 }
 
 
-- (id) jatemplatePerform_length_withArgument:(NSString *)argument
+- (id) jatemplatePerform_length_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	NSString *value = [self jatemplateCoerceToString];
 	if (value == nil)  return nil;
@@ -745,7 +745,7 @@ static void Warn(const unichar characters[], NSUInteger length, NSString *format
 }
 
 
-- (id) jatemplatePerform_fold_withArgument:(NSString *)argument
+- (id) jatemplatePerform_fold_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	NSString *value = [self jatemplateCoerceToString];
 	if (value == nil)  return nil;

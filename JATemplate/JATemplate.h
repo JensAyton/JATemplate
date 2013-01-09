@@ -56,47 +56,6 @@
 	
 	void JALogLocalized(NSString *message, ...)
 		Combines JAExpand() with NSLog() in the obvious way.
-*/
-
-#define JAExpand(TEMPLATE, ...) \
-	JALocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, nil, nil, \
-	@#__VA_ARGS__, (__unsafe_unretained id[]){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
-
-#define JAExpandLiteral(TEMPLATE, ...) \
-	JAExpandTemplateUsingMacroKeysAndValues(TEMPLATE, \
-	@#__VA_ARGS__, (__unsafe_unretained id[]){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
-
-#define JAExpandFromTable(TEMPLATE, TABLE, ...) \
-	JALocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, nil, TABLE, \
-	@#__VA_ARGS__, (__unsafe_unretained id[]){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
-
-#define JAExpandFromTableInBundle(TEMPLATE, TABLE, BUNDLE, ...) \
-	JALocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, BUNDLE, TABLE, \
-	@#__VA_ARGS__, (__unsafe_unretained id[]){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
-
-#define JALog(TEMPLATE, ...)  NSLog(@"%@", JAExpandLiteral(TEMPLATE, __VA_ARGS__))
-
-#define JALogLocalized(TEMPLATE, ...)  NSLog(@"%@", JAExpand(TEMPLATE, __VA_ARGS__))
-
-
-@interface NSObject (JATemplateOperators)
-
-/*	-jatemplatePerformOperator:argument: implements formatting operators in
-	template substitutions. The default implementation builds and calls a
-	selector based on the operator name according to the following pattern:
-		- (id) jatemplatePerform_{operator}_withArgument:(NSString *)argument;
-	
-	For example, a substitution of the form {foo|num:spellout} is turned into
-	a call to -jatemplatePerform_num_withArgument:@"spellout".
-	
-	The recommended pattern is to implement operators as categories on NSObject
-	and coerce the object to the required class. For some custom operators, it
-	may be reasonable to implement them on a specific class instead.
-	
-	Operators signal failure by returning nil.
-	
-	If no operator implementation is found, the default implementation of
-	-jatemplatePerformOperator:withArgument: returns nil.
 	
 	
 	The following operators are built in. They can be suppressed by defining
@@ -155,7 +114,52 @@
 		list of options. The currently supported options are "case", "width"
 		and "diacritics".
 */
-- (id) jatemplatePerformOperator:(NSString *)op withArgument:(NSString *)argument;
+
+#define JAExpand(TEMPLATE, ...) \
+	JALocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, nil, nil, \
+	@#__VA_ARGS__, (__unsafe_unretained id[]){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
+
+#define JAExpandLiteral(TEMPLATE, ...) \
+	JAExpandTemplateUsingMacroKeysAndValues(TEMPLATE, \
+	@#__VA_ARGS__, (__unsafe_unretained id[]){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
+
+#define JAExpandFromTable(TEMPLATE, TABLE, ...) \
+	JALocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, nil, TABLE, \
+	@#__VA_ARGS__, (__unsafe_unretained id[]){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
+
+#define JAExpandFromTableInBundle(TEMPLATE, TABLE, BUNDLE, ...) \
+	JALocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, BUNDLE, TABLE, \
+	@#__VA_ARGS__, (__unsafe_unretained id[]){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
+
+#define JALog(TEMPLATE, ...)  NSLog(@"%@", JAExpandLiteral(TEMPLATE, __VA_ARGS__))
+
+#define JALogLocalized(TEMPLATE, ...)  NSLog(@"%@", JAExpand(TEMPLATE, __VA_ARGS__))
+
+
+@interface NSObject (JATemplateOperators)
+
+/*	-jatemplatePerformOperator:argument:variables: implements formatting
+	operators in template substitutions. The default implementation builds and
+	calls a selector based on the operator name according to the following pattern:
+		- (id) jatemplatePerform_{operator}_withArgument:(NSString *)argument variables:(NSDictionary *)variables;
+	
+	Argument is the string following a colon in the operator expression, or nil
+	if there is no colon. Variables is a dictionary of all the variables passed
+	to JAExpand*().
+	
+	For example, a substitution of the form {foo|num:spellout} is turned into
+	a call to -jatemplatePerform_num_withArgument:@"spellout" variables:variables.
+	
+	The recommended pattern is to implement operators as categories on NSObject
+	and coerce the object to the required class. For some custom operators, it
+	may be reasonable to implement them on a specific class instead.
+	
+	Operators signal failure by returning nil.
+	
+	If no operator implementation is found, the default implementation of
+	-jatemplatePerformOperator:withArgument: returns nil.
+*/
+- (id) jatemplatePerformOperator:(NSString *)op withArgument:(NSString *)argument variables:(NSDictionary *)variables;
 
 
 /*	- (NSNumber *) jatemplateCoerceToString
