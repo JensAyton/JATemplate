@@ -3,16 +3,9 @@
 
 
 @implementation JATemplateOperatorTests
-{
-	NSBundle *_bundle;
-}
-
 
 - (void) setUp
 {
-	[super setUp];
-	_bundle = [NSBundle bundleForClass:self.class];
-	
 	static dispatch_once_t onceToken;
 	dispatch_once(&onceToken, ^{
 		// Check that locale is en_US. NOTE: in the shared JATemplate scheme,
