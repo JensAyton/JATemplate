@@ -95,8 +95,23 @@ NSString *JAExpandTemplateUsingMacroKeysAndValues(NSString *template, NSString *
 	NSArray *parameterNames = JATemplateParseNames(names, expectedCount);
 	if (parameterNames == nil)  return template;
 	
-	// Stick parameter values in an array.
-	NSArray *parameterValues = [NSArray arrayWithObjects:objects count:expectedCount];
+	// Stick parameter values in an array, replacing nils with [NSNull null].
+	NSNull *null = nil;
+	__unsafe_unretained id shadowArray[expectedCount];
+	for (NSUInteger i = 0; i < expectedCount; i++)
+	{
+		id value = objects[i];
+		if (value != nil)
+		{
+			shadowArray[i] = value;
+		}
+		else
+		{
+			if (null == nil)  null = [NSNull null];
+			shadowArray[i] = null;
+		}
+	}
+	NSArray *parameterValues = [NSArray arrayWithObjects:shadowArray count:expectedCount];
 	
 	// Build dictionary of parameters.
 	NSDictionary *parameters = [NSDictionary dictionaryWithObjects:parameterValues forKeys:parameterNames];
@@ -931,6 +946,22 @@ static void Warn(const unichar characters[], NSUInteger length, NSString *format
 - (NSString *) jatemplateCoerceToString
 {
 	return self;
+}
+
+@end
+
+
+@implementation NSNull (JATemplateOperators)
+
+- (NSString *) jatemplateCoerceToString
+{
+	return @"(null)";
+}
+
+
+- (NSNumber *) jatemplateCoerceToBoolean
+{
+	return @(NO);
 }
 
 @end

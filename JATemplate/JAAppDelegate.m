@@ -32,7 +32,7 @@
 	NSNumber *boolValue = @(NO);
 	NSString *trueString = @"yes";
 	NSString *falseString = @"no";
-	JALog(@"Boolean: {boolValue|if:true;false}, inverted: {boolValue|not|ifuse:trueString;falseString}", boolValue, trueString, falseString);
+	JALog(@"Boolean: {boolValue|if:true;false}; inverted: {boolValue|not|ifuse:trueString;falseString}", boolValue, trueString, falseString);
 	
 	// Test byte size formatting.
 	NSUInteger byteSize = 65536;

@@ -21,6 +21,7 @@
 		Parameters must be variables of object type, not expressions, except
 		that the boxing syntax for numbers and C strings is supported: for
 		example, int bar = 5; JAExpand(@"A number: {bar}", @(bar)); works.
+		Nils are replaced with NSNull (which is printed as "(null)").
 		
 		Parameters may be modified using modifiers, which are specified using
 		a vertical bar. Operators may optionally have a parameter, seperated
@@ -226,7 +227,8 @@ NSString *JAExpandFromTableInBundleWithParameters(NSString *templateString, NSSt
 	series of operators, or a variable with no operators applied, to a string
 	for insertion in the template.
 	
-	The default implementation calls -description.
+	The default implementation calls -description. Overridden for NSNull to
+	return @"(null)".
 */
 - (NSString *) jatemplateCoerceToString;
 
@@ -251,7 +253,7 @@ NSString *JAExpandFromTableInBundleWithParameters(NSString *templateString, NSSt
 	custom template operators in the same way.
 	
 	The default implementation attempts to call boolValue. If this is not
-	implemented, it returns nil.
+	implemented, it returns nil. Overridden for NSNull to return false.
 */
 - (NSNumber *) jatemplateCoerceToBoolean;
 
