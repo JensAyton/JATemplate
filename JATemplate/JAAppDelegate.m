@@ -29,7 +29,7 @@
 	JALog(@"Fancy bar: {bar|num:spellout|capitalize}", foo, @(bar));
 	
 	// Test booleans.
-	NSNumber *boolValue = @(NO);
+	NSNumber *boolValue = @NO;
 	NSString *trueString = @"yes";
 	NSString *falseString = @"no";
 	JALog(@"Boolean: {boolValue|if:true;false}; inverted: {boolValue|not|ifuse:trueString;falseString}", boolValue, trueString, falseString);

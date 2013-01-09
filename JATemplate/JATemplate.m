@@ -668,7 +668,7 @@ static void Warn(const unichar characters[], NSUInteger length, NSString *format
 {
 	if ([self respondsToSelector:@selector(boolValue)])
 	{
-		return @([(id)self boolValue]);
+		return [(id)self boolValue] ? @YES : @NO;
 	}
 	return nil;
 }
@@ -777,7 +777,7 @@ static void Warn(const unichar characters[], NSUInteger length, NSString *format
 	NSNumber *value = [self jatemplateCoerceToBoolean];
 	if (value == nil)  return nil;
 	
-	return @(!value.boolValue);
+	return value.boolValue ? @NO : @YES;
 }
 
 
@@ -961,7 +961,7 @@ static void Warn(const unichar characters[], NSUInteger length, NSString *format
 
 - (NSNumber *) jatemplateCoerceToBoolean
 {
-	return @(NO);
+	return @NO;
 }
 
 @end
