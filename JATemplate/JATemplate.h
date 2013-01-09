@@ -83,6 +83,15 @@
 		- binarybytes
 		  Byte count formatting using NSByteCountFormatterCountStyleBinary.
 		
+		plural:
+		Takes one to three arguments separated by semicolons. If one argument
+		is provided, the argument is returned if the value is plural and the
+		empty string is returned otherwise. If there are two arguments, the
+		first is used for singular and the second for plural. If there are
+		three arguments, the first is singular, the second is dual (i.e., used
+		for exactly two items) and the third is plural.
+		Example: "I have {gooseCount} {gooseCount|plural:goose;geese}.".
+		
 		uppercase
 		Locale-sensitive conversion to uppercase using uppercaseStringWithLocale:.
 		

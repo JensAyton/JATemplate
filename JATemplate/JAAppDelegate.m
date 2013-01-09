@@ -32,6 +32,11 @@
 	NSUInteger byteSize = 65536;
 	JALog(@"File bytes: {byteSize|num:filebytes}; memory bytes: {byteSize|num:memorybytes}", @(byteSize));
 	
+	// Test plural: operator.
+	NSUInteger catCount = 1;
+	NSUInteger gooseCount = 5;
+	JALog(@"I have {catCount} cat{catCount|plural:s} and {gooseCount} {gooseCount|plural:goose;geese}. That’s {gooseCount|plural:one goose;a couple of geese;several geese}.", @(catCount), @(gooseCount));
+	
 	// Test fold: operator.
 	NSString *blargh = @"BläÄ";
 	JALog(@"Fold operator: {blargh|fold:case,diacritics}", blargh);

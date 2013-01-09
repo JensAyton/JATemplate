@@ -673,6 +673,53 @@ static void Warn(const unichar characters[], NSUInteger length, NSString *format
 }
 
 
+- (id) jatemplatePerform_plural_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+{
+	NSNumber *value = [self jatemplateCoerceToNumber];
+	if (value == nil)  return nil;
+	
+	if (argument == nil)
+	{
+		Warn(NULL, 0, @"Template operator plural: used with no argument.");
+	}
+	
+	NSArray *components = [argument componentsSeparatedByString:@";"];
+	NSUInteger count = components.count;
+	if (count > 3)
+	{
+		Warn(NULL, 0, @"Template operator plural: requires one to three arguments.");
+	}
+	
+	bool isPlural = ![value isEqual:@(1)];
+	
+	if (count == 1)
+	{
+		// One argument: use argument for plural, empty string for singular.
+		return isPlural ? argument : @"";
+	}
+	else if (count == 2)
+	{
+		// Two arguments: singular;plural
+		return isPlural ? components[1] : components[0];
+	}
+	else if (count == 3)
+	{
+		// Two arguments: singular;dual;plural
+		if (!isPlural)  return components[0];
+		else if ([value isEqual:@(2)])
+		{
+			return components[1];
+		}
+		else
+		{
+			return components[2];
+		}
+	}
+	
+	return nil;
+}
+
+
 - (id) jatemplatePerform_uppercase_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	NSString *value = [self jatemplateCoerceToString];
