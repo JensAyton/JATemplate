@@ -21,6 +21,9 @@
 		Parameters must be variables of object type, not expressions, except
 		that the boxing syntax for numbers and C strings is supported: for
 		example, int bar = 5; JAExpand(@"A number: {bar}", @(bar)); works.
+		
+		Template syntax is quite strict. In particular, there is no optional
+		whitespace.
 	
 	NSString *JAExpandLiteral(NSString *template, ...)
 		Like JAExpand(), but without the Localizable.strings lookup.
@@ -47,8 +50,6 @@
 		Combines JAExpand() with NSLog() in the obvious way.
 */
 
-
-
 #define JAExpand(TEMPLATE, ...) \
 	JALocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, nil, nil, \
 	@#__VA_ARGS__, (__unsafe_unretained id[]){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
@@ -68,6 +69,59 @@
 #define JALog(TEMPLATE, ...)  NSLog(@"%@", JAExpandLiteral(TEMPLATE, __VA_ARGS__))
 
 #define JALogLocalized(TEMPLATE, ...)  NSLog(@"%@", JAExpand(TEMPLATE, __VA_ARGS__))
+
+
+@interface NSObject (JATemplateOperators)
+
+/*
+	-jatemplatePerformOperator:argument: implements formatting operators in
+	template substitutions. The default implementation builds and calls a
+	selector based on the operator name according to the following pattern:
+		- (id) jatemplatePerform_{operator}_withArgument:(NSString *)argument;
+	
+	For example, a substitution of the form {foo|num:spellout} is turned into
+	a call to -jatemplatePerform_num_withArgument:@"spellout".
+	
+	The recommended pattern is to implement operators as categories on NSObject
+	and coerce the object to the required class. For some custom operators, it
+	may be reasonable to implement them on a specific class instead.
+	
+	Operators signal failure by returning nil.
+	
+	If no operator implementation is found, the default implementation of
+	-jatemplatePerformOperator:withArgument: returns nil.
+*/
+- (id) jatemplatePerformOperator:(NSString *)op withArgument:(NSString *)argument;
+
+
+/*
+	- (NSNumber *) jatemplateCoerceToString
+	
+	Convert reciever to an NSString. May return nil on failure. Used by default
+	template operators that expect a string, and should be used for custom
+	template operators in the same way. Also used to convert the result of a
+	series of operators, or a variable with no operators applied, to a string
+	for insertion in the template.
+	
+	The default implementation calls -description.
+*/
+- (NSString *) jatemplateCoerceToString;
+
+
+/*
+	- (NSNumber *) jatemplateCoerceToNumber
+	
+	Convert reciever to an NSNumber. May return nil on failure. Used by default
+	template operators that expect a number, and should be used for custom
+	template operators in the same way.
+	
+	The default implementation attempts to call -doubleValue, -floatValue,
+	-integerValue or -intValue, in that order. If they fail, it returns nil.
+	Overriden for NSNumber to return self.
+*/
+- (NSNumber *) jatemplateCoerceToNumber;
+
+@end
 
 
 /*

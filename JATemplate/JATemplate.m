@@ -34,7 +34,7 @@
 #endif
 
 #if JATEMPLATE_SYNTAX_WARNINGS
-static void Warn(const unichar *characters, NSUInteger length, NSString *format, ...)  NS_FORMAT_FUNCTION(3, 4);
+static void Warn(const unichar characters[], NSUInteger length, NSString *format, ...)  NS_FORMAT_FUNCTION(3, 4);
 #else
 #define Warn(...) do {} while (0)
 #endif
@@ -53,18 +53,21 @@ static NSArray *JATemplateParseNamesUncached(NSString *nameString, NSUInteger ex
 static NSString *JATemplateParseOneName(NSString *name);
 
 static NSString *JAExpandInternal(const unichar *stringBuffer, NSUInteger length, NSDictionary *parameters);
-static NSString *JAExpandOneSub(const unichar *characters, NSUInteger length, NSUInteger idx, NSUInteger *replaceLength, NSDictionary *parameters);
-static NSString *JAExpandOneSimpleSub(const unichar *characters, NSUInteger length, NSUInteger keyStart, NSUInteger keyLength, NSDictionary *parameters);
-static NSString *JAExpandOneFancyPantsSub(const unichar *characters, NSUInteger length, NSUInteger keyStart, NSUInteger keyLength, NSDictionary *parameters);
+static NSString *JAExpandOneSub(const unichar characters[], NSUInteger length, NSUInteger idx, NSUInteger *replaceLength, NSDictionary *parameters);
+static NSString *JAExpandOneSimpleSub(const unichar characters[], NSUInteger length, NSUInteger keyStart, NSUInteger keyLength, NSDictionary *parameters);
+static NSString *JAExpandOneFancyPantsSub(const unichar characters[], NSUInteger length, NSUInteger keyStart, NSUInteger keyLength, NSDictionary *parameters);
 
-static void JATemplateAppendCharacters(NSMutableString *buffer, const unichar *characters, NSUInteger length, NSUInteger start, NSUInteger end);
+static void JATemplateAppendCharacters(NSMutableString *buffer, const unichar characters[], NSUInteger length, NSUInteger start, NSUInteger end);
 
 static bool IsIdentifierStartChar(unichar value);
 static bool IsIdentifierChar(unichar value);
 #ifndef NS_BLOCK_ASSERTIONS
 static bool IsValidIdentifier(NSString *candidate);
 #endif
+static bool ScanIdentifier(const unichar characters[], NSUInteger length, NSUInteger start, NSUInteger *outEnd);
 
+
+#pragma mark - Template parsing
 
 /*
 	JAExpandTemplateUsingMacroKeysAndValues(templateString, names, paddedObjectArray, expectedCount)
@@ -267,7 +270,7 @@ static NSString *JATemplateParseOneName(NSString *name)
 	Parse a template string and substitute the parameters. In other words, do
 	the actual work after the faffing about parsing names and so forth.
 */
-static NSString *JAExpandInternal(const unichar *characters, NSUInteger length, NSDictionary *parameters)
+static NSString *JAExpandInternal(const unichar characters[], NSUInteger length, NSDictionary *parameters)
 {
 	NSCParameterAssert(characters != NULL);
 	
@@ -317,7 +320,7 @@ static NSString *JAExpandInternal(const unichar *characters, NSUInteger length, 
 }
 
 
-static NSString *JAExpandOneSub(const unichar *characters, NSUInteger length, NSUInteger idx, NSUInteger *replaceLength, NSDictionary *parameters)
+static NSString *JAExpandOneSub(const unichar characters[], NSUInteger length, NSUInteger idx, NSUInteger *replaceLength, NSDictionary *parameters)
 {
 	NSCParameterAssert(characters != NULL);
 	NSCParameterAssert(idx < length - 1);
@@ -369,7 +372,7 @@ static NSString *JAExpandOneSub(const unichar *characters, NSUInteger length, NS
 	
 	Handles cases where the substitution token is a simple identifier.
 */
-static NSString *JAExpandOneSimpleSub(const unichar *characters, NSUInteger length, NSUInteger keyStart, NSUInteger keyLength, NSDictionary *parameters)
+static NSString *JAExpandOneSimpleSub(const unichar characters[], NSUInteger length, NSUInteger keyStart, NSUInteger keyLength, NSDictionary *parameters)
 {
 	NSCParameterAssert(characters != NULL);
 	NSCParameterAssert(keyStart < length);
@@ -381,7 +384,7 @@ static NSString *JAExpandOneSimpleSub(const unichar *characters, NSUInteger leng
 	{
 		Warn(characters, length, @"Template substitution uses unknown key \"%@\".", key);
 	}
-	return [value description];
+	return [value jatemplateCoerceToString];
 }
 
 
@@ -391,7 +394,7 @@ static NSString *JAExpandOneSimpleSub(const unichar *characters, NSUInteger leng
 	Handles cases where the substitution token is something other than a simple
 	identifier. Length is guaranteed not to be zero.
 */
-static NSString *JAExpandOneFancyPantsSub(const unichar *characters, NSUInteger length, NSUInteger keyStart, NSUInteger keyLength, NSDictionary *parameters)
+static NSString *JAExpandOneFancyPantsSub(const unichar characters[], NSUInteger length, NSUInteger keyStart, NSUInteger keyLength, NSDictionary *parameters)
 {
 	NSCParameterAssert(characters != NULL);
 	NSCParameterAssert(keyStart < length);
@@ -408,21 +411,67 @@ static NSString *JAExpandOneFancyPantsSub(const unichar *characters, NSUInteger 
 		if (first == '(')  return @"{";
 		if (first == ')')  return @"}";
 	}
-	if (!IsIdentifierStartChar(first))
+	
+	bool isIdentifier = ScanIdentifier(characters, length, keyStart, &keyLength);
+	if (!isIdentifier)
 	{
 		// No other forms starting with non-identifiers are defined.
 		Warn(characters, length, @"Unkown template substitution syntax {%@}.", [NSString stringWithCharacters:characters + keyStart length:keyLength]);
 		return nil;
 	}
 	
-	// At this point, we know that the substitution isn't a simple identifier, but does start with one.
+	// extract the identifier.
+	NSString *identifier = [NSString stringWithCharacters:characters + keyStart length:keyLength];
 	
+	// At this point, we expect one or more bars, each followed by an operator expression.
+	NSUInteger cursor = keyStart + keyLength;
+	if (characters[cursor] != '|')
+	{
+		Warn(characters, length, @"Unexpected character '%@' in template substitution {%@}.", [NSString stringWithCharacters:characters + cursor length:1], [NSString stringWithCharacters:characters + keyStart length:keyLength]);
+		return nil;
+	}
 	
-	return nil;
+	id value = parameters[identifier];
+	
+	while (value != nil && characters[cursor] == '|')
+	{
+		cursor++;
+		NSUInteger opLength;
+		isIdentifier = ScanIdentifier(characters, length, cursor, &opLength);
+		if (!isIdentifier)
+		{
+			Warn(characters, length, @"Expected identifier after | in {%@}.", [NSString stringWithCharacters:characters + keyStart length:keyLength]);
+			return nil;
+		}
+		
+		NSString *operator = [NSString stringWithCharacters:characters + cursor length:opLength];
+		cursor += opLength;
+		
+		NSString *argument = nil;
+		if (characters[cursor] == ':')
+		{
+			// Everything up to the next | or } is the argument.
+			cursor++;
+			NSUInteger argStart = cursor;
+			for (; cursor < length; cursor++)
+			{
+				if (characters[cursor] == '|' || characters[cursor] == '}')
+				{
+					break;
+				}
+			}
+			
+			argument = [NSString stringWithCharacters:characters + argStart length:cursor - argStart];
+		}
+		
+		value = [value jatemplatePerformOperator:operator withArgument:argument];
+	}
+	
+	return [value jatemplateCoerceToString];
 }
 
 
-static void JATemplateAppendCharacters(NSMutableString *buffer, const unichar *characters, NSUInteger length, NSUInteger start, NSUInteger end)
+static void JATemplateAppendCharacters(NSMutableString *buffer, const unichar characters[], NSUInteger length, NSUInteger start, NSUInteger end)
 {
 	NSCParameterAssert(buffer != nil);
 	NSCParameterAssert(characters != NULL);
@@ -483,8 +532,27 @@ static bool IsValidIdentifier(NSString *candidate)
 #endif
 
 
+static bool ScanIdentifier(const unichar characters[], NSUInteger length, NSUInteger start, NSUInteger *outIdentifierLength)
+{
+	NSCParameterAssert(characters != NULL);
+	NSCParameterAssert(start < length);
+	NSCParameterAssert(outIdentifierLength != NULL);
+	
+	if (!IsIdentifierStartChar(characters[start]))  return false;
+	
+	NSUInteger end;
+	for (end = start + 1; end < length; end++)
+	{
+		if (!IsIdentifierChar(characters[end]))  break;
+	}
+	
+	*outIdentifierLength = end - start;
+	return true;
+}
+
+
 #if JATEMPLATE_SYNTAX_WARNINGS
-static void Warn(const unichar *characters, NSUInteger length, NSString *format, ...)
+static void Warn(const unichar characters[], NSUInteger length, NSString *format, ...)
 {
 	va_list args;
 	va_start(args, format);
@@ -499,3 +567,235 @@ static void Warn(const unichar *characters, NSUInteger length, NSString *format,
 	NSLog(@"%@", message);
 }
 #endif
+
+
+#pragma mark - Operators
+
+@implementation NSObject (JATemplateOperators)
+
+- (id) jatemplatePerformOperator:(NSString *)operator withArgument:(NSString *)argument
+{
+	// Dogfood note: it would be a bad idea to use an operator in this template.
+	NSString *opImplementationName = JAExpandLiteral(@"jatemplatePerform_{operator}_withArgument:", operator);
+	SEL selector = NSSelectorFromString(opImplementationName);
+	
+	if ([self respondsToSelector:selector])
+	{
+		typedef id (*OperatorIMP)(id, SEL, NSString *);
+		OperatorIMP imp = (OperatorIMP)[self methodForSelector:selector];
+		return imp(self, selector, argument);
+	}
+	else
+	{
+		return nil;
+	}
+}
+
+
+- (NSString *) jatemplateCoerceToString
+{
+	return [self description];
+}
+
+
+- (NSNumber *) jatemplateCoerceToNumber
+{
+	if ([self respondsToSelector:@selector(doubleValue)])
+	{
+		return @([(id)self doubleValue]);
+	}
+	if ([self respondsToSelector:@selector(floatValue)])
+	{
+		return @([(id)self floatValue]);
+	}
+	if ([self respondsToSelector:@selector(integerValue)])
+	{
+		return @([(id)self integerValue]);
+	}
+	if ([self respondsToSelector:@selector(intValue)])
+	{
+		return @([(id)self intValue]);
+	}
+	
+	return nil;
+}
+
+
+#ifndef JATEMPLATE_SUPPRESS_DEFAULT_OPERATORS
+
+- (id) jatemplatePerform_num_withArgument:(NSString *)argument
+{
+	NSNumber *value = [self jatemplateCoerceToNumber];
+	if (value == nil)  return nil;
+	
+	if ([argument isEqual:@"decimal"] || [argument isEqual:@"dec"])
+	{
+		return [NSNumberFormatter localizedStringFromNumber:value numberStyle:NSNumberFormatterDecimalStyle];
+	}
+	if ([argument isEqual:@"currency"] || [argument isEqual:@"cur"])
+	{
+		return [NSNumberFormatter localizedStringFromNumber:value numberStyle:NSNumberFormatterCurrencyStyle];
+	}
+	if ([argument isEqual:@"percent"] || [argument isEqual:@"pct"])
+	{
+		return [NSNumberFormatter localizedStringFromNumber:value numberStyle:NSNumberFormatterPercentStyle];
+	}
+	if ([argument isEqual:@"scientific"] || [argument isEqual:@"sci"])
+	{
+		return [NSNumberFormatter localizedStringFromNumber:value numberStyle:NSNumberFormatterScientificStyle];
+	}
+	if ([argument isEqual:@"spellout"])
+	{
+		return [NSNumberFormatter localizedStringFromNumber:value numberStyle:NSNumberFormatterSpellOutStyle];
+	}
+	if ([argument isEqual:@"filebytes"] || [argument isEqual:@"file"] || [argument isEqual:@"bytes"])
+	{
+		return [NSByteCountFormatter stringFromByteCount:value.longLongValue countStyle:NSByteCountFormatterCountStyleFile];
+	}
+	if ([argument isEqual:@"memorybytes"] || [argument isEqual:@"memory"])
+	{
+		return [NSByteCountFormatter stringFromByteCount:value.longLongValue countStyle:NSByteCountFormatterCountStyleMemory];
+	}
+	if ([argument isEqual:@"decimalbytes"])
+	{
+		return [NSByteCountFormatter stringFromByteCount:value.longLongValue countStyle:NSByteCountFormatterCountStyleDecimal];
+	}
+	if ([argument isEqual:@"binarybytes"])
+	{
+		return [NSByteCountFormatter stringFromByteCount:value.longLongValue countStyle:NSByteCountFormatterCountStyleBinary];
+	}
+	
+	NSNumberFormatter *formatter = [NSNumberFormatter new];
+	formatter.formatterBehavior = NSNumberFormatterBehavior10_4;
+	formatter.format = argument;
+	
+	return [formatter stringFromNumber:value];
+}
+
+
+- (id) jatemplatePerform_uppercase_withArgument:(NSString *)argument
+{
+	NSString *value = [self jatemplateCoerceToString];
+	if (value == nil)  return nil;
+	
+	return [value uppercaseStringWithLocale:nil];
+}
+
+
+- (id) jatemplatePerform_lowercase_withArgument:(NSString *)argument
+{
+	NSString *value = [self jatemplateCoerceToString];
+	if (value == nil)  return nil;
+	
+	return [value lowercaseStringWithLocale:nil];
+}
+
+
+- (id) jatemplatePerform_capitalize_withArgument:(NSString *)argument
+{
+	NSString *value = [self jatemplateCoerceToString];
+	if (value == nil)  return nil;
+	
+	return [value capitalizedStringWithLocale:nil];
+}
+
+
+- (id) jatemplatePerform_uppercase_noloc_withArgument:(NSString *)argument
+{
+	NSString *value = [self jatemplateCoerceToString];
+	if (value == nil)  return nil;
+	
+	return [value uppercaseString];
+}
+
+
+- (id) jatemplatePerform_lowercase_noloc_withArgument:(NSString *)argument
+{
+	NSString *value = [self jatemplateCoerceToString];
+	if (value == nil)  return nil;
+	
+	return [value lowercaseString];
+}
+
+
+- (id) jatemplatePerform_capitalize_noloc_withArgument:(NSString *)argument
+{
+	NSString *value = [self jatemplateCoerceToString];
+	if (value == nil)  return nil;
+	
+	return [value capitalizedString];
+}
+
+
+- (id) jatemplatePerform_trim_withArgument:(NSString *)argument
+{
+	NSString *value = [self jatemplateCoerceToString];
+	if (value == nil)  return nil;
+	
+	return [value stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
+}
+
+
+- (id) jatemplatePerform_length_withArgument:(NSString *)argument
+{
+	NSString *value = [self jatemplateCoerceToString];
+	if (value == nil)  return nil;
+	
+	return @(value.length);
+}
+
+
+- (id) jatemplatePerform_fold_withArgument:(NSString *)argument
+{
+	NSString *value = [self jatemplateCoerceToString];
+	if (value == nil)  return nil;
+	
+	NSStringCompareOptions optionMask = 0;
+	for (NSString *option in [argument componentsSeparatedByString:@","])
+	{
+		if ([option isEqual:@"case"])
+		{
+			optionMask |= NSCaseInsensitiveSearch;
+		}
+		else if ([option isEqual:@"diacritics"])
+		{
+			optionMask |= NSDiacriticInsensitiveSearch;
+		}
+		else if ([option isEqual:@"width"])
+		{
+			optionMask |= NSWidthInsensitiveSearch;
+		}
+		else
+		{
+			Warn(NULL, 0, @"Unknown option \"%@\" for \"fold\" template operator.", option);
+		}
+	}
+	
+	if (optionMask == 0)  return value;
+	
+	return [value stringByFoldingWithOptions:optionMask locale:NSLocale.currentLocale];
+}
+
+#endif
+
+@end
+
+
+@implementation NSString (JATemplateOperators)
+
+- (NSString *) jatemplateCoerceToString
+{
+	return self;
+}
+
+@end
+
+
+@implementation NSNumber (JATemplateOperators)
+
+- (NSNumber *) jatemplateCoerceToNumber
+{
+	return self;
+}
+
+@end
