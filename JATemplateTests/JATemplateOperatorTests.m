@@ -93,6 +93,18 @@
 // TODO: a few tests of num: with NSNumberFormatter format strings.
 
 
+- (void) testOperatorPlural
+{
+	unsigned myKittenCount = 1;
+	unsigned myGooseCount = 7;
+	unsigned yourKittenCount = 3;
+	unsigned yourGooseCount = 1;
+	NSString *expansion = JATExpand(@"I have {myKittenCount|num:spellout} kitten{myKittenCount|plural:s}. You have {yourKittenCount|num:spellout} kitten{yourKittenCount|plural:s}. I have {myGooseCount|num:spellout} {myGooseCount|plural:goose;geese}. You have {yourGooseCount|num:spellout} {yourGooseCount|plural:goose;geese}.", @(myKittenCount), @(myGooseCount), @(yourKittenCount), @(yourGooseCount));
+	
+	STAssertEqualObjects(expansion, @"I have one kitten. You have three kittens. I have seven geese. You have one goose.", @"plural: operator failed.");
+}
+
+
 - (void) testOperatorNot
 {
 	NSNumber *yes = @YES;
