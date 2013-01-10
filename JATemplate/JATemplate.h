@@ -119,7 +119,7 @@
 		
 		ifuse:
 		Like if:, but treats its arguments as parameter keys:
-		Example: "If the flag is true, \"{flag|ifuse:trueString:falseString}
+		Example: "If the flag is true, \"{flag|ifuse:trueString:falseString}\"
 		is {trueString}, otherwise it's {falseString}."
 		
 		uppercase
