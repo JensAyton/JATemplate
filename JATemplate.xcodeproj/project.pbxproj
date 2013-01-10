@@ -85,6 +85,7 @@
 		1ABDBA63169AFF0100846E17 = {
 			isa = PBXGroup;
 			children = (
+				1AC73892169F65AC0067D813 /* Test app */,
 				1ABDBA78169AFF0100846E17 /* JATemplate */,
 				1ABDBA95169AFF0200846E17 /* JATemplateTests */,
 				1ABDBA71169AFF0100846E17 /* Frameworks */,
@@ -124,12 +125,8 @@
 		1ABDBA78169AFF0100846E17 /* JATemplate */ = {
 			isa = PBXGroup;
 			children = (
-				1ABDBA84169AFF0100846E17 /* JATAppDelegate.h */,
-				1ABDBA85169AFF0100846E17 /* JATAppDelegate.m */,
 				1ABDBAA6169B019000846E17 /* JATemplate.h */,
 				1ABDBAA7169B019000846E17 /* JATemplate.m */,
-				1ABDBA87169AFF0100846E17 /* MainMenu.xib */,
-				1ABDBA79169AFF0100846E17 /* Supporting Files */,
 			);
 			path = JATemplate;
 			sourceTree = "<group>";
@@ -166,6 +163,18 @@
 				1ABDBA98169AFF0200846E17 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		1AC73892169F65AC0067D813 /* Test app */ = {
+			isa = PBXGroup;
+			children = (
+				1ABDBA84169AFF0100846E17 /* JATAppDelegate.h */,
+				1ABDBA85169AFF0100846E17 /* JATAppDelegate.m */,
+				1ABDBA87169AFF0100846E17 /* MainMenu.xib */,
+				1ABDBA79169AFF0100846E17 /* Supporting Files */,
+			);
+			name = "Test app";
+			path = TestApp;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -407,8 +416,8 @@
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "JATemplate/JATemplate-Prefix.pch";
-				INFOPLIST_FILE = "JATemplate/JATemplate-Info.plist";
+				GCC_PREFIX_HEADER = "TestApp/JATemplate-Prefix.pch";
+				INFOPLIST_FILE = "TestApp/JATemplate-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -419,8 +428,8 @@
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "JATemplate/JATemplate-Prefix.pch";
-				INFOPLIST_FILE = "JATemplate/JATemplate-Info.plist";
+				GCC_PREFIX_HEADER = "TestApp/JATemplate-Prefix.pch";
+				INFOPLIST_FILE = "TestApp/JATemplate-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -433,7 +442,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "JATemplate/JATemplate-Prefix.pch";
+				GCC_PREFIX_HEADER = "TestApp/JATemplate-Prefix.pch";
 				INFOPLIST_FILE = "JATemplateTests/JATemplateTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
@@ -448,7 +457,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "JATemplate/JATemplate-Prefix.pch";
+				GCC_PREFIX_HEADER = "TestApp/JATemplate-Prefix.pch";
 				INFOPLIST_FILE = "JATemplateTests/JATemplateTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
