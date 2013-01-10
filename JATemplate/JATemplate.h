@@ -23,7 +23,7 @@
 		example, int bar = 5; JATExpand(@"A number: {bar}", @(bar)); works.
 		Nils are replaced with NSNull (which is printed as "(null)").
 		
-		Parameters may be modified using modifiers, which are specified using
+		Parameters may be modified using operators, which are specified using
 		a vertical bar. Operators may optionally have a parameter, seperated
 		by a colon. Several operators may be chained. Examples:
 			{foo|uppercase}
