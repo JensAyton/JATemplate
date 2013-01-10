@@ -37,11 +37,6 @@
 	NSString *JATExpandLiteral(NSString *template, ...)
 		Like JATExpand(), but without the Localizable.strings lookup.
 	
-	NSString *JATExpandLiteral(NSString *template, NSString *table, ...)
-		Like JATExpand(), but allows you to specify a strings file other than
-		Localizable.strings. The table name should be specified without the
-		.strings extension. Compare NSLocalizedStringFromTable().
-	
 	NSString *JATExpandFromTable(NSString *template, NSString *table, ...)
 		Like JATExpand(), but allows you to specify a strings file other than
 		Localizable.strings. The table name should be specified without the
