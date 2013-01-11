@@ -81,7 +81,12 @@
 		Format numbers. The argument may be an NSNumberFormatter format string,
 		or one of the following constants for locale-sensitive formatting:
 		- decimal or dec
-		  Decimal formatting using NSNumberFormatterDecimalStyle.
+		  Decimal formatting using NSNumberFormatterDecimalStyle. This is
+		  generally redundant since the default string coersion of numbers
+		  also uses NSNumberFormatterDecimalStyle, but included for
+		  completeness.
+		- noloc
+		  The number's non-locale-sensitive description.
 		- currency or cur
 		  Currency formatting using NSNumberFormatterCurrencyStyle.
 		- percent or pct
@@ -204,7 +209,8 @@ NSString *JATExpandFromTableInBundleWithParameters(NSString *templateString, NSS
 	to JATExpand*().
 	
 	For example, a substitution of the form {foo|num:spellout} is turned into
-	a call to -jatemplatePerform_num_withArgument:@"spellout" variables:variables.
+	a call to -jatemplatePerform_num_withArgument:variables: with @"spellout"
+	as the first argument.
 	
 	The recommended pattern is to implement operators as categories on NSObject
 	and coerce the object to the required class. For some custom operators, it
@@ -226,7 +232,8 @@ NSString *JATExpandFromTableInBundleWithParameters(NSString *templateString, NSS
 	series of operators, or a variable with no operators applied, to a string
 	for insertion in the template.
 	
-	The default implementation calls -description. Overridden for NSNull to
+	The default implementation calls -description. Overridden for NSNumber to
+	use locale-sensitive NSNumberFormatterDecimalStyle, and for NSNull to
 	return @"(null)".
 */
 - (NSString *) jatemplateCoerceToString;

@@ -686,6 +686,10 @@ static void Warn(const unichar characters[], NSUInteger length, NSString *format
 	{
 		return [NSNumberFormatter localizedStringFromNumber:value numberStyle:NSNumberFormatterDecimalStyle];
 	}
+	if ([argument isEqual:@"noloc"])
+	{
+		return [value description];
+	}
 	if ([argument isEqual:@"currency"] || [argument isEqual:@"cur"])
 	{
 		return [NSNumberFormatter localizedStringFromNumber:value numberStyle:NSNumberFormatterCurrencyStyle];
@@ -982,6 +986,12 @@ static void Warn(const unichar characters[], NSUInteger length, NSString *format
 
 
 @implementation NSNumber (JATTemplateOperators)
+
+- (NSString *) jatemplateCoerceToString
+{
+	return [NSNumberFormatter localizedStringFromNumber:self numberStyle:NSNumberFormatterDecimalStyle];
+}
+
 
 - (NSNumber *) jatemplateCoerceToNumber
 {

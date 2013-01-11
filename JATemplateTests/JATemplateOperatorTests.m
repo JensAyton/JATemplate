@@ -20,12 +20,30 @@
 }
 
 
+- (void) testImplicitNumDecimal
+{
+	double foo = 10723.056;
+	NSString *expansion = JATExpand(@"{foo}", @(foo));
+	
+	STAssertEqualObjects(expansion, @"10,723.056", @"number-to-string coersion failed.");
+}
+
+
 - (void) testOperatorNumDecimal
 {
-	double foo = 723.056;
+	double foo = 10723.056;
 	NSString *expansion = JATExpand(@"{foo|num:decimal}", @(foo));
 	
-	STAssertEqualObjects(expansion, @"723.056", @"num:decimal operator failed.");
+	STAssertEqualObjects(expansion, @"10,723.056", @"num:decimal operator failed.");
+}
+
+
+- (void) testOperatorNumNoloc
+{
+	double foo = 10723.056;
+	NSString *expansion = JATExpand(@"{foo|num:noloc}", @(foo));
+	
+	STAssertEqualObjects(expansion, @"10723.056", @"num:noloc operator failed.");
 }
 
 
