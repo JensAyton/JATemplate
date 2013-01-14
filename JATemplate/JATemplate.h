@@ -1,12 +1,64 @@
-//
-//  JATemplate.h
-//  JATemplate
-//
-//  Created by Jens Ayton on 2013-01-07.
-//  Copyright (c) 2013 Jens Ayton. All rights reserved.
-//
+/*
+
+JATemplate.h
+
+JATemplate is a string expansion system designed for convenience of use and
+safety. In particular, it is intended to replace printf-style formatting
+(-[NSString stringWithFormat:], NSLog() etc.), and to be immune to format
+string attacks.
+
+Internationalization is achieved through implicit calls of NSLocalizedString()
+(by default) and locale-sensitive formatting operations.
+
+Immunity from format string attacks is achieved by specifying the substitution
+parameters out-of-band at compile time (which is handled automatically by
+macros). An unknown variable in a template will be ignored, rather than reading
+arbitrary parts of the stack as with printf-style formatting. There is no
+equivalent to the dangerous %n specifier (which, to be fair, isn’t supported by
+Foundation either).
+
+Examples of use:
+	NSString *item = @"apples";
+	NSUInteger quantity = 12563;
+	NSString *ex1 = JATExpand(@"We have {quantity} {items}.", items, @(quantity));
+	// Produces “We have 12,463 apples.”, assuming an English locale.
+	
+	float timeElapsed = 1.3;
+	float estimatedTotalTime = 2.5;
+	float timeRatio = timeElapsed / estimatedTotalTime;
+	NSString *ex2 = JATExpand(@"Progress: {timeRatio|num:percent}", timeRatio);
+	// Produces “Progress: 52%” using the num: formatting operator.
+	
+	NSString *foo = @"bunny";
+	NSString *ex3 = JATExpand(@"{foo}");
+	// Produces “{foo}”, because foo wasn’t passed as a parameter.
+
+
+Copyright © 2013 Jens Ayton
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the “Software“), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+ 
+*/
 
 #import <Foundation/Foundation.h>
+
+
 /*
 	The notional interface for the expansion system is as follows. The actual
 	implementations are mostly macros as defined below.
