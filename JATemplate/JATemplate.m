@@ -88,7 +88,7 @@ static bool ScanIdentifier(const unichar characters[], NSUInteger length, NSUInt
 #pragma mark - Public
 
 /*
-	JATExpandTemplateUsingMacroKeysAndValues(template, names, paddedObjectArray, expectedCount)
+	JAT_DoExpandTemplateUsingMacroKeysAndValues(template, names, paddedObjectArray, expectedCount)
 	
 		- template is the string to expand - for example, @"foo = {foo}, bar = {bar}".
 		- names is the preprocessor stringification of the parameter list -
@@ -99,7 +99,7 @@ static bool ScanIdentifier(const unichar characters[], NSUInteger length, NSUInt
 		  <names>, but we use a value calculated using the preprocessor for
 		  sanity checking.
 */
-NSString *JATExpandTemplateUsingMacroKeysAndValues(NSString *template, NSString *names, JATParameterArray objects, NSUInteger expectedCount)
+NSString *JAT_DoExpandTemplateUsingMacroKeysAndValues(NSString *template, NSString *names, JATParameterArray objects, NSUInteger expectedCount)
 {
 	NSCParameterAssert(template != nil);
 	NSCParameterAssert(names != nil);
@@ -140,18 +140,18 @@ NSString *JATExpandTemplateUsingMacroKeysAndValues(NSString *template, NSString 
 
 
 /*
-	JATLocalizeAndExpandTemplateUsingMacroKeysAndValues(...)
+	JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues(...)
 	
 	Equivalent to using one of the NSLocalizedString macro family before calling
-	JATExpandTemplateUsingMacroKeysAndValues().
+	JAT_DoExpandTemplateUsingMacroKeysAndValues().
 */
-NSString *JATLocalizeAndExpandTemplateUsingMacroKeysAndValues(NSString *template, NSBundle *bundle, NSString *localizationTable, NSString *names, JATParameterArray objects, NSUInteger count)
+NSString *JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues(NSString *template, NSBundle *bundle, NSString *localizationTable, NSString *names, JATParameterArray objects, NSUInteger count)
 {
 	// Perform the equivalent of NSLocalizedString*().
 	if (bundle == nil)  bundle = [NSBundle mainBundle];
 	template = [bundle localizedStringForKey:template value:@"" table:localizationTable];
 	
-	return JATExpandTemplateUsingMacroKeysAndValues(template, names, objects, count);
+	return JAT_DoExpandTemplateUsingMacroKeysAndValues(template, names, objects, count);
 }
 
 

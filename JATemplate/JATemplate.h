@@ -223,19 +223,19 @@ typedef __strong id JATParameterArray[];
 
 
 #define JATExpand(TEMPLATE, ...) \
-	JATLocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, nil, nil, \
+	JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, nil, nil, \
 	@#__VA_ARGS__, (JATParameterArray){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
 
 #define JATExpandLiteral(TEMPLATE, ...) \
-	JATExpandTemplateUsingMacroKeysAndValues(TEMPLATE, \
+	JAT_DoExpandTemplateUsingMacroKeysAndValues(TEMPLATE, \
 	@#__VA_ARGS__, (JATParameterArray){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
 
 #define JATExpandFromTable(TEMPLATE, TABLE, ...) \
-	JATLocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, nil, TABLE, \
+	JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, nil, TABLE, \
 	@#__VA_ARGS__, (JATParameterArray){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
 
 #define JATExpandFromTableInBundle(TEMPLATE, TABLE, BUNDLE, ...) \
-	JATLocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, BUNDLE, TABLE, \
+	JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, BUNDLE, TABLE, \
 	@#__VA_ARGS__, (JATParameterArray){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
 
 #define JATExpandWithParameters(TEMPLATE, PARAMETERS) \
@@ -323,14 +323,14 @@ NSString *JATExpandFromTableInBundleWithParameters(NSString *templateString, NSS
 
 
 /*
-	JATExpandTemplateUsingMacroKeysAndValues()
-	JATLocalizeAndExpandTemplateUsingMacroKeysAndValues()
+	JAT_DoExpandTemplateUsingMacroKeysAndValues()
+	JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues()
 	
 	Implementation details, do not call directly.
 */
-NSString *JATExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSString *names, JATParameterArray objects, NSUInteger count);
+NSString *JAT_DoExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSString *names, JATParameterArray objects, NSUInteger count);
 
-NSString *JATLocalizeAndExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSBundle *bundle, NSString *localizationTable, NSString *names, JATParameterArray objects, NSUInteger count);
+NSString *JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSBundle *bundle, NSString *localizationTable, NSString *names, JATParameterArray objects, NSUInteger count);
 
 
 /*
