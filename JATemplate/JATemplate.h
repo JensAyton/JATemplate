@@ -24,10 +24,10 @@ Examples of use:
 	// Produces “We have 12,463 apples.”, assuming an English locale.
 	
 	float timeElapsed = 1.3;
-	float estimatedTotalTime = 2.5;
+	float estimatedTotalTime = 2.7;
 	float timeRatio = timeElapsed / estimatedTotalTime;
-	NSString *ex2 = JATExpand(@"Progress: {timeRatio|num:percent}", timeRatio);
-	// Produces “Progress: 52%” using the num: formatting operator.
+	NSString *ex2 = JATExpand(@"Progress: {timeRatio|round|num:percent}", timeRatio);
+	// Produces “Progress: 48%” using the num: formatting operator.
 	
 	NSString *foo = @"bunny";
 	NSString *ex3 = JATExpand(@"{foo}");
@@ -155,6 +155,10 @@ SOFTWARE.
 		  Byte count formatting using NSByteCountFormatterCountStyleDecimal.
 		- binarybytes
 		  Byte count formatting using NSByteCountFormatterCountStyleBinary.
+		
+		round
+		Coerces value to a number and rounds it to an integer, rounding half-way
+		cases away from zero (“school rounding”).
 		
 		plural:
 		Takes one to three arguments separated by semicolons. If one argument

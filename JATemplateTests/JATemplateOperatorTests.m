@@ -29,6 +29,15 @@
 }
 
 
+- (void) testOperatorRound
+{
+	double foo = 10723.056;
+	NSString *expansion = JATExpand(@"{foo|round}", @(foo));
+	
+	STAssertEqualObjects(expansion, @"10,723", @"round operator failed.");
+}
+
+
 - (void) testOperatorNumDecimal
 {
 	double foo = 10723.056;

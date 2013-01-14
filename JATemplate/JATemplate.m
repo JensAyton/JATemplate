@@ -749,6 +749,17 @@ static void Warn(const unichar characters[], NSUInteger length, NSString *format
 }
 
 
+- (id) jatemplatePerform_round_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+{
+	NSNumber *value = [self jatemplateCoerceToNumber];
+	if (value == nil)  return nil;
+	
+	long long rounded = llround(value.doubleValue);
+	
+	return [NSNumber numberWithLongLong:rounded];
+}
+
+
 - (id) jatemplatePerform_plural_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	NSNumber *value = [self jatemplateCoerceToNumber];
