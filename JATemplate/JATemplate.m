@@ -615,8 +615,8 @@ static void JATemplateAppendCharacters(NSMutableString *buffer, const unichar ch
 }
 
 
-static NSString * const kIdentifierStartChars = @"qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM_$0123456789";
-static NSString * const kIdentifierChars = @"qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM_$";
+static NSString * const kIdentifierChars = @"qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM_$0123456789";
+static NSString * const kIdentifierStartChars = @"qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM_$";
 
 
 static bool IsIdentifierStartChar(unichar value)
