@@ -215,6 +215,11 @@ SOFTWARE.
 		list of options. The currently supported options are "case", "width"
 		and "diacritics".
 		
+		pointer
+		Produces a string representing the address of a value object, equivalent
+		to %p in printf-style formatting. NSNull becomes 0x0, since there is
+		no way to distinguish a parameter value of NSNull from nil internally.
+		
 		debugdesc
 		Calls -debugDescription on the value if implemented, otherwise
 		-description. (Try it on some Foundation collections.)

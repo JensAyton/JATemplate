@@ -1072,6 +1072,15 @@ static void Warn(const unichar characters[], NSUInteger length, NSString *format
 }
 
 
+- (id) jatemplatePerform_pointer_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+{
+	id value = self;
+	if (self == [NSNull null])  value = nil;
+	
+	return [NSString stringWithFormat:@"%p", value];
+}
+
+
 - (id) jatemplatePerform_debugdesc_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	if ([self respondsToSelector:@selector(debugDescription)])
