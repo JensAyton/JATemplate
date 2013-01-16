@@ -66,16 +66,8 @@ enum
 };
 
 
-static NSArray *JATemplateParseNames(NSString *nameString, NSUInteger expectedCount);
-static NSArray *JATemplateParseNamesUncached(NSString *nameString, NSUInteger expectedCount);
-static NSString *JATemplateParseOneName(NSString *name);
-
+static NSDictionary *JATBuildParameterDictionary(NSString *names, JATParameterArray objects, NSUInteger expectedCount);
 static NSString *JATExpandInternal(const unichar *stringBuffer, NSUInteger length, NSDictionary *parameters);
-static NSString *JATExpandOneSub(const unichar characters[], NSUInteger length, NSUInteger idx, NSUInteger *replaceLength, NSDictionary *parameters);
-static NSString *JATExpandOneSimpleSub(const unichar characters[], NSUInteger length, NSUInteger keyStart, NSUInteger keyLength, NSDictionary *parameters);
-static NSString *JATExpandOneFancyPantsSub(const unichar characters[], NSUInteger length, NSUInteger keyStart, NSUInteger keyLength, NSDictionary *parameters);
-
-static void JATemplateAppendCharacters(NSMutableString *buffer, const unichar characters[], NSUInteger length, NSUInteger start, NSUInteger end);
 
 static bool IsIdentifierStartChar(unichar value);
 static bool IsIdentifierChar(unichar value);
@@ -109,32 +101,10 @@ NSString *JAT_DoExpandTemplateUsingMacroKeysAndValues(NSString *template, NSStri
 		parameters, but that breaks if there are {(} escapes.
 	*/
 	
-	// Parse <names> into an array of identifiers. This also strips boxing @() syntax.
-	NSArray *parameterNames = JATemplateParseNames(names, expectedCount);
-	if (parameterNames == nil)  return template;
+	// Build dictionary of parametes and hand off to Boring Mode.
+	NSDictionary *parameters = JATBuildParameterDictionary(names, objects, expectedCount);
+	if (parameters == nil)  return template;
 	
-	// Stick parameter values in an array, replacing nils with [NSNull null].
-	NSNull *null = nil;
-	__unsafe_unretained id shadowArray[expectedCount];
-	for (NSUInteger i = 0; i < expectedCount; i++)
-	{
-		id value = objects[i];
-		if (value != nil)
-		{
-			shadowArray[i] = value;
-		}
-		else
-		{
-			if (null == nil)  null = [NSNull null];
-			shadowArray[i] = null;
-		}
-	}
-	NSArray *parameterValues = [NSArray arrayWithObjects:shadowArray count:expectedCount];
-	
-	// Build dictionary of parameters.
-	NSDictionary *parameters = [NSDictionary dictionaryWithObjects:parameterValues forKeys:parameterNames];
-	
-	// Hand off to Boring Mode.
 	return JATExpandLiteralWithParameters(template, parameters);
 }
 
@@ -202,6 +172,39 @@ NSString *JATExpandFromTableInBundleWithParameters(NSString *template, NSString 
 
 
 #pragma mark - Name string parsing
+
+static NSArray *JATemplateParseNames(NSString *nameString, NSUInteger expectedCount);
+static NSArray *JATemplateParseNamesUncached(NSString *nameString, NSUInteger expectedCount);
+static NSString *JATemplateParseOneName(NSString *name);
+
+
+static NSDictionary *JATBuildParameterDictionary(NSString *names, JATParameterArray objects, NSUInteger expectedCount)
+{
+	// Parse <names> into an array of identifiers. This also strips boxing @() syntax.
+	NSArray *parameterNames = JATemplateParseNames(names, expectedCount);
+	if (parameterNames == nil)  return nil;
+	
+	// Stick parameter values in an array, replacing nils with [NSNull null].
+	NSNull *null = nil;
+	__unsafe_unretained id shadowArray[expectedCount];
+	for (NSUInteger i = 0; i < expectedCount; i++)
+	{
+		id value = objects[i];
+		if (value != nil)
+		{
+			shadowArray[i] = value;
+		}
+		else
+		{
+			if (null == nil)  null = [NSNull null];
+			shadowArray[i] = null;
+		}
+	}
+	NSArray *parameterValues = [NSArray arrayWithObjects:shadowArray count:expectedCount];
+	
+	// Build dictionary of parameters.
+	return [NSDictionary dictionaryWithObjects:parameterValues forKeys:parameterNames];
+}
 
 
 /*
@@ -318,6 +321,11 @@ static NSString *JATemplateParseOneName(NSString *name)
 
 
 #pragma mark - Template parsing
+static NSString *JATExpandOneSub(const unichar characters[], NSUInteger length, NSUInteger idx, NSUInteger *replaceLength, NSDictionary *parameters);
+static NSString *JATExpandOneSimpleSub(const unichar characters[], NSUInteger length, NSUInteger keyStart, NSUInteger keyLength, NSDictionary *parameters);
+static NSString *JATExpandOneFancyPantsSub(const unichar characters[], NSUInteger length, NSUInteger keyStart, NSUInteger keyLength, NSDictionary *parameters);
+
+static void JATemplateAppendCharacters(NSMutableString *buffer, const unichar characters[], NSUInteger length, NSUInteger start, NSUInteger end);
 
 
 /*
