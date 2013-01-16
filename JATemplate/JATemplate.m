@@ -71,10 +71,11 @@ static NSString *JATExpandInternal(const unichar *stringBuffer, NSUInteger lengt
 
 static bool IsIdentifierStartChar(unichar value);
 static bool IsIdentifierChar(unichar value);
-#ifndef NS_BLOCK_ASSERTIONS
+static bool IsPositionalStartChar(unichar value);
+static bool IsPositionalChar(unichar value);
 static bool IsValidIdentifier(NSString *candidate);
-#endif
 static bool ScanIdentifier(const unichar characters[], NSUInteger length, NSUInteger start, NSUInteger *outEnd);
+static NSNumber *ReadPositional(const unichar characters[], NSUInteger length, NSUInteger start, NSUInteger *outLength);
 
 
 #pragma mark - Public
@@ -173,37 +174,42 @@ NSString *JATExpandFromTableInBundleWithParameters(NSString *template, NSString 
 
 #pragma mark - Name string parsing
 
-static NSArray *JATemplateParseNames(NSString *nameString, NSUInteger expectedCount);
-static NSArray *JATemplateParseNamesUncached(NSString *nameString, NSUInteger expectedCount);
+static NSDictionary *JATemplateParseNames(NSString *nameString, NSUInteger expectedCount);
+static NSDictionary *JATemplateParseNamesUncached(NSString *nameString, NSUInteger expectedCount);
 static NSString *JATemplateParseOneName(NSString *name);
 
 
 static NSDictionary *JATBuildParameterDictionary(NSString *names, JATParameterArray objects, NSUInteger expectedCount)
 {
-	// Parse <names> into an array of identifiers. This also strips boxing @() syntax.
-	NSArray *parameterNames = JATemplateParseNames(names, expectedCount);
-	if (parameterNames == nil)  return nil;
+	if (expectedCount == 0)  return @{};
 	
-	// Stick parameter values in an array, replacing nils with [NSNull null].
-	NSNull *null = nil;
-	__unsafe_unretained id shadowArray[expectedCount];
-	for (NSUInteger i = 0; i < expectedCount; i++)
+	__strong id keys[expectedCount * 2];
+	__strong id values[expectedCount * 2];
+	NSUInteger mapIndex;
+	
+	// Insert NSNumber keys for positional parameters.
+	for (mapIndex = 0; mapIndex < expectedCount; mapIndex++)
 	{
-		id value = objects[i];
-		if (value != nil)
-		{
-			shadowArray[i] = value;
-		}
-		else
-		{
-			if (null == nil)  null = [NSNull null];
-			shadowArray[i] = null;
-		}
+		keys[mapIndex] = @(mapIndex);
+		id value = objects[mapIndex];
+		if (value == nil)  value = [NSNull null];
+		values[mapIndex] = value;
 	}
-	NSArray *parameterValues = [NSArray arrayWithObjects:shadowArray count:expectedCount];
+	
+	// Parse <names> into an array of identifiers. This also strips boxing @() syntax.
+	NSDictionary *parameterNames = JATemplateParseNames(names, expectedCount);
+	
+	for (NSString *key in parameterNames)
+	{
+		keys[mapIndex] = key;
+		NSInteger elementIndex = [parameterNames[key] integerValue];
+		NSCAssert(elementIndex < expectedCount, @"JATemplateParseNames produced an out-of-range index.");
+		values[mapIndex] = values[elementIndex];
+		mapIndex++;
+	}
 	
 	// Build dictionary of parameters.
-	return [NSDictionary dictionaryWithObjects:parameterValues forKeys:parameterNames];
+	return [NSDictionary dictionaryWithObjects:values forKeys:keys count:mapIndex];
 }
 
 
@@ -233,11 +239,11 @@ static NSDictionary *JATBuildParameterDictionary(NSString *names, JATParameterAr
 	most practical uses cases where JATemplateParseNames() is a significant
 	cost, raising the cache limit is probably a better bet.
 */
-static NSArray *JATemplateParseNames(NSString *nameString, NSUInteger expectedCount)
+static NSDictionary *JATemplateParseNames(NSString *nameString, NSUInteger expectedCount)
 {
 	NSCParameterAssert(nameString != nil);
 	
-	NSArray *result;
+	NSDictionary *result;
 #if JATEMPLATE_NAME_PARSE_CACHE_COUNT_LIMIT > 0
 	NSMutableDictionary *threadDictionary = NSThread.currentThread.threadDictionary;
 	NSCache *cache = threadDictionary[kJATemplateParseCacheThreadDictionaryKey];
@@ -265,35 +271,34 @@ static NSArray *JATemplateParseNames(NSString *nameString, NSUInteger expectedCo
 }
 
 
-static NSArray *JATemplateParseNamesUncached(NSString *nameString, NSUInteger expectedCount)
+static NSDictionary *JATemplateParseNamesUncached(NSString *nameString, NSUInteger expectedCount)
 {
 	if (expectedCount == 0)
 	{
 		NSCParameterAssert(nameString.length == 0);
-		return @[];
+		return @{};
 	}
 	
 	NSArray *components = [nameString componentsSeparatedByString:@","];
 	NSCAssert(components.count == expectedCount, @"Expected %lu variable names in template expansion, got %lu. The problem name string is: \"%@\".", expectedCount, components.count, nameString);
 	
 	NSString *cleanedNames[expectedCount];
+	NSNumber *indices[expectedCount];
 	
-	// Trim out whitespace. NOTE: the preprocessor handles comments for us.
-	NSUInteger idx = 0;
+	NSUInteger nameIndex = 0, mapIndex = 0;
 	for (NSString *name in components)
 	{
-		cleanedNames[idx++] = JATemplateParseOneName(name);
+		NSString *cleaned = JATemplateParseOneName(name);
+		if (cleaned != nil)
+		{
+			cleanedNames[mapIndex] = cleaned;
+			indices[mapIndex] = @(nameIndex);
+			mapIndex++;
+		}
+		nameIndex++;
 	}
 	
-#ifndef NS_BLOCK_ASSERTIONS
-	// Verify that the parsed names are identifiers.
-	for (idx = 0; idx < expectedCount; idx++)
-	{
-		NSCAssert(IsValidIdentifier(cleanedNames[idx]), @"Template variable list doesn't look like a list of identifiers - got \"%@\" from \"%@\".", cleanedNames[idx], nameString);
-	}
-#endif
-	
-	return [NSArray arrayWithObjects:cleanedNames count:expectedCount];
+	return [NSDictionary dictionaryWithObjects:indices forKeys:cleanedNames count:mapIndex];
 }
 
 
@@ -316,6 +321,8 @@ static NSString *JATemplateParseOneName(NSString *name)
 		name = [name stringByTrimmingCharactersInSet:whiteSpace];
 	}
 	
+	if (!IsValidIdentifier(name))  name = nil;
+	
 	return name;
 }
 
@@ -323,6 +330,7 @@ static NSString *JATemplateParseOneName(NSString *name)
 #pragma mark - Template parsing
 static NSString *JATExpandOneSub(const unichar characters[], NSUInteger length, NSUInteger idx, NSUInteger *replaceLength, NSDictionary *parameters);
 static NSString *JATExpandOneSimpleSub(const unichar characters[], NSUInteger length, NSUInteger keyStart, NSUInteger keyLength, NSDictionary *parameters);
+static NSString *JATExpandOnePositionalSub(const unichar characters[], NSUInteger length, NSUInteger keyStart, NSUInteger keyLength, NSDictionary *parameters);
 static NSString *JATExpandOneFancyPantsSub(const unichar characters[], NSUInteger length, NSUInteger keyStart, NSUInteger keyLength, NSDictionary *parameters);
 
 static void JATemplateAppendCharacters(NSMutableString *buffer, const unichar characters[], NSUInteger length, NSUInteger start, NSUInteger end);
@@ -394,14 +402,16 @@ static NSString *JATExpandOneSub(const unichar characters[], NSUInteger length, 
 	// Find the balancing close brace.
 	NSUInteger end, balanceCount = 1;
 	bool isIdentifier = IsIdentifierStartChar(characters[idx + 1]);
+	bool isPositional = IsPositionalStartChar(characters[idx + 1]);
 	
 	for (end = idx + 1; end < length && balanceCount > 0; end++)
 	{
 		if (characters[end] == '}')  balanceCount--;
-		else
+		if (characters[end] == '{')  balanceCount++;
+		if (balanceCount > 0 && end > idx + 1)
 		{
 			isIdentifier = isIdentifier && IsIdentifierChar(characters[end]);
-			if (characters[end] == '}')  balanceCount++;
+			isPositional = isPositional && IsPositionalChar(characters[end]);
 		}
 	}
 	
@@ -423,6 +433,10 @@ static NSString *JATExpandOneSub(const unichar characters[], NSUInteger length, 
 	if (isIdentifier)
 	{
 		return JATExpandOneSimpleSub(characters, length, keyStart, keyLength, parameters);
+	}
+	else if (isPositional)
+	{
+		return JATExpandOnePositionalSub(characters, length, keyStart, keyLength, parameters);
 	}
 	else
 	{
@@ -453,6 +467,29 @@ static NSString *JATExpandOneSimpleSub(const unichar characters[], NSUInteger le
 
 
 /*
+	JATExpandOnePositionalSub()
+	
+	Handles cases where the substitution token is a simple positional reference.
+*/
+static NSString *JATExpandOnePositionalSub(const unichar characters[], NSUInteger length, NSUInteger keyStart, NSUInteger keyLength, NSDictionary *parameters)
+{
+	NSCParameterAssert(characters != NULL);
+	NSCParameterAssert(keyStart < length);
+	NSCParameterAssert(keyStart + keyLength < length);
+	
+	NSNumber *key = ReadPositional(characters, length, keyStart, NULL);
+	NSCAssert(key != nil, @"Failed to scan positional reference that has already been identified as valid.");
+	
+	id value = parameters[key];
+	if (value == nil)
+	{
+		Warn(characters, length, @"Template substitution uses out-of-range positional reference @%@.", key);
+	}
+	return [value jatemplateCoerceToString];
+}
+
+
+/*
 	JATExpandOneFancyPantsSub()
 	
 	Handles cases where the substitution token is something other than a simple
@@ -476,29 +513,52 @@ static NSString *JATExpandOneFancyPantsSub(const unichar characters[], NSUIntege
 		if (first == ')')  return @"}";
 	}
 	
+	id value = nil;
+	NSUInteger cursor = keyStart;
+	
 	bool isIdentifier = ScanIdentifier(characters, length, keyStart, &keyLength);
-	if (!isIdentifier)
+	if (isIdentifier)
 	{
-		// No other forms starting with non-identifiers are defined.
-		Warn(characters, length, @"Unkown template substitution syntax {%@}.", [NSString stringWithCharacters:characters + keyStart length:keyLength]);
+		NSString *identifier = [NSString stringWithCharacters:characters + cursor length:keyLength];
+		value = parameters[identifier];
+		
+		if (value == nil)
+		{
+			Warn(characters, length, @"Template substitution uses unknown key \"%@\".", identifier);
+			return nil;
+		}
+		
+		cursor += keyLength;
+	}
+	
+	if (characters[cursor] == '@')
+	{
+		NSNumber *positional = ReadPositional(characters, length, cursor, &keyLength);
+		if (positional != nil)
+		{
+			value = parameters[positional];
+			
+			if (value == nil)
+			{
+				Warn(characters, length, @"Template substitution uses out-of-range positional reference @%@.", positional);
+				return nil;
+			}
+			
+			cursor += keyLength;
+		}
+		// else fall through to syntax error.
+	}
+	
+	if (value == nil)
+	{
+		Warn(characters, length, @"Unknown template substitution syntax {%@}.", [NSString stringWithCharacters:characters + keyStart length:keyLength]);
 		return nil;
 	}
 	
-	// extract the identifier.
-	NSString *identifier = [NSString stringWithCharacters:characters + keyStart length:keyLength];
-	
 	// At this point, we expect one or more bars, each followed by an operator expression.
-	NSUInteger cursor = keyStart + keyLength;
 	if (characters[cursor] != '|')
 	{
 		Warn(characters, length, @"Unexpected character '%@' in template substitution {%@}.", [NSString stringWithCharacters:characters + cursor length:1], [NSString stringWithCharacters:characters + keyStart length:keyLength]);
-		return nil;
-	}
-	
-	id value = parameters[identifier];
-	if (value == nil)
-	{
-		Warn(characters, length, @"Template substitution uses unknown key \"%@\".", identifier);
 		return nil;
 	}
 	
@@ -539,6 +599,8 @@ static NSString *JATExpandOneFancyPantsSub(const unichar characters[], NSUIntege
 	return [value jatemplateCoerceToString];
 }
 
+
+#pragma mark - Utilities
 
 static void JATemplateAppendCharacters(NSMutableString *buffer, const unichar characters[], NSUInteger length, NSUInteger start, NSUInteger end)
 {
@@ -583,7 +645,18 @@ static bool IsIdentifierChar(unichar value)
 }
 
 
-#ifndef NS_BLOCK_ASSERTIONS
+static bool IsPositionalStartChar(unichar value)
+{
+	return value == '@';
+}
+
+
+static bool IsPositionalChar(unichar value)
+{
+	return isdigit(value);
+}
+
+
 static bool IsValidIdentifier(NSString *candidate)
 {
 	NSCParameterAssert(candidate != nil);
@@ -598,7 +671,6 @@ static bool IsValidIdentifier(NSString *candidate)
 	return IsIdentifierStartChar([candidate characterAtIndex:0]) &&
 		   [candidate rangeOfCharacterFromSet:nonIdentifierChars].location == NSNotFound;
 }
-#endif
 
 
 static bool ScanIdentifier(const unichar characters[], NSUInteger length, NSUInteger start, NSUInteger *outIdentifierLength)
@@ -617,6 +689,27 @@ static bool ScanIdentifier(const unichar characters[], NSUInteger length, NSUInt
 	
 	*outIdentifierLength = end - start;
 	return true;
+}
+
+
+static NSNumber *ReadPositional(const unichar characters[], NSUInteger length, NSUInteger start, NSUInteger *outLength)
+{
+	NSCParameterAssert(characters != NULL);
+	NSCParameterAssert(start < length);
+	
+	if (!IsPositionalStartChar(characters[start]))  return nil;
+	if (start == length - 1 || !IsPositionalChar(characters[start + 1]))  return nil;
+	
+	NSUInteger value = 0;
+	NSUInteger end;
+	for (end = start + 1; end < length; end++)
+	{
+		if (!IsPositionalChar(characters[end]))  break;
+		value = value * 10 + characters[end] - '0';
+	}
+	
+	if (outLength != NULL)  *outLength = end - start;
+	return @(value);
 }
 
 

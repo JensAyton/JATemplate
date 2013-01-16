@@ -20,6 +20,10 @@
 	// Test formatting operators. Also a redundant parameter, and reuse of a cached parameter list parse.
 	JATLog(@"Fancy bar: {bar|num:spellout|capitalize}", foo, @(bar));
 	
+	// Test positional parameters.
+	int anotherNumber = 30;
+	JATLog(@"The sum of {bar} and {anotherNumber} is {@2}.", @(bar), @(anotherNumber), @(bar + anotherNumber));
+	
 	// Test booleans.
 	NSNumber *boolValue = @NO;
 	NSString *trueString = @"yes";

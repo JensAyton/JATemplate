@@ -70,17 +70,16 @@ SOFTWARE.
 		NSString *foo = @"banana"; JATExpand(@"test: {foo}", foo); returns
 		@"test: banana" (unless of course the template is localized).
 		
-		Parameters must be variables of object type, not expressions, except
-		that the boxing syntax for numbers and C strings is supported: for
-		example, int bar = 5; JATExpand(@"A number: {bar}", @(bar)); works.
-		Nils are replaced with NSNull (which is printed as "(null)").
+		Parameters may be referenced by name if they are plain variables or
+		variables boxed using @() syntax. All parameters can also be referenced
+		by index using the form {@0}, {@1} etc.
 		
 		Parameters may be modified using operators, which are specified using
 		a vertical bar. Operators may optionally have a parameter, seperated
 		by a colon. Several operators may be chained. Examples:
 			{foo|uppercase}
 			{bar|num:$#,##0.00}
-			{baz|num:spellout|capitalize}
+			{@2|num:spellout|capitalize}
 		More information about operators is found further down the header.
 		
 		Template syntax is quite strict. In particular, there is no optional
@@ -102,8 +101,10 @@ SOFTWARE.
 	
 	NSString *JATExpandWithParameters(NSString *template, NSDictionary *parameters)
 		Allows the template system to be used the old-fashioned way: values
-		are looked up in <parameters> instead of using variables. Attempts to
-		localize using Localizable.strings.
+		are looked up in <parameters> instead of using variables. Positional
+		parameters are looked up using NSNumber keys (for example,
+		JATExpandWithParameters(@"(@0)", @{ @(0): @"value" }) works).
+		Attempts to localize template using Localizable.strings.
 	
 	NSString *JATExpandLiteralWithParameters(NSString *template, NSDictionary *parameters)
 		Like JATExpandWithParameters(), but without the Localizable.strings lookup.
@@ -272,7 +273,8 @@ NSString *JATExpandFromTableInBundleWithParameters(NSString *templateString, NSS
 	and coerce the object to the required class. For some custom operators, it
 	may be reasonable to implement them on a specific class instead.
 	
-	Operators signal failure by returning nil.
+	Operators signal failure by returning nil. Nil values are represented with
+	NSNull, which becomes @"(null)" when coerced to a string.
 	
 	If no operator implementation is found, the default implementation of
 	-jatemplatePerformOperator:withArgument: returns nil.
