@@ -6,6 +6,7 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+	JATLog(@"{0|uppercase}", @"foo");
 	// Test that it works with no parameters.
 	JATLog(@"Trivial string");
 	
@@ -22,7 +23,7 @@
 	
 	// Test positional parameters.
 	int anotherNumber = 30;
-	JATLog(@"The sum of {bar} and {anotherNumber} is {@2}.", @(bar), @(anotherNumber), @(bar + anotherNumber));
+	JATLog(@"The sum of {bar} and {anotherNumber} is {2}.", @(bar), @(anotherNumber), @(bar + anotherNumber));
 	
 	// Test booleans.
 	NSNumber *boolValue = @NO;

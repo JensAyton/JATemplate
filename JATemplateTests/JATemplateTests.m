@@ -90,7 +90,7 @@
 {
 	NSString *foo = @"frob";
 	NSString *bar = @"banana";
-	NSString *expansion = JATExpand(@"{foo} and {bar} and {@1} and {@0|uppercase}", foo, bar);
+	NSString *expansion = JATExpand(@"{foo} and {bar} and {1} and {0|uppercase}", foo, bar);
 	
 	STAssertEqualObjects(expansion, @"frob and banana and banana and FROB", @"Expansion with multiple substitutions failed.");
 }

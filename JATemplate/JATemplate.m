@@ -71,7 +71,6 @@ static NSString *JATExpandInternal(const unichar *stringBuffer, NSUInteger lengt
 
 static bool IsIdentifierStartChar(unichar value);
 static bool IsIdentifierChar(unichar value);
-static bool IsPositionalStartChar(unichar value);
 static bool IsPositionalChar(unichar value);
 static bool IsValidIdentifier(NSString *candidate);
 static bool ScanIdentifier(const unichar characters[], NSUInteger length, NSUInteger start, NSUInteger *outEnd);
@@ -312,11 +311,12 @@ static NSString *JATemplateParseOneName(NSString *name)
 		Syntax note: @ (foo) is invalid, so we can treat @( as one token.
 		However, we need to strip out whitespace inside the parentheses.
 	*/
-	if (name.length > 3 && [name characterAtIndex:0] == '@')
+	NSUInteger length = name.length;
+	if (length > 3 &&
+		[name characterAtIndex:0] == '@' &&
+		[name characterAtIndex:1] == '(' &&
+		[name characterAtIndex:length - 1] == ')')
 	{
-		NSUInteger length = name.length;
-		NSCAssert([name characterAtIndex:1] == '(' && [name characterAtIndex:length - 1] == ')', @"Identified a boxed variable but didn't find expected parentheses when parsing variable name \"%@\".", name);
-		
 		name = [name substringWithRange:(NSRange){2, length - 3}];
 		name = [name stringByTrimmingCharactersInSet:whiteSpace];
 	}
@@ -402,13 +402,13 @@ static NSString *JATExpandOneSub(const unichar characters[], NSUInteger length, 
 	// Find the balancing close brace.
 	NSUInteger end, balanceCount = 1;
 	bool isIdentifier = IsIdentifierStartChar(characters[idx + 1]);
-	bool isPositional = IsPositionalStartChar(characters[idx + 1]);
+	bool isPositional = IsPositionalChar(characters[idx + 1]);
 	
 	for (end = idx + 1; end < length && balanceCount > 0; end++)
 	{
 		if (characters[end] == '}')  balanceCount--;
 		if (characters[end] == '{')  balanceCount++;
-		if (balanceCount > 0 && end > idx + 1)
+		if (balanceCount > 0)
 		{
 			isIdentifier = isIdentifier && IsIdentifierChar(characters[end]);
 			isPositional = isPositional && IsPositionalChar(characters[end]);
@@ -502,13 +502,13 @@ static NSString *JATExpandOneFancyPantsSub(const unichar characters[], NSUIntege
 	NSCParameterAssert(length > 0);
 	NSCParameterAssert(keyStart + keyLength < length);
 	
-	unichar first = characters[keyStart];
 	if (keyLength == 1)
 	{
 		/*	Escape code {(} allows literal {s in templates. {)} is unnecessary
 			but provides aesthetic harmony. ({{} is not possible because the
 			parser requires braces to be balanced.)
 		*/
+		unichar first = characters[keyStart];
 		if (first == '(')  return @"{";
 		if (first == ')')  return @"}";
 	}
@@ -516,7 +516,7 @@ static NSString *JATExpandOneFancyPantsSub(const unichar characters[], NSUIntege
 	id value = nil;
 	NSUInteger cursor = keyStart;
 	
-	bool isIdentifier = ScanIdentifier(characters, length, keyStart, &keyLength);
+	bool isIdentifier = ScanIdentifier(characters, length, cursor, &keyLength);
 	if (isIdentifier)
 	{
 		NSString *identifier = [NSString stringWithCharacters:characters + cursor length:keyLength];
@@ -531,7 +531,7 @@ static NSString *JATExpandOneFancyPantsSub(const unichar characters[], NSUIntege
 		cursor += keyLength;
 	}
 	
-	if (characters[cursor] == '@')
+	if (IsPositionalChar(characters[cursor]))
 	{
 		NSNumber *positional = ReadPositional(characters, length, cursor, &keyLength);
 		if (positional != nil)
@@ -645,12 +645,6 @@ static bool IsIdentifierChar(unichar value)
 }
 
 
-static bool IsPositionalStartChar(unichar value)
-{
-	return value == '@';
-}
-
-
 static bool IsPositionalChar(unichar value)
 {
 	return isdigit(value);
@@ -697,16 +691,15 @@ static NSNumber *ReadPositional(const unichar characters[], NSUInteger length, N
 	NSCParameterAssert(characters != NULL);
 	NSCParameterAssert(start < length);
 	
-	if (!IsPositionalStartChar(characters[start]))  return nil;
-	if (start == length - 1 || !IsPositionalChar(characters[start + 1]))  return nil;
-	
 	NSUInteger value = 0;
 	NSUInteger end;
-	for (end = start + 1; end < length; end++)
+	for (end = start; end < length; end++)
 	{
 		if (!IsPositionalChar(characters[end]))  break;
 		value = value * 10 + characters[end] - '0';
 	}
+	
+	if (end == start)  return nil;
 	
 	if (outLength != NULL)  *outLength = end - start;
 	return @(value);

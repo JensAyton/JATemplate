@@ -72,14 +72,14 @@ SOFTWARE.
 		
 		Parameters may be referenced by name if they are plain variables or
 		variables boxed using @() syntax. All parameters can also be referenced
-		by index using the form {@0}, {@1} etc.
+		by index using the form {0}, {1} etc.
 		
 		Parameters may be modified using operators, which are specified using
 		a vertical bar. Operators may optionally have a parameter, seperated
 		by a colon. Several operators may be chained. Examples:
 			{foo|uppercase}
 			{bar|num:$#,##0.00}
-			{@2|num:spellout|capitalize}
+			{2|num:spellout|capitalize}
 		More information about operators is found further down the header.
 		
 		Template syntax is quite strict. In particular, there is no optional
