@@ -120,11 +120,31 @@ SOFTWARE.
 		JATExpandFromTableInBundle().
 	
 	
-	void JATLog(NSString *message, ...)
-		Combines JATExpandLiteral() with NSLog() in the obvious way.
+	void JATAppend(NSMutableString *string, NSString *template, ...)
+		Equivalent to [string appendString:JATExpand(template, ...)].
 	
-	void JATLogLocalized(NSString *message, ...)
-		Combines JATExpand() with NSLog() in the obvious way.
+	void JATAppendLiteral(NSMutableString *string, NSString *template, ...)
+		Equivalent to [string appendString:JATExpandLiteral(template, ...)].
+	
+	void JATAppendFromTable(NSMutableString *string, NSString *template, NSString *table, ...)
+		Equivalent to [string appendString:JATExpandFromTable(template, table, ...)].
+	
+	void JATAppendFromTableInBundle(NSMutableString *string, NSString *template, NSString *table, NSBundle *bundle, ...)
+		Equivalent to [string appendString:JATExpandFromTableInBundle(template, table, bundle, ...)].
+	
+	
+	void JATLog(NSString *template, ...)
+		Equivalent to NSLog(@"%@", JATExpandLiteral(template, ...)).
+	
+	void JATLogLocalized(NSString *template, ...)
+		Equivalent to NSLog(@"%@", JATExpand(template, ...)).
+	
+	
+	JATAssert(condition, template, ...)
+		Equivalent to NSAssert1(condition, @"%@", JATExpandLiteral(template, ...)).
+	
+	JATCAssert(condition, template, ...)
+		Equivalent to NSCAssert1(condition, @"%@", JATExpandLiteral(template, ...)).
 	
 	
 	The following operators are built in. They can be suppressed by defining
@@ -257,6 +277,19 @@ FOUNDATION_EXTERN NSString *JATExpandLiteralWithParameters(NSString *templateStr
 	JATExpandFromTableInBundleWithParameters(TEMPLATE, TABLE, nil, PARAMETERS)
 
 FOUNDATION_EXTERN NSString *JATExpandFromTableInBundleWithParameters(NSString *templateString, NSString *localizationTable, NSBundle *bundle, NSDictionary *parameters);
+
+
+#define JATAppend(MSTRING, TEMPLATE, ...) \
+	[MSTRING appendString:JATExpand(TEMPLATE, __VA_ARGS__)]
+
+#define JATAppendLiteral(MSTRING, TEMPLATE, ...) \
+	[MSTRING appendString:JATExpandLiteral(TEMPLATE, __VA_ARGS__)]
+
+#define JATAppendFromTable(MSTRING, TEMPLATE, TABLE, ...) \
+	[MSTRING appendString:JATExpandFromTable(TEMPLATE, TABLE, __VA_ARGS__)]
+
+#define JATAppendFromTableInBundle(MSTRING, TEMPLATE, TABLE, BUNDLE, ...) \
+	[MSTRING appendString:JATExpandFromTableInBundle(TEMPLATE, TABLE, BUNDLE, __VA_ARGS__)]
 
 
 #define JATLog(TEMPLATE, ...)  NSLog(@"%@", JATExpandLiteral(TEMPLATE, __VA_ARGS__))

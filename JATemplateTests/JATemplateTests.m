@@ -130,4 +130,17 @@
 	STAssertEqualObjects(expansion, @"This is a template from Localizable.strings, not the one in the source code.", @"Localized template lookup failed.");
 }
 
+
+- (void) testAppend
+{
+	NSString *foo = @"frob";
+	NSString *bar = @"banana";
+	NSMutableString *expansion = [NSMutableString string];
+	
+	JATAppend(expansion, @"{foo}", foo, bar);
+	JATAppend(expansion, @" and {bar}", foo, bar);
+	
+	STAssertEqualObjects(expansion, @"frob and banana", @"JATAppend() failed.");
+}
+
 @end
