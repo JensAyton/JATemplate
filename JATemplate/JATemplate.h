@@ -220,6 +220,10 @@ SOFTWARE.
 		to %p in printf-style formatting. NSNull becomes 0x0, since there is
 		no way to distinguish a parameter value of NSNull from nil internally.
 		
+		basedesc
+		Produces the class name and address of an object enclosed in angle
+		brackets, equivalent to the default implementation of -description.
+		
 		debugdesc
 		Calls -debugDescription on the value if implemented, otherwise
 		-description. (Try it on some Foundation collections.)

@@ -1074,6 +1074,16 @@ static void Warn(const unichar characters[], NSUInteger length, NSString *format
 }
 
 
+- (id) jatemplatePerform_basedesc_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+{
+	id value = self;
+	if (self == [NSNull null])  return [self jatemplateCoerceToString];
+	Class class = [value class];
+	
+	return JATExpand(@"<{class}: {value|pointer}>", class, value);
+}
+
+
 - (id) jatemplatePerform_debugdesc_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	if ([self respondsToSelector:@selector(debugDescription)])

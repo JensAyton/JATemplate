@@ -6,7 +6,6 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-	JATLog(@"{0|uppercase}", @"foo");
 	// Test that it works with no parameters.
 	JATLog(@"Trivial string");
 	
