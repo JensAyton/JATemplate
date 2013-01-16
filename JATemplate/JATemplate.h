@@ -251,12 +251,12 @@ typedef __strong id JATParameterArray[];
 #define JATExpandWithParameters(TEMPLATE, PARAMETERS) \
 	JATExpandFromTableInBundleWithParameters(TEMPLATE, nil, nil, PARAMETERS)
 
-NSString *JATExpandLiteralWithParameters(NSString *templateString, NSDictionary *parameters);
+FOUNDATION_EXTERN NSString *JATExpandLiteralWithParameters(NSString *templateString, NSDictionary *parameters);
 
 #define JATExpandFromTableWithParameters(TEMPLATE, TABLE, PARAMETERS) \
 	JATExpandFromTableInBundleWithParameters(TEMPLATE, TABLE, nil, PARAMETERS)
 
-NSString *JATExpandFromTableInBundleWithParameters(NSString *templateString, NSString *localizationTable, NSBundle *bundle, NSDictionary *parameters);
+FOUNDATION_EXTERN NSString *JATExpandFromTableInBundleWithParameters(NSString *templateString, NSString *localizationTable, NSBundle *bundle, NSDictionary *parameters);
 
 
 #define JATLog(TEMPLATE, ...)  NSLog(@"%@", JATExpandLiteral(TEMPLATE, __VA_ARGS__))
@@ -343,9 +343,9 @@ NSString *JATExpandFromTableInBundleWithParameters(NSString *templateString, NSS
 	
 	Implementation details, do not call directly.
 */
-NSString *JAT_DoExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSString *names, JATParameterArray objects, NSUInteger count);
+FOUNDATION_EXTERN NSString *JAT_DoExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSString *names, JATParameterArray objects, NSUInteger count);
 
-NSString *JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSBundle *bundle, NSString *localizationTable, NSString *names, JATParameterArray objects, NSUInteger count);
+FOUNDATION_EXTERN NSString *JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSBundle *bundle, NSString *localizationTable, NSString *names, JATParameterArray objects, NSUInteger count);
 
 
 /*
