@@ -4,5 +4,5 @@
 #endif
 
 
-void JATWarnIntercept(const unichar characters[], NSUInteger length, NSString *format, ...);
-#define JATWarn JATWarnIntercept
+void JATWarnIntercept(NSString *message);
+#define JATReportWarning JATWarnIntercept

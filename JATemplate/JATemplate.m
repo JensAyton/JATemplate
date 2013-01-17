@@ -51,12 +51,15 @@ SOFTWARE.
 #endif
 #endif
 
-#ifndef JATWarn
 #if JATEMPLATE_SYNTAX_WARNINGS
-static void JATWarn(const unichar characters[], NSUInteger length, NSString *format, ...)  NS_FORMAT_FUNCTION(3, 4);
-#else
-#define JATWarn(...) do {} while (0)
+#ifndef JATReportWarning
+#define JATReportWarning(message)  NSLog(@"JATemplate warning: %@", message)
 #endif
+static void JATWrapWarning(const unichar characters[], NSUInteger length, NSString *message);
+
+#define JATWarn(CHARACTERS, LENGTH, TEMPLATE, ...)  JATWrapWarning(CHARACTERS, LENGTH, JATExpand(TEMPLATE, __VA_ARGS__))
+#else
+#define JATWarn(CHARACTERS, LENGTH, TEMPLATE, ...) do {} while (0)
 #endif
 
 
@@ -428,7 +431,7 @@ static NSString *JATExpandOneSub(const unichar characters[], NSUInteger length, 
 	NSUInteger keyStart = idx + 1, keyLength = *replaceLength - 2;
 	if (keyLength == 0)
 	{
-		JATWarn(characters, length, @"Empty substitution expression in template string. To silence this message, use {(}{)} instead of {}.");
+		JATWarn(characters, length, @"Empty substitution expression in template string. To silence this message, use {(}({)}{(}){)} instead of {(}{)}.");
 		return nil;
 	}
 	
@@ -458,11 +461,11 @@ static NSString *JATExpandOneSimpleSub(const unichar characters[], NSUInteger le
 	NSCParameterAssert(keyStart < length);
 	NSCParameterAssert(keyStart + keyLength < length);
 	
-	NSString *key = [NSString stringWithCharacters:characters + keyStart length:keyLength];
-	id value = parameters[key];
+	NSString *identifier = [NSString stringWithCharacters:characters + keyStart length:keyLength];
+	id value = parameters[identifier];
 	if (value == nil)
 	{
-		JATWarn(characters, length, @"Template substitution uses unknown key \"%@\".", key);
+		JATWarn(characters, length, @"Template substitution uses unknown parameter \"{identifier}\".", identifier);
 	}
 	return [value jatemplateCoerceToString];
 }
@@ -485,7 +488,7 @@ static NSString *JATExpandOnePositionalSub(const unichar characters[], NSUIntege
 	id value = parameters[key];
 	if (value == nil)
 	{
-		JATWarn(characters, length, @"Template substitution uses out-of-range positional reference @%@.", key);
+		JATWarn(characters, length, @"Template substitution uses out-of-range positional reference @{key}.", key);
 	}
 	return [value jatemplateCoerceToString];
 }
@@ -526,7 +529,7 @@ static NSString *JATExpandOneFancyPantsSub(const unichar characters[], NSUIntege
 		
 		if (value == nil)
 		{
-			JATWarn(characters, length, @"Template substitution uses unknown key \"%@\".", identifier);
+			JATWarn(characters, length, @"Template substitution uses unknown parameter \"{identifier}\".", identifier);
 			return nil;
 		}
 		
@@ -542,7 +545,7 @@ static NSString *JATExpandOneFancyPantsSub(const unichar characters[], NSUIntege
 			
 			if (value == nil)
 			{
-				JATWarn(characters, length, @"Template substitution uses out-of-range positional reference @%@.", positional);
+				JATWarn(characters, length, @"Template substitution uses out-of-range positional reference @{positional}.", positional);
 				return nil;
 			}
 			
@@ -553,14 +556,14 @@ static NSString *JATExpandOneFancyPantsSub(const unichar characters[], NSUIntege
 	
 	if (value == nil)
 	{
-		JATWarn(characters, length, @"Unknown template substitution syntax {%@}.", [NSString stringWithCharacters:characters + keyStart length:keyLength]);
+		JATWarn(characters, length, @"Unknown template substitution syntax {(}{0}{)}.", [NSString stringWithCharacters:characters + keyStart length:keyLength]);
 		return nil;
 	}
 	
 	// At this point, we expect one or more bars, each followed by an operator expression.
 	if (characters[cursor] != '|')
 	{
-		JATWarn(characters, length, @"Unexpected character '%@' in template substitution {%@}.", [NSString stringWithCharacters:characters + cursor length:1], [NSString stringWithCharacters:characters + keyStart length:keyLength]);
+		JATWarn(characters, length, @"Unexpected character '{0}' in template substitution {(}{1}{)}.", [NSString stringWithCharacters:characters + cursor length:1], [NSString stringWithCharacters:characters + keyStart length:keyLength]);
 		return nil;
 	}
 	
@@ -571,7 +574,7 @@ static NSString *JATExpandOneFancyPantsSub(const unichar characters[], NSUIntege
 		isIdentifier = ScanIdentifier(characters, length, cursor, &opLength);
 		if (!isIdentifier)
 		{
-			JATWarn(characters, length, @"Expected identifier after | in {%@}.", [NSString stringWithCharacters:characters + keyStart length:keyLength]);
+			JATWarn(characters, length, @"Expected identifier after | in {(}{0}{)}.", [NSString stringWithCharacters:characters + keyStart length:keyLength]);
 			return nil;
 		}
 		
@@ -708,20 +711,15 @@ static NSNumber *ReadPositional(const unichar characters[], NSUInteger length, N
 }
 
 
-#ifndef JATWarn
-static void JATWarn(const unichar characters[], NSUInteger length, NSString *format, ...)
+#if JATEMPLATE_SYNTAX_WARNINGS
+static void JATWrapWarning(const unichar characters[], NSUInteger length, NSString *message)
 {
-	va_list args;
-	va_start(args, format);
-	NSString *message = [[NSString alloc] initWithFormat:format arguments:args];
-	va_end(args);
-	
 	if (characters != NULL)
 	{
 		message = [NSString stringWithFormat:@"%@ (Template: \"%@\")", message, [NSString stringWithCharacters:characters length:length]];
 	}
 	
-	NSLog(@"%@", message);
+	JATReportWarning(message);
 }
 #endif
 
@@ -744,7 +742,7 @@ static void JATWarn(const unichar characters[], NSUInteger length, NSString *for
 	}
 	else
 	{
-		JATWarn(NULL, 0, @"Unknown operator \"%@\" in template expansion.", operator);
+		JATWarn(NULL, 0, @"Unknown operator \"{operator}\" in template expansion.", operator);
 		return nil;
 	}
 }
@@ -896,7 +894,7 @@ static void JATWarn(const unichar characters[], NSUInteger length, NSString *for
 	}
 	else
 	{
-		JATWarn(NULL, 0, @"Template operator plural: requires one to three arguments, got \"%@\".", argument);
+		JATWarn(NULL, 0, @"Template operator plural: requires one to three arguments, got \"{argument}\".", argument);
 		return nil;
 	}
 }
@@ -952,7 +950,7 @@ static void JATWarn(const unichar characters[], NSUInteger length, NSString *for
 		NSString *result = variables[selectedKey];
 		if (result == nil)
 		{
-			JATWarn(NULL, 0, @"Template substitution uses unknown key \"%@\" in ifuse: operator.", selectedKey);
+			JATWarn(NULL, 0, @"Template substitution uses unknown key \"{selectedKey}\" in ifuse: operator.", selectedKey);
 		}
 		return result;
 	}
@@ -1057,7 +1055,7 @@ static void JATWarn(const unichar characters[], NSUInteger length, NSString *for
 		}
 		else
 		{
-			JATWarn(NULL, 0, @"Unknown option \"%@\" for \"fold\" template operator.", option);
+			JATWarn(NULL, 0, @"Unknown option \"{option}\" for \"fold\" template operator.", option);
 		}
 	}
 	

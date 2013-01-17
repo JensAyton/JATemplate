@@ -183,13 +183,8 @@ void JATResetWarnings(void)
 }
 
 
-void JATWarnIntercept(const unichar characters[], NSUInteger length, NSString *format, ...)
+void JATWarnIntercept(NSString *message)
 {
-	va_list args;
-	va_start(args, format);
-	NSString *message = [[NSString alloc] initWithFormat:format arguments:args];
-	va_end(args);
-	
 	if (sWarnings == nil)  sWarnings = [NSMutableArray array];
 	[sWarnings addObject:message];
 	
