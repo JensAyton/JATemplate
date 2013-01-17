@@ -4,6 +4,12 @@
 
 @implementation JATemplateTests
 
+- (void) setUp
+{
+	JATResetWarnings();
+}
+
+
 - (void) testTrivial
 {
 	NSString *template = @"Trivial string with no substitutions";
@@ -19,6 +25,15 @@
 	NSString *expansion = JATExpand(@"{foo}", foo);
 	
 	STAssertEqualObjects(expansion, foo, @"Substitution of entire string failed.");
+}
+
+
+- (void) testMissingSubstitution
+{
+	NSString *expansion = JATExpand(@"{foo}");
+	
+	STAssertEquals(JATGetWarnings().count, (NSUInteger)1, @"Expected one warning to be generated when expanding template with missing parameter.");
+	STAssertEqualObjects(expansion, @"{foo}", @"Substitution with missing parameter.");
 }
 
 
@@ -144,3 +159,39 @@
 }
 
 @end
+
+
+static NSMutableArray *sWarnings;
+
+
+NSArray *JATGetWarnings(void)
+{
+	if (sWarnings != nil)
+	{
+		return [sWarnings copy];
+	}
+	else
+	{
+		return @[];
+	}
+}
+
+
+void JATResetWarnings(void)
+{
+	sWarnings = nil;
+}
+
+
+void JATWarnIntercept(const unichar characters[], NSUInteger length, NSString *format, ...)
+{
+	va_list args;
+	va_start(args, format);
+	NSString *message = [[NSString alloc] initWithFormat:format arguments:args];
+	va_end(args);
+	
+	if (sWarnings == nil)  sWarnings = [NSMutableArray array];
+	[sWarnings addObject:message];
+	
+	NSLog(@"JAT warning: %@", message);
+}

@@ -1,4 +1,5 @@
 #import "JATemplateOperatorTests.h"
+#import "JATemplateTests.h"
 #import "JATemplate.h"
 
 
@@ -17,6 +18,7 @@
 			JATLog(@"\n\nWARNING: unit tests assume en_US locale, your current locale is {localeID}.\n\n", localeID);
 		}
 	});
+	JATResetWarnings();
 }
 
 

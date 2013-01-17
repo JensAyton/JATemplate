@@ -37,6 +37,7 @@
 /* Begin PBXFileReference section */
 		1A304A57169E17F300DB0DF0 /* JATemplateOperatorTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JATemplateOperatorTests.h; sourceTree = "<group>"; };
 		1A304A58169E17F300DB0DF0 /* JATemplateOperatorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JATemplateOperatorTests.m; sourceTree = "<group>"; };
+		1A5354E916A7FA6E008F411D /* JATemplateTests-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "JATemplateTests-Prefix.pch"; sourceTree = "<group>"; };
 		1ABDBA6E169AFF0100846E17 /* JATemplate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JATemplate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1ABDBA72169AFF0100846E17 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		1ABDBA75169AFF0100846E17 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -161,6 +162,7 @@
 			children = (
 				1ABDBA97169AFF0200846E17 /* JATemplateTests-Info.plist */,
 				1ABDBA98169AFF0200846E17 /* InfoPlist.strings */,
+				1A5354E916A7FA6E008F411D /* JATemplateTests-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -444,7 +446,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "TestApp/JATemplate-Prefix.pch";
+				GCC_PREFIX_HEADER = "JATemplateTests/JATemplateTests-Prefix.pch";
 				INFOPLIST_FILE = "JATemplateTests/JATemplateTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
@@ -459,7 +461,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "TestApp/JATemplate-Prefix.pch";
+				GCC_PREFIX_HEADER = "JATemplateTests/JATemplateTests-Prefix.pch";
 				INFOPLIST_FILE = "JATemplateTests/JATemplateTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";

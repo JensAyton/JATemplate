@@ -1,0 +1,8 @@
+#ifdef __OBJC__
+	#import <Cocoa/Cocoa.h>
+	#import <SenTestingKit/SenTestingKit.h>
+#endif
+
+
+void JATWarnIntercept(const unichar characters[], NSUInteger length, NSString *format, ...);
+#define JATWarn JATWarnIntercept
