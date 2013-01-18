@@ -103,7 +103,7 @@ NSString *JAT_DoExpandTemplateUsingMacroKeysAndValues(NSString *template, NSStri
 	NSCParameterAssert(objects != NULL);
 	
 	/*	Non-optimization: it's tempting to short-circuit here if there are no
-		parameters, but that breaks if there are {(} escapes.
+		parameters, but that breaks if there are {{/}} escapes.
 	*/
 	
 	// Build dictionary of parametes and hand off to Boring Mode.
@@ -374,6 +374,12 @@ static NSString *JATExpandInternal(const unichar characters[], NSUInteger length
 		{
 			replacement = JATExpandOneSub(characters, length, idx, &replaceLength, parameters);
 		}
+		else if (thisChar == '}')
+		{
+			// Detect }} as escape code for }
+			replaceLength = 2;
+			replacement = @"}";
+		}
 		// Other types of replacement can easily be chained here.
 		
 		if (replacement != nil)
@@ -404,6 +410,13 @@ static NSString *JATExpandOneSub(const unichar characters[], NSUInteger length, 
 	NSCParameterAssert(replaceLength != NULL);
 	NSCParameterAssert(characters[idx] == '{');
 	
+	// Detect {{ as escape code for {
+	if (characters[idx + 1] == '{')
+	{
+		*replaceLength = 2;
+		return @"{";
+	}
+	
 	// Find the balancing close brace.
 	NSUInteger end, balanceCount = 1;
 	bool isIdentifier = IsIdentifierStartChar(characters[idx + 1]);
@@ -431,7 +444,7 @@ static NSString *JATExpandOneSub(const unichar characters[], NSUInteger length, 
 	NSUInteger keyStart = idx + 1, keyLength = *replaceLength - 2;
 	if (keyLength == 0)
 	{
-		JATWarn(characters, length, @"Empty substitution expression in template string. To silence this message, use {(}({)}{(}){)} instead of {(}{)}.");
+		JATWarn(characters, length, @"Empty substitution expression in template string. To silence this message, use {{{{}}}} instead of {{}}.");
 		return nil;
 	}
 	
@@ -507,17 +520,6 @@ static NSString *JATExpandOneFancyPantsSub(const unichar characters[], NSUIntege
 	NSCParameterAssert(length > 0);
 	NSCParameterAssert(keyStart + keyLength < length);
 	
-	if (keyLength == 1)
-	{
-		/*	Escape code {(} allows literal {s in templates. {)} is unnecessary
-			but provides aesthetic harmony. ({{} is not possible because the
-			parser requires braces to be balanced.)
-		*/
-		unichar first = characters[keyStart];
-		if (first == '(')  return @"{";
-		if (first == ')')  return @"}";
-	}
-	
 	id value = nil;
 	NSUInteger cursor = keyStart;
 	
@@ -556,14 +558,14 @@ static NSString *JATExpandOneFancyPantsSub(const unichar characters[], NSUIntege
 	
 	if (value == nil)
 	{
-		JATWarn(characters, length, @"Unknown template substitution syntax {(}{0}{)}.", [NSString stringWithCharacters:characters + keyStart length:keyLength]);
+		JATWarn(characters, length, @"Unknown template substitution syntax {{{0}}}.", [NSString stringWithCharacters:characters + keyStart length:keyLength]);
 		return nil;
 	}
 	
 	// At this point, we expect one or more bars, each followed by an operator expression.
 	if (characters[cursor] != '|')
 	{
-		JATWarn(characters, length, @"Unexpected character '{0}' in template substitution {(}{1}{)}.", [NSString stringWithCharacters:characters + cursor length:1], [NSString stringWithCharacters:characters + keyStart length:keyLength]);
+		JATWarn(characters, length, @"Unexpected character '{0}' in template substitution {{{1}}}.", [NSString stringWithCharacters:characters + cursor length:1], [NSString stringWithCharacters:characters + keyStart length:keyLength]);
 		return nil;
 	}
 	
@@ -574,7 +576,7 @@ static NSString *JATExpandOneFancyPantsSub(const unichar characters[], NSUIntege
 		isIdentifier = ScanIdentifier(characters, length, cursor, &opLength);
 		if (!isIdentifier)
 		{
-			JATWarn(characters, length, @"Expected identifier after | in {(}{0}{)}.", [NSString stringWithCharacters:characters + keyStart length:keyLength]);
+			JATWarn(characters, length, @"Expected identifier after | in {{{0}}}.", [NSString stringWithCharacters:characters + keyStart length:keyLength]);
 			return nil;
 		}
 		

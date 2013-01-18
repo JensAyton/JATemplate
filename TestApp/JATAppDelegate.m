@@ -44,7 +44,7 @@
 	JATLog(@"Fold operator: {blargh|fold:case,diacritics}", blargh);
 	
 	// Test brace escapes.
-	JATLog(@"Braces: int main() {(} return 0; {)}");
+	JATLog(@"Braces: int main() {{ return 0; }}");
 	
 	// Test localization.
 	NSString *localizationFile = @"Localizable.strings";
