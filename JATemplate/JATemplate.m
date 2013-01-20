@@ -1107,7 +1107,7 @@ static void JATWrapWarning(const unichar characters[], NSUInteger length, NSStri
 @end
 
 
-@implementation NSString (JATTemplateOperators)
+@implementation NSString (JATCoercable)
 
 - (NSString *) jatemplateCoerceToString
 {
@@ -1117,7 +1117,7 @@ static void JATWrapWarning(const unichar characters[], NSUInteger length, NSStri
 @end
 
 
-@implementation NSNull (JATTemplateOperators)
+@implementation NSNull (JATCoercable)
 
 - (NSString *) jatemplateCoerceToString
 {
@@ -1133,7 +1133,7 @@ static void JATWrapWarning(const unichar characters[], NSUInteger length, NSStri
 @end
 
 
-@implementation NSNumber (JATTemplateOperators)
+@implementation NSNumber (JATCoercable)
 
 - (NSString *) jatemplateCoerceToString
 {
@@ -1144,6 +1144,27 @@ static void JATWrapWarning(const unichar characters[], NSUInteger length, NSStri
 - (NSNumber *) jatemplateCoerceToNumber
 {
 	return self;
+}
+
+@end
+
+
+@implementation NSArray (JATCoercable)
+
+- (NSString *) jatemplateCoerceToString
+{
+	bool first = true;
+	NSMutableString *result = [NSMutableString string];
+	
+	for (id value in self)
+	{
+		if (!first)  [result appendString:@", "];
+		else  first = false;
+		
+		[result appendString:[value jatemplateCoerceToString]];
+	}
+	
+	return result;
 }
 
 @end
