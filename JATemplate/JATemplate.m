@@ -728,27 +728,7 @@ static void JATWrapWarning(const unichar characters[], NSUInteger length, NSStri
 
 #pragma mark - Operators
 
-@implementation NSObject (JATTemplateOperators)
-
-- (id) jatemplatePerformOperator:(NSString *)operator withArgument:(NSString *)argument variables:(NSDictionary *)variables
-{
-	// Dogfood note: it would be a bad idea to use an operator in this template.
-	NSString *opImplementationName = JATExpandLiteral(@"jatemplatePerform_{operator}_withArgument:variables:", operator);
-	SEL selector = NSSelectorFromString(opImplementationName);
-	
-	if ([self respondsToSelector:selector])
-	{
-		typedef id (*OperatorIMP)(id, SEL, NSString *, NSDictionary *);
-		OperatorIMP imp = (OperatorIMP)[self methodForSelector:selector];
-		return imp(self, selector, argument, variables);
-	}
-	else
-	{
-		JATWarn(NULL, 0, @"Unknown operator \"{operator}\" in template expansion.", operator);
-		return nil;
-	}
-}
-
+@implementation NSObject (JATCoercable)
 
 - (NSString *) jatemplateCoerceToString
 {
@@ -786,6 +766,30 @@ static void JATWrapWarning(const unichar characters[], NSUInteger length, NSStri
 		return [(id)self boolValue] ? @YES : @NO;
 	}
 	return nil;
+}
+
+@end
+
+
+@implementation NSObject (JATTemplateOperators)
+
+- (id) jatemplatePerformOperator:(NSString *)operator withArgument:(NSString *)argument variables:(NSDictionary *)variables
+{
+	// Dogfood note: it would be a bad idea to use an operator in this template.
+	NSString *opImplementationName = JATExpandLiteral(@"jatemplatePerform_{operator}_withArgument:variables:", operator);
+	SEL selector = NSSelectorFromString(opImplementationName);
+	
+	if ([self respondsToSelector:selector])
+	{
+		typedef id (*OperatorIMP)(id, SEL, NSString *, NSDictionary *);
+		OperatorIMP imp = (OperatorIMP)[self methodForSelector:selector];
+		return imp(self, selector, argument, variables);
+	}
+	else
+	{
+		JATWarn(NULL, 0, @"Unknown operator \"{operator}\" in template expansion.", operator);
+		return nil;
+	}
 }
 
 
@@ -1082,7 +1086,7 @@ static void JATWrapWarning(const unichar characters[], NSUInteger length, NSStri
 	if (self == [NSNull null])  return [self jatemplateCoerceToString];
 	Class class = [value class];
 	
-	return JATExpand(@"<{class}: {value|pointer}>", class, value);
+	return JATExpand(@"<{class}: {value|pointer}>", (id <JATCoercable>)class, value);
 }
 
 

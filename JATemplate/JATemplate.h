@@ -249,7 +249,9 @@ SOFTWARE.
 		-description. (Try it on some Foundation collections.)
 */
 
-typedef __strong id JATParameterArray[];
+
+@protocol JATCoercable;
+typedef __strong id<JATCoercable> JATParameterArray[];
 
 
 #define JATExpand(TEMPLATE, ...) \
@@ -327,6 +329,10 @@ FOUNDATION_EXTERN NSString *JATExpandFromTableInBundleWithParameters(NSString *t
 */
 - (id) jatemplatePerformOperator:(NSString *)op withArgument:(NSString *)argument variables:(NSDictionary *)variables;
 
+@end
+
+
+@protocol JATCoercable <NSObject>
 
 /*	- (NSNumber *) jatemplateCoerceToString
 	
@@ -367,6 +373,10 @@ FOUNDATION_EXTERN NSString *JATExpandFromTableInBundleWithParameters(NSString *t
 */
 - (NSNumber *) jatemplateCoerceToBoolean;
 
+@end
+
+
+@interface NSObject (JATCoercable) <JATCoercable>
 @end
 
 
