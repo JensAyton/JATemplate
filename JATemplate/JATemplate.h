@@ -7,6 +7,10 @@ safety. In particular, it is intended to replace printf-style formatting
 (-[NSString stringWithFormat:], NSLog() etc.), and to be immune to format
 string attacks.
 
+*** WARNING: while it is intended to avoid designed-in vulnerabilities, this
+is prototype-level code that hasn't been extensively tested. Don’t use it with
+arbitrary format strings fresh of the interwebs. ***
+
 Internationalization is achieved through implicit calls of NSLocalizedString()
 (by default) and locale-sensitive formatting operations.
 
