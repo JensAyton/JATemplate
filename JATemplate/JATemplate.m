@@ -968,7 +968,7 @@ static void JATWrapWarning(const unichar characters[], NSUInteger length, NSStri
 	NSString *value = [self jatemplateCoerceToString];
 	if (value == nil)  return nil;
 	
-	return [value uppercaseStringWithLocale:nil];
+	return [value uppercaseStringWithLocale:[NSLocale currentLocale]];
 }
 
 
@@ -977,7 +977,7 @@ static void JATWrapWarning(const unichar characters[], NSUInteger length, NSStri
 	NSString *value = [self jatemplateCoerceToString];
 	if (value == nil)  return nil;
 	
-	return [value lowercaseStringWithLocale:nil];
+	return [value lowercaseStringWithLocale:[NSLocale currentLocale]];
 }
 
 
@@ -986,7 +986,7 @@ static void JATWrapWarning(const unichar characters[], NSUInteger length, NSStri
 	NSString *value = [self jatemplateCoerceToString];
 	if (value == nil)  return nil;
 	
-	return [value capitalizedStringWithLocale:nil];
+	return [value capitalizedStringWithLocale:[NSLocale currentLocale]];
 }
 
 
