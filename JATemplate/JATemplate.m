@@ -537,8 +537,7 @@ static NSString *JATExpandOneFancyPantsSub(const unichar characters[], NSUIntege
 		
 		cursor += keyLength;
 	}
-	
-	if (IsPositionalChar(characters[cursor]))
+	else if (IsPositionalChar(characters[cursor]))
 	{
 		NSNumber *positional = ReadPositional(characters, length, cursor, &keyLength);
 		if (positional != nil)
@@ -586,15 +585,22 @@ static NSString *JATExpandOneFancyPantsSub(const unichar characters[], NSUIntege
 		NSString *argument = nil;
 		if (characters[cursor] == ':')
 		{
-			// Everything up to the next | or } is the argument.
+			// Everything up to the next | or } at nesting level 1 is the argument.
 			cursor++;
 			NSUInteger argStart = cursor;
+			NSUInteger balanceCount = 1;
 			for (; cursor < length; cursor++)
 			{
-				if (characters[cursor] == '|' || characters[cursor] == '}')
+				if (characters[cursor] == '{')  balanceCount++;
+				if (balanceCount == 1)
 				{
-					break;
+					if (characters[cursor] == '|' || characters[cursor] == '}')
+					{
+						break;
+					}
 				}
+				
+				if (characters[cursor] == '}')  balanceCount--;
 			}
 			
 			argument = [NSString stringWithCharacters:characters + argStart length:cursor - argStart];
@@ -870,38 +876,51 @@ static void JATWrapWarning(const unichar characters[], NSUInteger length, NSStri
 		JATWarn(NULL, 0, @"Template operator plural: used with no argument.");
 	}
 	
+	// FIXME: needs better parsing to allow nested templates to contain semicolons.
 	NSArray *components = [argument componentsSeparatedByString:@";"];
 	
 	bool isPlural = ![value isEqual:@(1)];
 	
 	NSUInteger count = components.count;
+	NSString *selected;
 	if (count == 1)
 	{
 		// One argument: use argument for plural, empty string for singular.
-		return isPlural ? argument : @"";
+		selected = isPlural ? argument : @"";
 	}
 	else if (count == 2)
 	{
 		// Two arguments: singular;plural
-		return isPlural ? components[1] : components[0];
+		selected = isPlural ? components[1] : components[0];
 	}
 	else if (count == 3)
 	{
 		// Two arguments: singular;dual;plural
-		if (!isPlural)  return components[0];
+		if (!isPlural)  selected = components[0];
 		else if ([value isEqual:@(2)])
 		{
-			return components[1];
+			selected = components[1];
 		}
 		else
 		{
-			return components[2];
+			selected = components[2];
 		}
 	}
 	else
 	{
 		JATWarn(NULL, 0, @"Template operator plural: requires one to three arguments, got \"{argument}\".", argument);
 		return nil;
+	}
+	
+	// If <selected> is an expansion expression, expand it.
+	NSUInteger length = selected.length;
+	if (length >= 2 && [selected characterAtIndex:0] == '{' && [selected characterAtIndex:selected.length - 1] == '}')
+	{
+		return JATExpandLiteralWithParameters(selected, variables);
+	}
+	else
+	{
+		return selected;
 	}
 }
 

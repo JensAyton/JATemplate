@@ -127,6 +127,16 @@
 }
 
 
+- (void) testOperatorPluralNesting
+{
+	NSString *sing = @"frog";
+	NSString *plur = @"frogs";
+	NSString *expansion = JATExpand(@"{0} {0|plural:{sing};{plur}} {1} {1|plural:{sing};{plur}} {2} {2|plural:{sing|uppercase};{plur|uppercase}}", @1, @2, @3, sing, plur);
+	
+	STAssertEqualObjects(expansion, @"1 frog 2 frogs 3 FROGS", @"plural: operator with nested expansions failed.");
+}
+
+
 - (void) testOperatorNot
 {
 	NSNumber *yes = @YES;
