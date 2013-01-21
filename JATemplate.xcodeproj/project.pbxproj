@@ -21,6 +21,8 @@
 		1ABDBA9D169AFF0200846E17 /* JATemplateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ABDBA9C169AFF0200846E17 /* JATemplateTests.m */; };
 		1ABDBAA8169B019000846E17 /* JATemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ABDBAA7169B019000846E17 /* JATemplate.m */; };
 		1ABDBAA9169B019000846E17 /* JATemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ABDBAA7169B019000846E17 /* JATemplate.m */; };
+		1AD41C1216ADDE2100E72D89 /* JATemplateDefaultOperators.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AD41C1116ADDE2100E72D89 /* JATemplateDefaultOperators.m */; };
+		1AD41C1316ADDE2100E72D89 /* JATemplateDefaultOperators.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AD41C1116ADDE2100E72D89 /* JATemplateDefaultOperators.m */; };
 		1AF27505169CD60100831BDB /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1AF27503169CD60100831BDB /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
@@ -59,6 +61,7 @@
 		1ABDBA9C169AFF0200846E17 /* JATemplateTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JATemplateTests.m; sourceTree = "<group>"; };
 		1ABDBAA6169B019000846E17 /* JATemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JATemplate.h; sourceTree = "<group>"; };
 		1ABDBAA7169B019000846E17 /* JATemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JATemplate.m; sourceTree = "<group>"; };
+		1AD41C1116ADDE2100E72D89 /* JATemplateDefaultOperators.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JATemplateDefaultOperators.m; path = JATemplate/JATemplateDefaultOperators.m; sourceTree = SOURCE_ROOT; };
 		1AF27504169CD60100831BDB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -128,6 +131,7 @@
 			children = (
 				1ABDBAA6169B019000846E17 /* JATemplate.h */,
 				1ABDBAA7169B019000846E17 /* JATemplate.m */,
+				1AD41C1116ADDE2100E72D89 /* JATemplateDefaultOperators.m */,
 			);
 			path = JATemplate;
 			sourceTree = "<group>";
@@ -293,6 +297,7 @@
 				1ABDBA7F169AFF0100846E17 /* main.m in Sources */,
 				1ABDBA86169AFF0100846E17 /* JATAppDelegate.m in Sources */,
 				1ABDBAA8169B019000846E17 /* JATemplate.m in Sources */,
+				1AD41C1216ADDE2100E72D89 /* JATemplateDefaultOperators.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -303,6 +308,7 @@
 				1ABDBA9D169AFF0200846E17 /* JATemplateTests.m in Sources */,
 				1ABDBAA9169B019000846E17 /* JATemplate.m in Sources */,
 				1A304A59169E17F300DB0DF0 /* JATemplateOperatorTests.m in Sources */,
+				1AD41C1316ADDE2100E72D89 /* JATemplateDefaultOperators.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

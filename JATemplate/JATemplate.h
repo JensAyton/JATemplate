@@ -151,8 +151,7 @@ SOFTWARE.
 		Equivalent to NSCAssert1(condition, @"%@", JATExpandLiteral(template, ...)).
 	
 	
-	The following operators are built in. They can be suppressed by defining
-	JATEMPLATE_SUPPRESS_DEFAULT_OPERATORS.
+	The following operators are defined in JATemplateDefaultOperators.m:
 	
 		num:
 		Format numbers. The argument may be an NSNumberFormatter format string,
@@ -306,7 +305,7 @@ FOUNDATION_EXTERN NSString *JATExpandFromTableInBundleWithParameters(NSString *t
 #define JATCAssert(CONDITION, TEMPLATE, ...)  NSCAssert1(CONDITION, @"%@", JATExpandLiteral(TEMPLATE, __VA_ARGS__))
 
 
-@interface NSObject (JATTemplateOperators)
+@interface NSObject (JATOperatorSupport)
 
 /*	-jatemplatePerformOperator:argument:variables: implements formatting
 	operators in template substitutions. The default implementation builds and
