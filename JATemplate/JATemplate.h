@@ -151,7 +151,8 @@ SOFTWARE.
 		Equivalent to NSCAssert1(condition, @"%@", JATExpandLiteral(template, ...)).
 	
 	
-	The following operators are defined in JATemplateDefaultOperators.m:
+	The following operators are defined in JATemplateDefaultOperators. If you
+	don’t want them, JATemplate.m will work without the operators.
 	
 		num:
 		Format numbers. The argument may be an NSNumberFormatter format string,
@@ -184,14 +185,29 @@ SOFTWARE.
 		Coerces value to a number and rounds it to an integer, rounding half-way
 		cases away from zero (“school rounding”).
 		
+		plur:
+		A powerful pluralization operator with support for many languages. It
+		takes three to seven arguments separated by semicolons. The first is a
+		number specifying a pluralization rule, and the others are different
+		word forms determined by the rule. The rules are the same as used by
+		Mozilla’s PluralForm system, documented here (except that rule 0 is
+		not supported or needed):
+		https://developer.mozilla.org/en-US/docs/Localization_and_Plurals
+		For example, the template "{count} minute{count|plural:s}" might be
+		translated to Polish as "{count} {count|plur:9;minuta;minuty;minut}".
+		
 		plural:
-		Takes one to three arguments separated by semicolons. If one argument
-		is provided, the argument is returned if the value is plural and the
-		empty string is returned otherwise. If there are two arguments, the
-		first is used for singular and the second for plural. If there are
-		three arguments, the first is singular, the second is dual (i.e., used
-		for exactly two items) and the third is plural.
+		A simplified plural operator for languages that use the same numeric
+		inflection structure as English. If one argument is given, the empty
+		string is used for a singular value and the argument is used for plural.
+		If two areguments separated by a semicolon are given, the first is
+		singular and the second is plural.
 		Example: "I have {gooseCount} {gooseCount|plural:goose;geese}.".
+		
+		pluraz:
+		Like plural:, except that a count of zero is treated as singular.
+		Example: "J’ai {gooseCount} {gooseCount|pluraz:oie;oies}.", or
+		equivalently "J’ai {gooseCount} oie{gooseCount|pluraz:s}.".
 		
 		not
 		Coerces the value to a boolean and returns its negation.

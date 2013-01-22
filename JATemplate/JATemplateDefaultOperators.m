@@ -27,27 +27,59 @@ SOFTWARE.
 #import "JATemplate.h"
 
 
-#define JATWarn(CHARACTERS, LENGTH, TEMPLATE, ...)  JATWrapWarning(CHARACTERS, LENGTH, JATExpand(TEMPLATE, __VA_ARGS__))
+#define OpWarn(TEMPLATE, ...)  JATWrapWarning(NULL, 0, JATExpand(TEMPLATE, __VA_ARGS__))
 void JATWrapWarning(const unichar characters[], NSUInteger length, NSString *message);
 
 
 /*	Core pluralization logic used by plur: and plural: operators.
 */
-static NSString *PluralizationRule1(NSInteger value, NSArray *components);
+static NSString *PluralizationRule1(NSUInteger value, NSArray *components);
+static NSString *PluralizationRule2(NSUInteger value, NSArray *components);
+static NSString *PluralizationRule3(NSUInteger value, NSArray *components);
+static NSString *PluralizationRule4(NSUInteger value, NSArray *components);
+static NSString *PluralizationRule5(NSUInteger value, NSArray *components);
+static NSString *PluralizationRule6(NSUInteger value, NSArray *components);
+static NSString *PluralizationRule7(NSUInteger value, NSArray *components);
+static NSString *PluralizationRule8(NSUInteger value, NSArray *components);
+static NSString *PluralizationRule9(NSUInteger value, NSArray *components);
+static NSString *PluralizationRule10(NSUInteger value, NSArray *components);
+static NSString *PluralizationRule11(NSUInteger value, NSArray *components);
+static NSString *PluralizationRule12(NSUInteger value, NSArray *components);
+static NSString *PluralizationRule13(NSUInteger value, NSArray *components);
+static NSString *PluralizationRule14(NSUInteger value, NSArray *components);
+static NSString *PluralizationRule15(NSUInteger value, NSArray *components);
+static NSString *PluralizationRule16(NSUInteger value, NSArray *components);
 
 
 /*	Array of pluralization rules.
 	Each rule has a required component count, which is the expected number of
-	elements in the tokenized argument, including the first (the rule number).
-	For instance, for plur:1;;s the components are @[@"1", @"", @"s"].
+	elements in the tokenized argument, excluding the first (the rule number).
+	For instance, for plur:1;;s the components are @[@"1", @"", @"s"] and the
+	required count is 2.
 */
+typedef NSString *(*PluralizationRule)(NSUInteger, NSArray *);
 static const struct
 {
-	NSUInteger requiredComponentCount;
-	NSString *(*rule)(NSInteger, NSArray *);
+	NSUInteger			requiredComponentCount;
+	PluralizationRule	rule;
 } sPluralizationRules[] =
 {
-	[1] = { 3, PluralizationRule1 }
+	[1]  = { 2, PluralizationRule1 },
+	[2]  = { 2, PluralizationRule2 },
+	[3]  = { 3, PluralizationRule3 },
+	[4]  = { 4, PluralizationRule4 },
+	[5]  = { 3, PluralizationRule5 },
+	[6]  = { 3, PluralizationRule6 },
+	[7]  = { 3, PluralizationRule7 },
+	[8]  = { 3, PluralizationRule8 },
+	[9]  = { 3, PluralizationRule9 },
+	[10] = { 4, PluralizationRule10 },
+	[11] = { 5, PluralizationRule11 },
+	[12] = { 6, PluralizationRule12 },
+	[13] = { 4, PluralizationRule13 },
+	[14] = { 3, PluralizationRule14 },
+	[15] = { 2, PluralizationRule15 },
+	[16] = { 6, PluralizationRule16 }
 };
 
 
@@ -124,6 +156,46 @@ enum
 }
 
 
+- (id) jatemplatePerform_plur_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+{
+	NSNumber *value = [self jatemplateCoerceToNumber];
+	if (value == nil)  return nil;
+	
+	if (argument == nil)
+	{
+		OpWarn(@"Template operator plur: used with no argument.");
+		return nil;
+	}
+	
+	// FIXME: needs better parsing to allow nested templates to contain semicolons.
+	NSArray *components = [argument componentsSeparatedByString:@";"];
+	
+	NSInteger ruleID = [components[0] integerValue];
+	PluralizationRule rule = NULL;
+	
+	if (0 < ruleID && ruleID < kPluralizationRuleCount)
+	{
+		NSUInteger requiredCount = sPluralizationRules[ruleID].requiredComponentCount;
+		if (components.count != requiredCount + 1)
+		{
+			OpWarn(@"Template operator plur: rule {ruleID} requires {requiredCount} arguments (got plur:{argument}).", @(ruleID), @(requiredCount), argument);
+			return nil;
+		}
+		rule = sPluralizationRules[ruleID].rule;
+	}
+	
+	if (rule == NULL)
+	{
+		OpWarn(@"Template operator plur: used with invalid rule ID {0}.", components[0]);
+		return nil;
+	}
+	
+	NSString *selected = rule([value unsignedIntegerValue], components);
+	
+	return JATExpandLiteralWithParameters(selected, variables);
+}
+
+
 - (id) jatemplatePerform_plural_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	NSNumber *value = [self jatemplateCoerceToNumber];
@@ -131,7 +203,8 @@ enum
 	
 	if (argument == nil)
 	{
-		JATWarn(NULL, 0, @"Template operator plural: used with no argument.");
+		OpWarn(@"Template operator plural: used with no argument.");
+		return nil;
 	}
 	
 	// FIXME: needs better parsing to allow nested templates to contain semicolons.
@@ -147,22 +220,47 @@ enum
 	}
 	else
 	{
-		JATWarn(NULL, 0, @"Template operator plural: requires one or two arguments, got \"{argument}\".", argument);
+		OpWarn(@"Template operator plural: requires one or two arguments, got \"{argument}\".", argument);
 		return nil;
 	}
 	
 	NSString *selected = PluralizationRule1(value.integerValue, components);
 	
-	// If <selected> is an expansion expression, expand it.
-	NSUInteger length = selected.length;
-	if (length >= 2 && [selected characterAtIndex:0] == '{' && [selected characterAtIndex:selected.length - 1] == '}')
+	return JATExpandLiteralWithParameters(selected, variables);
+}
+
+
+- (id) jatemplatePerform_pluraz_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+{
+	NSNumber *value = [self jatemplateCoerceToNumber];
+	if (value == nil)  return nil;
+	
+	if (argument == nil)
 	{
-		return JATExpandLiteralWithParameters(selected, variables);
+		OpWarn(@"Template operator pluraz: used with no argument.");
+		return nil;
+	}
+	
+	// FIXME: needs better parsing to allow nested templates to contain semicolons.
+	NSArray *components = [argument componentsSeparatedByString:@";"];
+	
+	if (components.count == 1)
+	{
+		components = @[@"2", @"", components[0]];
+	}
+	else if (components.count == 2)
+	{
+		components = @[@"2", components[0], components[1]];
 	}
 	else
 	{
-		return selected;
+		OpWarn(@"Template operator pluraz: requires one or two arguments, got \"{argument}\".", argument);
+		return nil;
 	}
+	
+	NSString *selected = PluralizationRule2(value.integerValue, components);
+	
+	return JATExpandLiteralWithParameters(selected, variables);
 }
 
 
@@ -182,7 +280,7 @@ enum
 	
 	if (argument == nil)
 	{
-		JATWarn(NULL, 0, @"Template operator if: used with no argument.");
+		OpWarn(@"Template operator if: used with no argument.");
 	}
 	
 	NSArray *components = [argument componentsSeparatedByString:@";"];
@@ -201,7 +299,7 @@ enum
 	
 	if (argument == nil)
 	{
-		JATWarn(NULL, 0, @"Template operator ifuse: used with no argument.");
+		OpWarn(@"Template operator ifuse: used with no argument.");
 	}
 	
 	NSArray *components = [argument componentsSeparatedByString:@";"];
@@ -216,7 +314,7 @@ enum
 		NSString *result = variables[selectedKey];
 		if (result == nil)
 		{
-			JATWarn(NULL, 0, @"Template substitution uses unknown key \"{selectedKey}\" in ifuse: operator.", selectedKey);
+			OpWarn(@"Template substitution uses unknown key \"{selectedKey}\" in ifuse: operator.", selectedKey);
 		}
 		return result;
 	}
@@ -321,7 +419,7 @@ enum
 		}
 		else
 		{
-			JATWarn(NULL, 0, @"Unknown option \"{option}\" for \"fold\" template operator.", option);
+			OpWarn(@"Unknown option \"{option}\" for \"fold\" template operator.", option);
 		}
 	}
 	
@@ -365,10 +463,191 @@ enum
 @end
 
 
-static NSString *PluralizationRule1(NSInteger value, NSArray *components)
+#pragma mark - Pluralization rules
+// These are based on https://developer.mozilla.org/en-US/docs/Localization_and_Plurals
+
+static NSString *PluralizationRule1(NSUInteger value, NSArray *components)
 {
 	NSCParameterAssert(components.count == 3);
 	
 	if (value == 1)  return components[1];
-	else  return components[2];
+	return components[2];
+}
+
+
+static NSString *PluralizationRule2(NSUInteger value, NSArray *components)
+{
+	NSCParameterAssert(components.count == 3);
+	
+	if (value == 0 || value == 1)  return components[1];
+	return components[2];
+}
+
+
+static NSString *PluralizationRule3(NSUInteger value, NSArray *components)
+{
+	NSCParameterAssert(components.count == 4);
+	
+	NSUInteger lastDigit = value % 10;
+	if (value == 0)  return components[1];
+	if (lastDigit == 1 && value != 11)  return components[2];
+	return components[3];
+}
+
+
+static NSString *PluralizationRule4(NSUInteger value, NSArray *components)
+{
+	NSCParameterAssert(components.count == 5);
+	
+	if (value == 1 || value == 11)  return components[1];
+	if (value == 2 || value == 12)  return components[2];
+	if (3 <= value && value <= 19)  return components[3];
+	return components[4];
+}
+
+
+static NSString *PluralizationRule5(NSUInteger value, NSArray *components)
+{
+	NSCParameterAssert(components.count == 4);
+	
+	NSUInteger lastTwoDigits = value % 100;
+	if (value == 1)  return components[1];
+	if (value == 0 || lastTwoDigits <= 19)  return components[2];
+	return components[3];
+}
+
+
+static NSString *PluralizationRule6(NSUInteger value, NSArray *components)
+{
+	NSCParameterAssert(components.count == 4);
+	
+	NSUInteger lastDigit = value % 10;
+	NSUInteger lastTwoDigits = value % 100;
+	if (lastDigit == 1 && lastTwoDigits != 11)  return components[1];
+	if (lastDigit == 0)  return components[2];
+	if (11 <= lastTwoDigits && lastTwoDigits <= 19)  return components[2];
+	return components[3];
+}
+
+
+static NSString *PluralizationRule7(NSUInteger value, NSArray *components)
+{
+	NSCParameterAssert(components.count == 4);
+	
+	NSUInteger lastDigit = value % 10;
+	NSUInteger lastTwoDigits = value % 100;
+	if (lastDigit == 1 && lastTwoDigits != 11)  return components[1];
+	if (2 <= lastDigit && lastDigit <= 4 && (lastTwoDigits < 12 || lastTwoDigits > 14))  return components[2];
+	return components[3];
+}
+
+
+static NSString *PluralizationRule8(NSUInteger value, NSArray *components)
+{
+	NSCParameterAssert(components.count == 4);
+	
+	if (value == 1)  return components[1];
+	if (2 <= value && value <= 4)  return components[2];
+	return components[3];
+}
+
+
+static NSString *PluralizationRule9(NSUInteger value, NSArray *components)
+{
+	NSCParameterAssert(components.count == 4);
+	
+	NSUInteger lastDigit = value % 10;
+	NSUInteger lastTwoDigits = value % 100;
+	if (value == 1)  return components[1];
+	if (2 <= lastDigit && lastDigit <= 4 && (lastTwoDigits < 12 || lastTwoDigits > 14))  return components[2];
+	return components[3];
+}
+
+
+static NSString *PluralizationRule10(NSUInteger value, NSArray *components)
+{
+	NSCParameterAssert(components.count == 5);
+	
+	NSUInteger lastTwoDigits = value % 100;
+	if (lastTwoDigits == 1)  return components[1];
+	if (lastTwoDigits == 2)  return components[2];
+	if (lastTwoDigits == 3 || lastTwoDigits == 4)  return components[3];
+	return components[4];
+}
+
+
+static NSString *PluralizationRule11(NSUInteger value, NSArray *components)
+{
+	NSCParameterAssert(components.count == 6);
+	
+	if (value == 1)  return components[1];
+	if (value == 2)  return components[2];
+	if (3 <= value && value <= 6)  return components[3];
+	if (7 <= value && value <= 10)  return components[4];
+	return components[5];
+}
+
+
+static NSString *PluralizationRule12(NSUInteger value, NSArray *components)
+{
+	NSCParameterAssert(components.count == 7);
+	
+	NSUInteger lastTwoDigits = value % 100;
+	if (value == 0)  return components[6];
+	if (value == 1)  return components[1];
+	if (value == 2)  return components[2];
+	if (lastTwoDigits >= 3 && lastTwoDigits <= 10)  return components[3];
+	if (lastTwoDigits <= 2)  return components[5];
+	return components[4];
+}
+
+
+static NSString *PluralizationRule13(NSUInteger value, NSArray *components)
+{
+	NSCParameterAssert(components.count == 5);
+	
+	NSUInteger lastTwoDigits = value % 100;
+	if (value == 1)  return components[1];
+	if (value == 0 || (lastTwoDigits >= 1 && lastTwoDigits <= 10))  return components[2];
+	if (lastTwoDigits >= 11 && lastTwoDigits <= 19)  return components[3];
+	return components[4];
+}
+
+
+static NSString *PluralizationRule14(NSUInteger value, NSArray *components)
+{
+	NSCParameterAssert(components.count == 4);
+	
+	NSUInteger lastDigit = value % 10;
+	if (lastDigit == 1)  return components[1];
+	if (lastDigit == 2)  return components[2];
+	return components[3];
+}
+
+
+static NSString *PluralizationRule15(NSUInteger value, NSArray *components)
+{
+	NSCParameterAssert(components.count == 3);
+	
+	NSUInteger lastDigit = value % 10;
+	if (lastDigit == 1 && value != 11)  return components[1];
+	return components[2];
+}
+
+
+static NSString *PluralizationRule16(NSUInteger value, NSArray *components)
+{
+	NSCParameterAssert(components.count == 7);
+	
+	NSUInteger lastDigit = value % 10;
+	NSUInteger secondLastDigit = (value / 10) % 10;
+	if (value == 1)  return components[1];
+	if (secondLastDigit != 1 && secondLastDigit != 7 && secondLastDigit != 9)
+	{
+		if (lastDigit == 1)  return components[2];
+		if (lastDigit == 2)  return components[3];
+		if (lastDigit == 3 || lastDigit == 4 || lastDigit == 9)  return components[4];
+	}
+	if (value != 0 && (value % 1000000) == 0)  return components[5];
+	return components[6];
 }
