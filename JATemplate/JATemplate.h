@@ -196,6 +196,12 @@ SOFTWARE.
 		For example, the template "{count} minute{count|plural:s}" might be
 		translated to Polish as "{count} {count|plur:9;minuta;minuty;minut}".
 		
+		The selected string is also expanded as a template, so it’s possible
+		to do things like "{plur:1;{singularString};{pluralString}}". This is
+		generally a bad idea, because handling all the different language rules
+		this way is likely to be impossible, but it’s there if you need it.
+		(This also works with plural: and pluraz:.)
+		
 		plural:
 		A simplified plural operator for languages that use the same numeric
 		inflection structure as English. If one argument is given, the empty
