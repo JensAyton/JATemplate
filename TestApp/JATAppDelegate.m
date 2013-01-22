@@ -35,9 +35,11 @@
 	JATLog(@"File bytes: {byteSize|num:filebytes}; memory bytes: {byteSize|num:memorybytes}", @(byteSize));
 	
 	// Test plural: operator.
-	NSUInteger kittenCount = 1;
-	NSUInteger gooseCount = 5;
-	JATLog(@"I have {kittenCount|num:spellout} kitten{kittenCount|plural:s} and {gooseCount|num:spellout} {gooseCount|plural:goose;geese}. That’s {gooseCount|plural:one goose;a couple of geese;several geese}.", @(kittenCount), @(gooseCount));
+	unsigned myKittenCount = 1;
+	unsigned myGooseCount = 7;
+	unsigned yourKittenCount = 3;
+	unsigned yourGooseCount = 1;
+	JATLog(@"I have {myKittenCount|num:spellout} kitten{myKittenCount|plural:s}. You have {yourKittenCount|num:spellout} kitten{yourKittenCount|plural:s}. I have {myGooseCount|num:spellout} {myGooseCount|plural:goose;geese}. You have {yourGooseCount|num:spellout} {yourGooseCount|plural:goose;geese}.", @(myKittenCount), @(myGooseCount), @(yourKittenCount), @(yourGooseCount));
 	
 	// Test fold: operator.
 	NSString *blargh = @"BläÄ";

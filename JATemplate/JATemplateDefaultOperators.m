@@ -31,6 +31,32 @@ SOFTWARE.
 void JATWrapWarning(const unichar characters[], NSUInteger length, NSString *message);
 
 
+/*	Core pluralization logic used by plur: and plural: operators.
+*/
+static NSString *PluralizationRule1(NSInteger value, NSArray *components);
+
+
+/*	Array of pluralization rules.
+	Each rule has a required component count, which is the expected number of
+	elements in the tokenized argument, including the first (the rule number).
+	For instance, for plur:1;;s the components are @[@"1", @"", @"s"].
+*/
+static const struct
+{
+	NSUInteger requiredComponentCount;
+	NSString *(*rule)(NSInteger, NSArray *);
+} sPluralizationRules[] =
+{
+	[1] = { 3, PluralizationRule1 }
+};
+
+
+enum
+{
+	kPluralizationRuleCount = sizeof sPluralizationRules / sizeof *sPluralizationRules
+};
+
+
 @implementation NSObject (JATDefaultOperators)
 
 - (id) jatemplatePerform_num_withArgument:(NSString *)argument variables:(NSDictionary *)variables
@@ -111,38 +137,21 @@ void JATWrapWarning(const unichar characters[], NSUInteger length, NSString *mes
 	// FIXME: needs better parsing to allow nested templates to contain semicolons.
 	NSArray *components = [argument componentsSeparatedByString:@";"];
 	
-	bool isPlural = ![value isEqual:@(1)];
-	
-	NSUInteger count = components.count;
-	NSString *selected;
-	if (count == 1)
+	if (components.count == 1)
 	{
-		// One argument: use argument for plural, empty string for singular.
-		selected = isPlural ? argument : @"";
+		components = @[@"1", @"", components[0]];
 	}
-	else if (count == 2)
+	else if (components.count == 2)
 	{
-		// Two arguments: singular;plural
-		selected = isPlural ? components[1] : components[0];
-	}
-	else if (count == 3)
-	{
-		// Two arguments: singular;dual;plural
-		if (!isPlural)  selected = components[0];
-		else if ([value isEqual:@(2)])
-		{
-			selected = components[1];
-		}
-		else
-		{
-			selected = components[2];
-		}
+		components = @[@"1", components[0], components[1]];
 	}
 	else
 	{
-		JATWarn(NULL, 0, @"Template operator plural: requires one to three arguments, got \"{argument}\".", argument);
+		JATWarn(NULL, 0, @"Template operator plural: requires one or two arguments, got \"{argument}\".", argument);
 		return nil;
 	}
+	
+	NSString *selected = PluralizationRule1(value.integerValue, components);
 	
 	// If <selected> is an expansion expression, expand it.
 	NSUInteger length = selected.length;
@@ -354,3 +363,12 @@ void JATWrapWarning(const unichar characters[], NSUInteger length, NSString *mes
 }
 
 @end
+
+
+static NSString *PluralizationRule1(NSInteger value, NSArray *components)
+{
+	NSCParameterAssert(components.count == 3);
+	
+	if (value == 1)  return components[1];
+	else  return components[2];
+}
