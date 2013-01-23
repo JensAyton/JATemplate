@@ -140,14 +140,14 @@ NSString *JATExpandLiteralWithParameters(NSString *template, NSDictionary *param
 		a malloced buffer.
 	*/
 	NSUInteger length = template.length;
-	NSUInteger bufferSize = length;
+	NSUInteger stackBufferSize = length;
 	bool useHeapAllocation = length > kStackStringLimit;
-	if (useHeapAllocation)  bufferSize = 1;
+	if (useHeapAllocation)  stackBufferSize = 1;
 	unichar *stringBuffer = NULL;
-	unichar stackBuffer[bufferSize];
+	unichar stackBuffer[stackBufferSize];
 	if (useHeapAllocation)
 	{
-		stringBuffer = malloc(sizeof *stringBuffer * bufferSize);
+		stringBuffer = malloc(sizeof *stringBuffer * length);
 		if (stringBuffer == NULL)  return nil;
 	}
 	else
@@ -187,14 +187,14 @@ NSArray *JATSplitArgumentString(NSString *string, unichar separator)
 	*/
 	NSUInteger length = string.length;
 	if (string.length == 0)  return @[@""];
-	NSUInteger bufferSize = length;
+	NSUInteger stackBufferSize = length;
 	bool useHeapAllocation = length > kStackStringLimit;
-	if (useHeapAllocation)  bufferSize = 1;
+	if (useHeapAllocation)  stackBufferSize = 1;
 	unichar *stringBuffer = NULL;
-	unichar stackBuffer[bufferSize];
+	unichar stackBuffer[stackBufferSize];
 	if (useHeapAllocation)
 	{
-		stringBuffer = malloc(sizeof *stringBuffer * bufferSize);
+		stringBuffer = malloc(sizeof *stringBuffer * length);
 		if (stringBuffer == NULL)  return nil;
 	}
 	else
