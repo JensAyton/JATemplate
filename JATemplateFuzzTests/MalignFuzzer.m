@@ -2,13 +2,12 @@
 #import "JATemplate.h"
 #import "JATConstructFuzzTest.h"
 
-NSString * const kJATBenignFuzzerWarningException = @"se.ayton.jens.jatemplate warning occurred";
-
 
 // If set, prints the first 25 templates and then exits.
 #define DUMP_EXAMPLE_TEMPLATES	0
 
 
+static NSString *CorruptTemplate(NSString *template);
 static void ReportException(NSException *ex, NSString *template, NSDictionary *parameters);
 
 #define Print(TEMPLATE, ...)   fputs([JATExpandLiteral(TEMPLATE, ##__VA_ARGS__) UTF8String], stdout)
@@ -21,7 +20,7 @@ int main(int argc, const char * argv[])
 	
 	@autoreleasepool
 	{
-		Print(@"Starting fuzz testing...\n");
+		Print(@"Starting evil fuzz testing...\n");
 		
 		NSUInteger count = 0;
 		
@@ -43,6 +42,8 @@ int main(int argc, const char * argv[])
 						return EXIT_FAILURE;
 					}
 					
+					template = CorruptTemplate(template);
+					
 					#if DUMP_EXAMPLE_TEMPLATES
 						Print(@"{template}\n\n", template);
 						if (count == 25)  exit(0);
@@ -60,7 +61,7 @@ int main(int argc, const char * argv[])
 					
 					if ((count % 1000) == 0)
 					{
-						Print(@"{count} happy customers served.\n", @(count));
+						Print(@"{count} grumpy customers served.\n", @(count));
 					}
 				}
 			}
@@ -77,25 +78,51 @@ int main(int argc, const char * argv[])
 }
 
 
-void JATWarnIntercept(NSString *message)
+static NSString *RandomCharacter(void)
 {
-	[NSException raise:kJATBenignFuzzerWarningException format:@"%@", message];
+	unichar character = random() % (256 - 32) + 32;	
+	return [NSString stringWithCharacters:&character length:1];
+}
+
+
+static NSString *CorruptTemplate(NSString *template)
+{
+	// Make random edits to induce parse errors.
+	NSMutableString *corrupt = [template mutableCopy];
+	NSUInteger changeCount = random() % ((template.length / 20) + 1) + 1;
+	
+	while (changeCount--)
+	{
+		if (corrupt.length == 0)
+		{
+			[corrupt insertString:RandomCharacter() atIndex:0];
+		}
+		
+		NSUInteger select = random() % 3;
+		NSUInteger target = random() % corrupt.length;
+		if (select == 0)
+		{
+			[corrupt deleteCharactersInRange:(NSRange){ target, 1 }];
+		}
+		else if (select == 1)
+		{
+			[corrupt insertString:RandomCharacter() atIndex:target];
+		}
+		else
+		{
+			[corrupt replaceCharactersInRange:(NSRange){ target, 1 }
+								   withString:RandomCharacter()];
+		}
+	}
+	
+	return corrupt;
 }
 
 
 static void ReportException(NSException *ex, NSString *template, NSDictionary *parameters)
 {
-	if ([ex.name isEqual:kJATBenignFuzzerWarningException])
-	{
-		NSString *warning = ex.reason;
-		
-		EPrint(@"An unexpected warning occurred during template expansion. This may be a bug in JATemplate, or a bug in the test case constructor.\n\nWarning text: {warning}\n\nTemplate: {template}\n\nParameters: {parameters}\n", warning, template, parameters);
-	}
-	else
-	{
-		NSString *name = ex.name;
-		NSString *reason = ex.reason;
-		
-		EPrint(@"An exception occurred during template expansion.\n\nException: {name}\n\nReason: {reason}\n", name, reason);
-	}
+	NSString *name = ex.name;
+	NSString *reason = ex.reason;
+	
+	EPrint(@"An exception occurred during template expansion.\n\nException: {name}\n\nReason: {reason}\n", name, reason);
 }

@@ -24,10 +24,15 @@
 		1AD41C1216ADDE2100E72D89 /* JATemplateDefaultOperators.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AD41C1116ADDE2100E72D89 /* JATemplateDefaultOperators.m */; };
 		1AD41C1316ADDE2100E72D89 /* JATemplateDefaultOperators.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AD41C1116ADDE2100E72D89 /* JATemplateDefaultOperators.m */; };
 		1AD4298716AFE06700ED323A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AD4298616AFE06700ED323A /* Foundation.framework */; };
-		1AD4298A16AFE06700ED323A /* BenignFuzzer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AD4298916AFE06700ED323A /* BenignFuzzer.m */; };
 		1AD4299516AFE15900ED323A /* JATConstructFuzzTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AD4299416AFE15900ED323A /* JATConstructFuzzTest.m */; };
 		1AD4299616AFE1D600ED323A /* JATemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ABDBAA7169B019000846E17 /* JATemplate.m */; };
 		1AD4299716AFE1D900ED323A /* JATemplateDefaultOperators.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AD41C1116ADDE2100E72D89 /* JATemplateDefaultOperators.m */; };
+		1AD429A016B086E300ED323A /* JATConstructFuzzTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AD4299416AFE15900ED323A /* JATConstructFuzzTest.m */; };
+		1AD429A116B086E300ED323A /* JATemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ABDBAA7169B019000846E17 /* JATemplate.m */; };
+		1AD429A216B086E300ED323A /* JATemplateDefaultOperators.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AD41C1116ADDE2100E72D89 /* JATemplateDefaultOperators.m */; };
+		1AD429A416B086E300ED323A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AD4298616AFE06700ED323A /* Foundation.framework */; };
+		1AD429AD16B0872600ED323A /* MalignFuzzer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AD429AC16B0872600ED323A /* MalignFuzzer.m */; };
+		1AD429AE16B0897000ED323A /* BenignFuzzer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AD4298916AFE06700ED323A /* BenignFuzzer.m */; };
 		1AF27505169CD60100831BDB /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1AF27503169CD60100831BDB /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
@@ -43,6 +48,15 @@
 
 /* Begin PBXCopyFilesBuildPhase section */
 		1AD4298216AFE06700ED323A /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		1AD429A516B086E300ED323A /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = /usr/share/man/man1/;
@@ -85,6 +99,8 @@
 		1AD4298C16AFE06700ED323A /* JATemplateFuzzer-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "JATemplateFuzzer-Prefix.pch"; sourceTree = "<group>"; };
 		1AD4299316AFE15900ED323A /* JATConstructFuzzTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JATConstructFuzzTest.h; sourceTree = "<group>"; };
 		1AD4299416AFE15900ED323A /* JATConstructFuzzTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JATConstructFuzzTest.m; sourceTree = "<group>"; };
+		1AD429A916B086E300ED323A /* JATemplateMalignFuzzer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = JATemplateMalignFuzzer; sourceTree = BUILT_PRODUCTS_DIR; };
+		1AD429AC16B0872600ED323A /* MalignFuzzer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MalignFuzzer.m; sourceTree = "<group>"; };
 		1AF27504169CD60100831BDB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -114,6 +130,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		1AD429A316B086E300ED323A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1AD429A416B086E300ED323A /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -135,6 +159,7 @@
 				1ABDBA6E169AFF0100846E17 /* JATemplate.app */,
 				1ABDBA8F169AFF0200846E17 /* JATemplateTests.octest */,
 				1AD4298416AFE06700ED323A /* JATemplateBenignFuzzer */,
+				1AD429A916B086E300ED323A /* JATemplateMalignFuzzer */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -221,6 +246,7 @@
 			isa = PBXGroup;
 			children = (
 				1AD4298916AFE06700ED323A /* BenignFuzzer.m */,
+				1AD429AC16B0872600ED323A /* MalignFuzzer.m */,
 				1AD4298B16AFE06700ED323A /* Supporting Files */,
 				1AD4299316AFE15900ED323A /* JATConstructFuzzTest.h */,
 				1AD4299416AFE15900ED323A /* JATConstructFuzzTest.m */,
@@ -292,6 +318,23 @@
 			productReference = 1AD4298416AFE06700ED323A /* JATemplateBenignFuzzer */;
 			productType = "com.apple.product-type.tool";
 		};
+		1AD4299D16B086E300ED323A /* JATemplateMalignFuzzer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1AD429A616B086E300ED323A /* Build configuration list for PBXNativeTarget "JATemplateMalignFuzzer" */;
+			buildPhases = (
+				1AD4299E16B086E300ED323A /* Sources */,
+				1AD429A316B086E300ED323A /* Frameworks */,
+				1AD429A516B086E300ED323A /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = JATemplateMalignFuzzer;
+			productName = JATemplateBenignFuzzer;
+			productReference = 1AD429A916B086E300ED323A /* JATemplateMalignFuzzer */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -317,6 +360,7 @@
 				1ABDBA6D169AFF0100846E17 /* JATemplate */,
 				1ABDBA8E169AFF0200846E17 /* JATemplateTests */,
 				1AD4298316AFE06700ED323A /* JATemplateBenignFuzzer */,
+				1AD4299D16B086E300ED323A /* JATemplateMalignFuzzer */,
 			);
 		};
 /* End PBXProject section */
@@ -387,10 +431,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1AD4298A16AFE06700ED323A /* BenignFuzzer.m in Sources */,
 				1AD4299516AFE15900ED323A /* JATConstructFuzzTest.m in Sources */,
 				1AD4299616AFE1D600ED323A /* JATemplate.m in Sources */,
 				1AD4299716AFE1D900ED323A /* JATemplateDefaultOperators.m in Sources */,
+				1AD429AE16B0897000ED323A /* BenignFuzzer.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1AD4299E16B086E300ED323A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1AD429A016B086E300ED323A /* JATConstructFuzzTest.m in Sources */,
+				1AD429A116B086E300ED323A /* JATemplate.m in Sources */,
+				1AD429A216B086E300ED323A /* JATemplateDefaultOperators.m in Sources */,
+				1AD429AD16B0872600ED323A /* MalignFuzzer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -579,6 +634,36 @@
 			};
 			name = Release;
 		};
+		1AD429A716B086E300ED323A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "JATemplateFuzzTests/JATemplateFuzzer-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"JATEMPLATE_SYNTAX_WARNINGS=0",
+					"$(inherited)",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				OTHER_CFLAGS = "-fobjc-arc-exceptions";
+				PRODUCT_NAME = JATemplateMalignFuzzer;
+			};
+			name = Debug;
+		};
+		1AD429A816B086E300ED323A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "JATemplateFuzzTests/JATemplateFuzzer-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					JATEMPLATE_SYNTAX_WARNINGS,
+					"$(inherited)",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				OTHER_CFLAGS = "-fobjc-arc-exceptions";
+				PRODUCT_NAME = JATemplateMalignFuzzer;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -616,6 +701,16 @@
 				1AD4299016AFE06700ED323A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1AD429A616B086E300ED323A /* Build configuration list for PBXNativeTarget "JATemplateMalignFuzzer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1AD429A716B086E300ED323A /* Debug */,
+				1AD429A816B086E300ED323A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
