@@ -24,9 +24,7 @@ static void RunTests(void)
 	
 	// Test booleans.
 	NSNumber *boolValue = @NO;
-	NSString *trueString = @"yes";
-	NSString *falseString = @"no";
-	JATLog(@"Boolean: {boolValue|if:true;false}; inverted: {boolValue|not|ifuse:trueString;falseString}", boolValue, trueString, falseString);
+	JATLog(@"Boolean: {boolValue|if:true;false}", boolValue);
 	
 	// Test byte size formatting.
 	NSUInteger byteSize = 65536;

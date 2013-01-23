@@ -158,15 +158,15 @@
 }
 
 
-- (void) testOperatorIfuse
+- (void) testOperatorIfWithNestedTemplates
 {
 	NSNumber *yes = @YES;
 	NSNumber *no = @NO;
 	NSString *yesString = @"yep!";
 	NSString *noString = @"nope!";
-	NSString *expansion = JATExpand(@"{yes|ifuse:yesString;noString} {no|ifuse:yesString;noString}", yes, no, yesString, noString);
+	NSString *expansion = JATExpand(@"{yes|if:{yesString};{noString}} {no|if:{yesString};{noString}}", yes, no, yesString, noString);
 	
-	STAssertEqualObjects(expansion, @"yep! nope!", @"ifuse: operator failed.");
+	STAssertEqualObjects(expansion, @"yep! nope!", @"if: operator failed.");
 }
 
 

@@ -280,45 +280,13 @@ enum
 		OpWarn(@"Template operator if: used with no argument.");
 	}
 	
-	NSArray *components = [argument componentsSeparatedByString:@";"];
+	NSArray *components = JATSplitArgumentString(argument, ';');
 	
-	id trueValue = components[0], falseValue = @"";
+	NSString *trueValue = components[0], *falseValue = @"";
 	if (components.count > 1)  falseValue = components[1];
 	
-	return value.boolValue ? trueValue : falseValue;
-}
-
-
-- (id) jatemplatePerform_ifuse_withArgument:(NSString *)argument variables:(NSDictionary *)variables
-{
-	NSNumber *value = [self jatemplateCoerceToBoolean];
-	if (value == nil)  return nil;
-	
-	if (argument == nil)
-	{
-		OpWarn(@"Template operator ifuse: used with no argument.");
-	}
-	
-	NSArray *components = [argument componentsSeparatedByString:@";"];
-	
-	NSString *trueKey = components[0], *falseKey = nil;
-	if (components.count > 1)  falseKey = components[1];
-	
-	NSString *selectedKey = value.boolValue ? trueKey : falseKey;
-	
-	if (selectedKey != nil)
-	{
-		NSString *result = variables[selectedKey];
-		if (result == nil)
-		{
-			OpWarn(@"Template substitution uses unknown key \"{selectedKey}\" in ifuse: operator.", selectedKey);
-		}
-		return result;
-	}
-	else
-	{
-		return @"";
-	}
+	NSString *selected = value.boolValue ? trueValue : falseValue;
+	return JATExpandLiteralWithParameters(selected, variables);
 }
 
 

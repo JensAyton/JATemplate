@@ -220,14 +220,10 @@ SOFTWARE.
 		
 		if:
 		Takes one or two arguments separated by semicolons. If the value, as a
-		boolean, is true, returns the first argument. Otherwise returns the
-		second argument (or the empty string if none).
+		boolean, is true, selects the first argument. Otherwise selects the
+		second argument (or the empty string if none). The selected argument is
+		then expanded as a template.
 		Example: "The flag is {flag|if:set;not set}."
-		
-		ifuse:
-		Like if:, but treats its arguments as parameter keys:
-		Example: "If the flag is true, \"{flag|ifuse:trueString:falseString}\"
-		is {trueString}, otherwise it's {falseString}."
 		
 		uppercase
 		Locale-sensitive conversion to uppercase using uppercaseStringWithLocale:.
