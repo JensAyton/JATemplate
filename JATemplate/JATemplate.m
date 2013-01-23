@@ -103,7 +103,7 @@ NSString *JAT_DoExpandTemplateUsingMacroKeysAndValues(NSString *template, NSStri
 {
 	NSCParameterAssert(template != nil);
 	NSCParameterAssert(names != nil);
-	NSCParameterAssert(objects != NULL);
+	NSCParameterAssert(objects != NULL || expectedCount == 0);
 	
 	/*	Non-optimization: it's tempting to short-circuit here if there are no
 		parameters, but that breaks if there are {{/}} escapes.
