@@ -246,7 +246,7 @@ static NSDictionary *JATBuildParameterDictionary(NSString *names, JATParameterAr
 	for (NSString *key in parameterNames)
 	{
 		keys[mapIndex] = key;
-		NSInteger elementIndex = [parameterNames[key] integerValue];
+		NSUInteger elementIndex = [parameterNames[key] unsignedIntegerValue];
 		NSCAssert(elementIndex < expectedCount, @"JATemplateParseNames produced an out-of-range index.");
 		values[mapIndex] = values[elementIndex];
 		mapIndex++;

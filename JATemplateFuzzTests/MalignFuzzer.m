@@ -4,7 +4,7 @@
 
 
 // If set, prints the first 25 templates and then exits.
-#define DUMP_EXAMPLE_TEMPLATES	1
+#define DUMP_EXAMPLE_TEMPLATES	0
 
 
 static NSString *CorruptTemplate(NSString *template);
