@@ -442,9 +442,9 @@ enum
 {
 	id value = self;
 	if (self == [NSNull null])  return [self jatemplateCoerceToString];
-	Class class = [value class];
+	id class = [value class];
 	
-	return JATExpand(@"<{class}: {value|pointer}>", (id <JATCoercable>)class, value);
+	return JATExpand(@"<{class}: {value|pointer}>", class, value);
 }
 
 
