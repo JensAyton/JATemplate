@@ -1,16 +1,12 @@
-//
-//  main.m
-//  JATemplateBenignFuzzer
-//
-//  Created by Jens Ayton on 2013-01-23.
-//  Copyright (c) 2013 Jens Ayton. All rights reserved.
-//
-
 #import <Foundation/Foundation.h>
 #import "JATemplate.h"
 #import "JATConstructFuzzTest.h"
 
 NSString * const kJATBenignFuzzerWarningException = @"se.ayton.jens.jatemplate warning occurred";
+
+
+// If set, prints the first 25 templates and then exits.
+#define DUMP_EXAMPLE_TEMPLATES	0
 
 
 static void ReportException(NSException *ex, NSString *template, NSDictionary *parameters);
@@ -21,6 +17,8 @@ static void ReportException(NSException *ex, NSString *template, NSDictionary *p
 
 int main(int argc, const char * argv[])
 {
+	srandomdev();
+	
 	@autoreleasepool
 	{
 		Print(@"Starting fuzz testing...\n");
@@ -31,31 +29,39 @@ int main(int argc, const char * argv[])
 		{
 			for (;;)
 			{
-				count++;
-				
-				NSString *template;
-				NSDictionary *parameters;
-				bool OK = JATConstructFuzzTest(&template, &parameters);
-				
-				@try
+				@autoreleasepool
 				{
-					(void)JATExpandLiteralWithParameters(template, parameters);
-				}
-				@catch (NSException *ex)
-				{
-					ReportException(ex, template, parameters);
-					return EXIT_FAILURE;
-				}
-				
-				if (!OK)
-				{
-					EPrint(@"Failed to construct test case number {count}.", @(count));
-					return EXIT_FAILURE;
-				}
-				
-				if ((count % 1000000) == 0)
-				{
-					Print(@"{count} happy customers served.\n", @(count));
+					count++;
+					
+					NSString *template;
+					NSDictionary *parameters;
+					bool OK = JATConstructFuzzTest(&template, &parameters);
+					
+					#if DUMP_EXAMPLE_TEMPLATES
+						Print(@"{template}\n\n", template);
+						if (count == 25)  exit(0);
+					#endif
+					
+					@try
+					{
+						(void)JATExpandLiteralWithParameters(template, parameters);
+					}
+					@catch (NSException *ex)
+					{
+						ReportException(ex, template, parameters);
+						return EXIT_FAILURE;
+					}
+					
+					if (!OK)
+					{
+						EPrint(@"Failed to construct test case number {count}.", @(count));
+						return EXIT_FAILURE;
+					}
+					
+					if ((count % 1000) == 0)
+					{
+						Print(@"{count} happy customers served.\n", @(count));
+					}
 				}
 			}
 		}
