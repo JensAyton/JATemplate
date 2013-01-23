@@ -167,8 +167,7 @@ enum
 		return nil;
 	}
 	
-	// FIXME: needs better parsing to allow nested templates to contain semicolons.
-	NSArray *components = [argument componentsSeparatedByString:@";"];
+	NSArray *components = JATSplitArgumentString(argument, ';');
 	
 	NSInteger ruleID = [components[0] integerValue];
 	PluralizationRule rule = NULL;
@@ -207,8 +206,7 @@ enum
 		return nil;
 	}
 	
-	// FIXME: needs better parsing to allow nested templates to contain semicolons.
-	NSArray *components = [argument componentsSeparatedByString:@";"];
+	NSArray *components = JATSplitArgumentString(argument, ';');
 	
 	if (components.count == 1)
 	{
@@ -241,8 +239,7 @@ enum
 		return nil;
 	}
 	
-	// FIXME: needs better parsing to allow nested templates to contain semicolons.
-	NSArray *components = [argument componentsSeparatedByString:@";"];
+	NSArray *components = JATSplitArgumentString(argument, ';');
 	
 	if (components.count == 1)
 	{

@@ -357,6 +357,20 @@ FOUNDATION_EXTERN NSString *JATExpandFromTableInBundleWithParameters(NSString *t
 @end
 
 
+/*	NSArray *JATSplitArgumentString(NSString *string, unichar separator)
+	
+	Split a string into components separated by <separator>, but ignore
+	<separator>s inside of braces. (No other balanced punctuation pairs are
+	supported.)
+	
+	For consistency, operators should use ';' as the separator unless there is
+	a pressing reason not to.
+	
+	If an unbalanced } is found, a warning will be logged.
+*/
+NSArray *JATSplitArgumentString(NSString *string, unichar separator);
+
+
 @protocol JATCoercable <NSObject>
 
 /*	- (NSNumber *) jatemplateCoerceToString

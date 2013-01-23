@@ -75,6 +75,8 @@ enum
 static NSDictionary *JATBuildParameterDictionary(NSString *names, JATParameterArray objects, NSUInteger expectedCount);
 static NSString *JATExpandInternal(const unichar *stringBuffer, NSUInteger length, NSDictionary *parameters);
 
+static NSArray *JATSplitArgumentStringInternal(NSString *string, unichar separator, const unichar *stringBuffer, NSUInteger length);
+
 static bool IsIdentifierStartChar(unichar value);
 static bool IsIdentifierChar(unichar value);
 static bool IsPositionalChar(unichar value);
@@ -174,6 +176,43 @@ NSString *JATExpandFromTableInBundleWithParameters(NSString *template, NSString 
 	template = [bundle localizedStringForKey:template value:@"" table:localizationTable];
 	
 	return JATExpandLiteralWithParameters(template, parameters);
+}
+
+
+NSArray *JATSplitArgumentString(NSString *string, unichar separator)
+{
+	/*
+		Extract template string into a buffer on the stack or, if it's big,
+		a malloced buffer.
+	*/
+	NSUInteger length = string.length;
+	if (string.length == 0)  return @[@""];
+	NSUInteger bufferSize = length;
+	bool useHeapAllocation = length > kStackStringLimit;
+	if (useHeapAllocation)  bufferSize = 1;
+	unichar *stringBuffer = NULL;
+	unichar stackBuffer[bufferSize];
+	if (useHeapAllocation)
+	{
+		stringBuffer = malloc(sizeof *stringBuffer * bufferSize);
+		if (stringBuffer == NULL)  return nil;
+	}
+	else
+	{
+		stringBuffer = stackBuffer;
+	}
+	
+	@try
+	{
+		[string getCharacters:stringBuffer];
+		
+		// Do the work.
+		return JATSplitArgumentStringInternal(string, separator, stringBuffer, length);
+	}
+	@finally
+	{
+		if (useHeapAllocation)  free(stringBuffer);
+	}	
 }
 
 
@@ -339,7 +378,7 @@ static NSString *JATExpandOneSimpleSub(const unichar characters[], NSUInteger le
 static NSString *JATExpandOnePositionalSub(const unichar characters[], NSUInteger length, NSUInteger keyStart, NSUInteger keyLength, NSDictionary *parameters);
 static NSString *JATExpandOneFancyPantsSub(const unichar characters[], NSUInteger length, NSUInteger keyStart, NSUInteger keyLength, NSDictionary *parameters);
 
-static void JATemplateAppendCharacters(NSMutableString *buffer, const unichar characters[], NSUInteger length, NSUInteger start, NSUInteger end);
+static void JATAppendCharacters(NSMutableString *buffer, const unichar characters[], NSUInteger length, NSUInteger start, NSUInteger end);
 
 
 /*
@@ -388,7 +427,7 @@ static NSString *JATExpandInternal(const unichar characters[], NSUInteger length
 			NSCAssert(replaceLength != 0, @"Internal error in JATemplate: substitution length is zero, which will lead to an infinite loop.");
 			
 			// Write the pending literal segment to result.
-			JATemplateAppendCharacters(result, characters, length, copyRangeStart, idx);
+			JATAppendCharacters(result, characters, length, copyRangeStart, idx);
 			[result appendString:replacement];
 			
 			// Skip over replaced part and start a new literal segment.
@@ -398,7 +437,7 @@ static NSString *JATExpandInternal(const unichar characters[], NSUInteger length
 	}
 	
 	// Append any trailing literal segment.
-	JATemplateAppendCharacters(result, characters, length, copyRangeStart, length);
+	JATAppendCharacters(result, characters, length, copyRangeStart, length);
 	
 	return result;
 }
@@ -616,7 +655,47 @@ static NSString *JATExpandOneFancyPantsSub(const unichar characters[], NSUIntege
 
 #pragma mark - Utilities
 
-static void JATemplateAppendCharacters(NSMutableString *buffer, const unichar characters[], NSUInteger length, NSUInteger start, NSUInteger end)
+static NSArray *JATSplitArgumentStringInternal(NSString *string, unichar separator, const unichar *stringBuffer, NSUInteger length)
+{
+	NSUInteger spanStart = 0;
+	NSMutableArray *result = [NSMutableArray array];
+	NSUInteger balanceCount = 0;
+	
+	for (NSUInteger cursor = 0; cursor < length; cursor++)
+	{
+		unichar curr = stringBuffer[cursor];
+		if (curr == '{')  balanceCount++;
+		else if (curr == '}')
+		{
+			if (balanceCount == 0)
+			{
+				JATWarn(NULL, 0, @"Unbalanced brace in template argument string \"{string}\".", string);
+			}
+			else
+			{
+				balanceCount--;
+			}
+		}
+		else if (balanceCount == 0 && curr == separator)
+		{
+			NSRange range = { spanStart, cursor - spanStart };
+			NSString *subString = [string substringWithRange:range];
+			[result addObject:subString];
+			spanStart = cursor + 1;
+		}
+	}
+	
+	if (spanStart == 0)  return @[string];	// No separators found.
+	
+	NSRange range = { spanStart, length - spanStart };
+	NSString *subString = [string substringWithRange:range];
+	[result addObject:subString];
+	
+	return result;
+}
+
+
+static void JATAppendCharacters(NSMutableString *buffer, const unichar characters[], NSUInteger length, NSUInteger start, NSUInteger end)
 {
 	NSCParameterAssert(buffer != nil);
 	NSCParameterAssert(characters != NULL);

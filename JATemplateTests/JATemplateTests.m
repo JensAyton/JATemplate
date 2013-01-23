@@ -158,6 +158,48 @@
 	STAssertEqualObjects(expansion, @"frob and banana", @"JATAppend() failed.");
 }
 
+
+- (void) testSplitBasic
+{
+	NSArray *split = JATSplitArgumentString(@"foo;bar", ';');
+	STAssertEqualObjects(split, (@[@"foo", @"bar"]), @"JATSplitArgumentString() failed in base case.");
+}
+
+
+- (void) testSplitTrailingEmpty
+{
+	NSArray *split = JATSplitArgumentString(@"foo;bar;", ';');
+	STAssertEqualObjects(split, (@[@"foo", @"bar", @""]), @"JATSplitArgumentString() failed in trailing empty case.");
+}
+
+
+- (void) testSplitTrailingSingle
+{
+	NSArray *split = JATSplitArgumentString(@"foo;bar;x", ';');
+	STAssertEqualObjects(split, (@[@"foo", @"bar", @"x"]), @"JATSplitArgumentString() failed in trailing single case.");
+}
+
+
+- (void) testSplitLeadingEmpty
+{
+	NSArray *split = JATSplitArgumentString(@";foo;bar", ';');
+	STAssertEqualObjects(split, (@[@"", @"foo", @"bar"]), @"JATSplitArgumentString() failed in leading empty case.");
+}
+
+
+- (void) testSplitNested
+{
+	NSArray *split = JATSplitArgumentString(@"foo;{baz;{flerp}};bar", ';');
+	STAssertEqualObjects(split, (@[@"foo", @"{baz;{flerp}}", @"bar"]), @"JATSplitArgumentString() failed in nested braces case.");
+}
+
+
+- (void) testSplitEmpty
+{
+	NSArray *split = JATSplitArgumentString(@"", ';');
+	STAssertEqualObjects(split, (@[@""]), @"JATSplitArgumentString() failed in empty case.");
+}
+
 @end
 
 

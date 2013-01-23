@@ -2,9 +2,7 @@
 #import "JATemplate.h"
 
 
-@implementation JATAppDelegate
-
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification
+static void RunTests(void)
 {
 	// Test that it works with no parameters.
 	JATLog(@"Trivial string");
@@ -59,7 +57,14 @@
 	// Test debugdesc.
 	NSArray *array = @[@"foo", @36, @YES];
 	JATLog(@"Debug description: {array|debugdesc}", array);
-	
+}
+
+
+@implementation JATAppDelegate
+
+- (void)applicationDidFinishLaunching:(NSNotification *)aNotification
+{
+	RunTests();	
 	[NSApp terminate:nil];
 }
 
