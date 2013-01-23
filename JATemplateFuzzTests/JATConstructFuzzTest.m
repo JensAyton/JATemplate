@@ -142,13 +142,18 @@ static NSString *GenerateTemplateExpression(NSArray *paramKeys)
 {
 	NSString *result;
 	
-	if (random() % 2 == 0)
+	NSUInteger select = random() % 3;
+	if (select == 0)
 	{
 		result = GenerateRandomText();
 	}
-	else
+	else if (select == 1)
 	{
 		result = GenerateRandomExpansion(paramKeys);
+	}
+	else
+	{
+		result = @"";
 	}
 	
 	if (random() % 3 != 0)
