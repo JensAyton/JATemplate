@@ -272,7 +272,7 @@ SOFTWARE.
 
 
 @protocol JATCoercable;
-typedef __strong id<JATCoercable> JATParameterArray[];
+typedef __autoreleasing id<JATCoercable> JATParameterArray[];
 
 
 #define JATExpand(TEMPLATE, ...) \
