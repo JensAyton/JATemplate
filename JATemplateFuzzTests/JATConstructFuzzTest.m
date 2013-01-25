@@ -241,10 +241,13 @@ enum
 
 static NSString *GenerateRandomOperator(NSArray *paramKeys)
 {
-	OperatorDesc *operator = &sOperators[random() % kOperatorCount];
-	NSString *result = operator->construct(operator->name, paramKeys);
-	JATCAssert(result != nil, @"Fuzzer failure: operator test case constructor for \"{0}\" failed.", @(operator->name));
-	return result;
+	@autoreleasepool
+	{
+		OperatorDesc *operator = &sOperators[random() % kOperatorCount];
+		NSString *result = operator->construct(operator->name, paramKeys);
+		JATCAssert(result != nil, @"Fuzzer failure: operator test case constructor for \"{0}\" failed.", @(operator->name));
+		return result;
+	}
 }
 
 

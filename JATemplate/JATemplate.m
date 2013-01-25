@@ -394,60 +394,63 @@ static NSString *JATExpandInternal(const unichar characters[], NSUInteger length
 	// Nothing to expand in an empty string, and the length-1 thing below would be trouble.
 	if (length == 0)  return @"";
 	
-	NSMutableString *result;
-	
-	/*	Beginning of current range of non-special characters. When we encounter
-		a substitution, we'll be copying from here forward.
-	*/
-	NSUInteger copyRangeStart = 0;
-	
-	/*	The iteration limit is length - 1 because every valid substitution is at
-		least 3 characters long. This way, characters[idx + 1] is always valid.
-	*/
-	for (NSUInteger idx = 0; idx < length - 1; idx++)
+	@autoreleasepool
 	{
-		NSString *replacement = nil;
-		NSUInteger replaceLength = 0;
-		unichar thisChar = characters[idx];
+		NSMutableString *result;
 		
-		if (thisChar == '{')
-		{
-			replacement = JATExpandOneSub(characters, length, idx, &replaceLength, parameters);
-		}
-		else if (thisChar == '}')
-		{
-			// Detect }} as escape code for }
-			replaceLength = 2;
-			replacement = @"}";
-		}
-		// Other types of replacement can easily be chained here.
+		/*	Beginning of current range of non-special characters. When we encounter
+			a substitution, we'll be copying from here forward.
+		*/
+		NSUInteger copyRangeStart = 0;
 		
-		if (replacement != nil)
+		/*	The iteration limit is length - 1 because every valid substitution is at
+			least 3 characters long. This way, characters[idx + 1] is always valid.
+		*/
+		for (NSUInteger idx = 0; idx < length - 1; idx++)
 		{
-			NSCAssert(replaceLength != 0, @"Internal bug in JATemplate: substitution length is zero, which will lead to an infinite loop.");
+			NSString *replacement = nil;
+			NSUInteger replaceLength = 0;
+			unichar thisChar = characters[idx];
 			
-			if (result == nil)  result = [NSMutableString string];
+			if (thisChar == '{')
+			{
+				replacement = JATExpandOneSub(characters, length, idx, &replaceLength, parameters);
+			}
+			else if (thisChar == '}')
+			{
+				// Detect }} as escape code for }
+				replaceLength = 2;
+				replacement = @"}";
+			}
+			// Other types of replacement can easily be chained here.
 			
-			// Write the pending literal segment to result.
-			JATAppendCharacters(result, characters, length, copyRangeStart, idx);
-			[result appendString:replacement];
-			
-			// Skip over replaced part and start a new literal segment.
-			idx += replaceLength - 1;
-			copyRangeStart = idx + 1;
+			if (replacement != nil)
+			{
+				NSCAssert(replaceLength != 0, @"Internal bug in JATemplate: substitution length is zero, which will lead to an infinite loop.");
+				
+				if (result == nil)  result = [NSMutableString string];
+				
+				// Write the pending literal segment to result.
+				JATAppendCharacters(result, characters, length, copyRangeStart, idx);
+				[result appendString:replacement];
+				
+				// Skip over replaced part and start a new literal segment.
+				idx += replaceLength - 1;
+				copyRangeStart = idx + 1;
+			}
 		}
-	}
-	
-	if (copyRangeStart == 0)
-	{
-		// No substitutions made.
-		return template;
-	}
-	else
-	{
-		// Append any trailing literal segment.
-		JATAppendCharacters(result, characters, length, copyRangeStart, length);
-		return result;
+		
+		if (copyRangeStart == 0)
+		{
+			// No substitutions made.
+			return template;
+		}
+		else
+		{
+			// Append any trailing literal segment.
+			JATAppendCharacters(result, characters, length, copyRangeStart, length);
+			return result;
+		}
 	}
 }
 
@@ -497,17 +500,20 @@ static NSString *JATExpandOneSub(const unichar characters[], NSUInteger length, 
 		return nil;
 	}
 	
-	if (isIdentifier)
+	@autoreleasepool
 	{
-		return JATExpandOneSimpleSub(characters, length, keyStart, keyLength, parameters);
-	}
-	else if (isPositional)
-	{
-		return JATExpandOnePositionalSub(characters, length, keyStart, keyLength, parameters);
-	}
-	else
-	{
-		return JATExpandOneFancyPantsSub(characters, length, keyStart, keyLength, parameters);
+		if (isIdentifier)
+		{
+			return JATExpandOneSimpleSub(characters, length, keyStart, keyLength, parameters);
+		}
+		else if (isPositional)
+		{
+			return JATExpandOnePositionalSub(characters, length, keyStart, keyLength, parameters);
+		}
+		else
+		{
+			return JATExpandOneFancyPantsSub(characters, length, keyStart, keyLength, parameters);
+		}
 	}
 }
 
