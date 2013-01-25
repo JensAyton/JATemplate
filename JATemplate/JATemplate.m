@@ -73,7 +73,7 @@ enum
 
 
 static NSDictionary *JATBuildParameterDictionary(NSString *names, JATParameterArray objects, NSUInteger expectedCount);
-static NSString *JATExpandInternal(const unichar *stringBuffer, NSUInteger length, NSDictionary *parameters);
+static NSString *JATExpandInternal(const unichar *stringBuffer, NSUInteger length, NSDictionary *parameters, NSString *template);
 
 static NSArray *JATSplitArgumentStringInternal(NSString *string, unichar separator, const unichar *stringBuffer, NSUInteger length);
 
@@ -160,7 +160,7 @@ NSString *JATExpandLiteralWithParameters(NSString *template, NSDictionary *param
 		[template getCharacters:stringBuffer];
 		
 		// Do the work.
-		return JATExpandInternal(stringBuffer, length, parameters);
+		return JATExpandInternal(stringBuffer, length, parameters, template);
 	}
 	@finally
 	{
@@ -382,19 +382,19 @@ static void JATAppendCharacters(NSMutableString *buffer, const unichar character
 
 
 /*
-	JATExpandInternal(characters, length, parameters)
+	JATExpandInternal(characters, length, parameters, template)
 	
 	Parse a template string and substitute the parameters. In other words, do
 	the actual work after the faffing about parsing names and so forth.
 */
-static NSString *JATExpandInternal(const unichar characters[], NSUInteger length, NSDictionary *parameters)
+static NSString *JATExpandInternal(const unichar characters[], NSUInteger length, NSDictionary *parameters, NSString *template)
 {
 	NSCParameterAssert(characters != NULL);
 	
 	// Nothing to expand in an empty string, and the length-1 thing below would be trouble.
 	if (length == 0)  return @"";
 	
-	NSMutableString *result = [NSMutableString string];
+	NSMutableString *result;
 	
 	/*	Beginning of current range of non-special characters. When we encounter
 		a substitution, we'll be copying from here forward.
@@ -424,7 +424,9 @@ static NSString *JATExpandInternal(const unichar characters[], NSUInteger length
 		
 		if (replacement != nil)
 		{
-			NSCAssert(replaceLength != 0, @"Internal error in JATemplate: substitution length is zero, which will lead to an infinite loop.");
+			NSCAssert(replaceLength != 0, @"Internal bug in JATemplate: substitution length is zero, which will lead to an infinite loop.");
+			
+			if (result == nil)  result = [NSMutableString string];
 			
 			// Write the pending literal segment to result.
 			JATAppendCharacters(result, characters, length, copyRangeStart, idx);
@@ -436,10 +438,17 @@ static NSString *JATExpandInternal(const unichar characters[], NSUInteger length
 		}
 	}
 	
-	// Append any trailing literal segment.
-	JATAppendCharacters(result, characters, length, copyRangeStart, length);
-	
-	return result;
+	if (copyRangeStart == 0)
+	{
+		// No substitutions made.
+		return template;
+	}
+	else
+	{
+		// Append any trailing literal segment.
+		JATAppendCharacters(result, characters, length, copyRangeStart, length);
+		return result;
+	}
 }
 
 
