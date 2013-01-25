@@ -225,6 +225,13 @@ SOFTWARE.
 		then expanded as a template.
 		Example: "The flag is {flag|if:set;not set}."
 		
+		select:
+		Takes any number of arguments separated by semicolons. The value is
+		coerced to a number and truncated. The corresponding argument is selected
+		(and expanded). Arguments are numbered from zero; if the value is out
+		of range, the last item is used.
+		Example: "Today is {weekDay|select:Mon;Tues;Wednes;Thurs;Fri;Satur;Sun}day."
+		
 		uppercase
 		Locale-sensitive conversion to uppercase using uppercaseStringWithLocale:.
 		

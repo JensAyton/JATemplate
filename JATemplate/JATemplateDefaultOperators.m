@@ -278,6 +278,7 @@ enum
 	if (argument == nil)
 	{
 		OpWarn(@"Template operator if: used with no argument.");
+		return nil;
 	}
 	
 	NSArray *components = JATSplitArgumentString(argument, ';');
@@ -286,6 +287,27 @@ enum
 	if (components.count > 1)  falseValue = components[1];
 	
 	NSString *selected = value.boolValue ? trueValue : falseValue;
+	return JATExpandLiteralWithParameters(selected, variables);
+}
+
+
+- (id) jatemplatePerform_select_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+{
+	NSNumber *value = [self jatemplateCoerceToNumber];
+	if (value == nil)  return nil;
+	
+	if (argument == nil)
+	{
+		OpWarn(@"Template operator select: used with no argument.");
+		return nil;
+	}
+	
+	NSArray *components = JATSplitArgumentString(argument, ';');
+	NSUInteger index = [value unsignedIntegerValue];
+	NSUInteger max = components.count - 1;
+	if (index > max)  index = max;
+	
+	NSString *selected = components[index];
 	return JATExpandLiteralWithParameters(selected, variables);
 }
 

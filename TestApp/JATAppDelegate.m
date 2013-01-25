@@ -37,6 +37,12 @@ static void RunTests(void)
 	unsigned yourGooseCount = 1;
 	JATLog(@"I have {myKittenCount|num:spellout} kitten{myKittenCount|plural:s}. You have {yourKittenCount|num:spellout} kitten{yourKittenCount|plural:s}. I have {myGooseCount|num:spellout} {myGooseCount|plural:goose;geese}. You have {yourGooseCount|num:spellout} {yourGooseCount|plural:goose;geese}.", @(myKittenCount), @(myGooseCount), @(yourKittenCount), @(yourGooseCount));
 	
+	// Test select: operator.
+	NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+	NSDateComponents *dateComponents = [calendar components:NSWeekdayCalendarUnit fromDate:NSDate.date];
+	NSUInteger weekDay = dateComponents.weekday - 1;
+	JATLog(@"Today is {weekDay|select:Sunday;Monday;Tuesday;Wednesday;Thursday;Friday;Saturday;Blarnsday}.", @(weekDay));
+	
 	// Test fold: operator.
 	NSString *blargh = @"BläÄ";
 	JATLog(@"Fold operator: {blargh|fold:case,diacritics}", blargh);

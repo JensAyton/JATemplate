@@ -144,7 +144,6 @@
 	NSString *expansion = JATExpand(@"{yes} {no} {yes|not} {no|not}", yes, no);
 	
 	STAssertEqualObjects(expansion, @"1 0 0 1", @"not operator failed.");
-	
 }
 
 
@@ -155,6 +154,15 @@
 	NSString *expansion = JATExpand(@"{yes|if:yep!;nope!} {no|if:yep!;nope!}", yes, no);
 	
 	STAssertEqualObjects(expansion, @"yep! nope!", @"if: operator failed.");
+}
+
+
+- (void) testOperatorSelect
+{
+	NSUInteger weekDay = 4;
+	NSString *expansion = JATExpand(@"Gotta get down on {weekDay|select:Monday;Tuesday;Wednesday;Thursday;Friday;Saturday;Sunday;Blarnsday}", @(weekDay));
+	
+	STAssertEqualObjects(expansion, @"Gotta get down on Friday", @"select: operator failed.");
 }
 
 
