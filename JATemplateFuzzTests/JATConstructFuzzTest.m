@@ -207,6 +207,7 @@ static NSString *BasicOperatorTestConstruct(const char *name, NSArray *paramKeys
 static NSString *NumOperatorTestConstruct(const char *name, NSArray *paramKeys);
 static NSString *PlurOperatorTestConstruct(const char *name, NSArray *paramKeys);
 static NSString *PluralAndIfOperatorTestConstruct(const char *name, NSArray *paramKeys);
+static NSString *SelectOperatorTestConstruct(const char *name, NSArray *paramKeys);
 static NSString *FoldOperatorTestConstruct(const char *name, NSArray *paramKeys);
 
 
@@ -219,6 +220,7 @@ static OperatorDesc sOperators[] =
 	{ "pluraz:", PluralAndIfOperatorTestConstruct },
 	{ "not", BasicOperatorTestConstruct },
 	{ "if:", PluralAndIfOperatorTestConstruct },
+	{ "select:", SelectOperatorTestConstruct },
 	{ "uppercase", BasicOperatorTestConstruct },
 	{ "lowercase", BasicOperatorTestConstruct },
 	{ "capitalize", BasicOperatorTestConstruct },
@@ -345,6 +347,18 @@ static NSString *PluralAndIfOperatorTestConstruct(const char *name, NSArray *par
 	{
 		return JATExpand(@"{name}{first};{second}", @(name), first, second);
 	}
+}
+
+
+static NSString *SelectOperatorTestConstruct(const char *name, NSArray *paramKeys)
+{
+	NSMutableArray *elements = [NSMutableArray array];
+	do
+	{
+		[elements addObject:GenerateTemplateExpression(paramKeys)];
+	} while (random() % 5 != 0);
+	
+	return JATExpand(@"select:{0}", [elements componentsJoinedByString:@";"]);
 }
 
 
