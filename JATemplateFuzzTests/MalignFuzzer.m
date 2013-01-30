@@ -30,8 +30,6 @@ int main(int argc, const char * argv[])
 			{
 				@autoreleasepool
 				{
-					count++;
-					
 					NSString *template;
 					NSDictionary *parameters;
 					bool OK = JATConstructFuzzTest(&template, &parameters);
@@ -59,6 +57,7 @@ int main(int argc, const char * argv[])
 						return EXIT_FAILURE;
 					}
 					
+					count++;
 					if ((count % 1000) == 0)
 					{
 						Print(@"{count} grumpy customers served.\n", @(count));
@@ -80,7 +79,13 @@ int main(int argc, const char * argv[])
 
 static NSString *RandomCharacter(void)
 {
-	unichar character = random() % (256 - 32) + 32;	
+	unichar character;
+	do
+	{
+		character = random() % (256 - 32) + 32;
+	}
+	while (character == 0xA4);	// Exclude ¤ to avoid a crashing OS bug.
+	
 	return [NSString stringWithCharacters:&character length:1];
 }
 
