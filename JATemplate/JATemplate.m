@@ -77,6 +77,8 @@ static NSString *JATExpandInternal(const unichar *stringBuffer, NSUInteger lengt
 
 static NSArray *JATSplitArgumentStringInternal(NSString *string, unichar separator, const unichar *stringBuffer, NSUInteger length);
 
+static void WithCharacters(NSString *string, void(^block)(const unichar characters[], NSUInteger length));
+
 static bool IsIdentifierStartChar(unichar value);
 static bool IsIdentifierChar(unichar value);
 static bool IsPositionalChar(unichar value);
@@ -135,37 +137,12 @@ NSString *JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues(NSString *templ
 
 NSString *JATExpandLiteralWithParameters(NSString *template, NSDictionary *parameters)
 {
-	/*
-		Extract template string into a buffer on the stack or, if it's big,
-		a malloced buffer.
-	*/
-	NSUInteger length = template.length;
-	NSUInteger stackBufferSize = length;
-	bool useHeapAllocation = length > kStackStringLimit;
-	if (useHeapAllocation)  stackBufferSize = 1;
-	unichar *stringBuffer = NULL;
-	unichar stackBuffer[stackBufferSize];
-	if (useHeapAllocation)
+	__block NSString *result;
+	WithCharacters(template, ^(const unichar characters[], NSUInteger length)
 	{
-		stringBuffer = malloc(sizeof *stringBuffer * length);
-		if (stringBuffer == NULL)  return nil;
-	}
-	else
-	{
-		stringBuffer = stackBuffer;
-	}
-	
-	@try
-	{
-		[template getCharacters:stringBuffer];
-		
-		// Do the work.
-		return JATExpandInternal(stringBuffer, length, parameters, template);
-	}
-	@finally
-	{
-		if (useHeapAllocation)  free(stringBuffer);
-	}
+		result = JATExpandInternal(characters, length, parameters, template);
+	});
+	return result;
 }
 
 
@@ -181,38 +158,12 @@ NSString *JATExpandFromTableInBundleWithParameters(NSString *template, NSString 
 
 NSArray *JATSplitArgumentString(NSString *string, unichar separator)
 {
-	/*
-		Extract template string into a buffer on the stack or, if it's big,
-		a malloced buffer.
-	*/
-	NSUInteger length = string.length;
-	if (string.length == 0)  return @[@""];
-	NSUInteger stackBufferSize = length;
-	bool useHeapAllocation = length > kStackStringLimit;
-	if (useHeapAllocation)  stackBufferSize = 1;
-	unichar *stringBuffer = NULL;
-	unichar stackBuffer[stackBufferSize];
-	if (useHeapAllocation)
+	__block NSArray *result;
+	WithCharacters(string, ^(const unichar characters[], NSUInteger length)
 	{
-		stringBuffer = malloc(sizeof *stringBuffer * length);
-		if (stringBuffer == NULL)  return nil;
-	}
-	else
-	{
-		stringBuffer = stackBuffer;
-	}
-	
-	@try
-	{
-		[string getCharacters:stringBuffer];
-		
-		// Do the work.
-		return JATSplitArgumentStringInternal(string, separator, stringBuffer, length);
-	}
-	@finally
-	{
-		if (useHeapAllocation)  free(stringBuffer);
-	}	
+		result = JATSplitArgumentStringInternal(string, separator, characters, length);
+	});
+	return result;	
 }
 
 
@@ -720,6 +671,43 @@ static void JATAppendCharacters(NSMutableString *buffer, const unichar character
 	if (start == end)  return;
 	
 	CFStringAppendCharacters((__bridge CFMutableStringRef)buffer, characters + start, end - start);
+}
+
+
+/*
+	WithCharacters()
+	
+	Extract an array of unichars from an NSString and call a block to process
+	them. The buffer may not be mutated and should be assumed to be freed after
+	the block returns.
+*/
+static void WithCharacters(NSString *string, void(^block)(const unichar characters[], NSUInteger length))
+{
+	NSUInteger length = string.length;
+	NSUInteger stackBufferSize = length;
+	bool useHeapAllocation = length > kStackStringLimit;
+	if (useHeapAllocation)  stackBufferSize = 1;
+	unichar *stringBuffer = NULL;
+	unichar stackBuffer[stackBufferSize];
+	if (useHeapAllocation)
+	{
+		stringBuffer = malloc(sizeof *stringBuffer * length);
+		if (stringBuffer == NULL)  return;
+	}
+	else
+	{
+		stringBuffer = stackBuffer;
+	}
+	
+	@try
+	{
+		[string getCharacters:stringBuffer];
+		return block(stringBuffer, length);
+	}
+	@finally
+	{
+		if (useHeapAllocation)  free(stringBuffer);
+	}
 }
 
 
