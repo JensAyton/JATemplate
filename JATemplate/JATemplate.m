@@ -683,14 +683,27 @@ static void JATAppendCharacters(NSMutableString *buffer, const unichar character
 */
 static void WithCharacters(NSString *string, void(^block)(const unichar characters[], NSUInteger length))
 {
+	NSCAssert(sizeof(unichar) == sizeof(UniChar), @"This is a silly place.");
+	
+	if (string == nil)  return;
 	NSUInteger length = string.length;
+	
+	// Fast case: if the string is internally a single UTF-16 buffer, we can peek.
+	unichar *stringBuffer = (UniChar *)CFStringGetCharactersPtr((__bridge CFStringRef)string);
+	if (stringBuffer != NULL)
+	{
+		block(stringBuffer, length);
+		return;
+	}
+	
+	// If the string is small, convert it to UTF-16 on the stack.
 	NSUInteger stackBufferSize = length;
 	bool useHeapAllocation = length > kStackStringLimit;
 	if (useHeapAllocation)  stackBufferSize = 1;
-	unichar *stringBuffer = NULL;
 	unichar stackBuffer[stackBufferSize];
 	if (useHeapAllocation)
 	{
+		// Otherwise, we need to do it on the heap.
 		stringBuffer = malloc(sizeof *stringBuffer * length);
 		if (stringBuffer == NULL)  return;
 	}
@@ -702,7 +715,7 @@ static void WithCharacters(NSString *string, void(^block)(const unichar characte
 	@try
 	{
 		[string getCharacters:stringBuffer];
-		return block(stringBuffer, length);
+		block(stringBuffer, length);
 	}
 	@finally
 	{
