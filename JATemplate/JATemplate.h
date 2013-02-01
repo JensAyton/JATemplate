@@ -286,6 +286,7 @@ SOFTWARE.
 
 @protocol JATCoercable;
 
+
 /*	Types used to manage our nasty arrays. Names can be __unsafe_unretained
 	because they’ll always be string literals, unless you’re abusing the
 	secret implementation-detail functions. Don’t do that. Use
@@ -297,24 +298,27 @@ typedef __autoreleasing id<JATCoercable> JATParameterArray[];
 
 // These macros convert an argument list (foo bar baz) to a name array {@"foo", @"bar", @"baz", NULL}.
 #define JATEMPLATE_NAMES_FROM_ARGS_ITERATOR(TAIL, ITEM)  @#ITEM, TAIL
-#define JATEMPLATE_NAMES_FROM_ARGS(...)  (JATNameArray){ rx_fold(JATEMPLATE_NAMES_FROM_ARGS_ITERATOR, __VA_ARGS__, NULL) }
+#define JATEMPLATE_NAMES_FROM_ARGS(...)  (JATNameArray){ rx_fold(JATEMPLATE_NAMES_FROM_ARGS_ITERATOR, __VA_ARGS__, nil) }
+
+#define JATEMPLATE_COERCE_PARAMETERS_ITERATOR(TAIL, ITEM)  JATCastParameter(ITEM), TAIL
+#define JATEMPLATE_COERCE_PARAMETERS(...) (JATParameterArray){ rx_fold(JATEMPLATE_COERCE_PARAMETERS_ITERATOR, __VA_ARGS__, nil) }
 
 
 #define JATExpand(TEMPLATE, ...) \
 	JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, nil, nil, \
-	JATEMPLATE_NAMES_FROM_ARGS(__VA_ARGS__), (JATParameterArray){ __VA_ARGS__ }, rx_count(__VA_ARGS__))
+	JATEMPLATE_NAMES_FROM_ARGS(__VA_ARGS__), JATEMPLATE_COERCE_PARAMETERS(__VA_ARGS__), rx_count(__VA_ARGS__))
 
 #define JATExpandLiteral(TEMPLATE, ...) \
 	JAT_DoExpandTemplateUsingMacroKeysAndValues(TEMPLATE, \
-	JATEMPLATE_NAMES_FROM_ARGS(__VA_ARGS__), (JATParameterArray){ __VA_ARGS__ }, rx_count(__VA_ARGS__))
+	JATEMPLATE_NAMES_FROM_ARGS(__VA_ARGS__), JATEMPLATE_COERCE_PARAMETERS(__VA_ARGS__), rx_count(__VA_ARGS__))
 
 #define JATExpandFromTable(TEMPLATE, TABLE, ...) \
 	JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, nil, TABLE, \
-	JATEMPLATE_NAMES_FROM_ARGS(__VA_ARGS__), (JATParameterArray){ __VA_ARGS__ }, rx_count(__VA_ARGS__))
+	JATEMPLATE_NAMES_FROM_ARGS(__VA_ARGS__), JATEMPLATE_COERCE_PARAMETERS(__VA_ARGS__), rx_count(__VA_ARGS__))
 
 #define JATExpandFromTableInBundle(TEMPLATE, TABLE, BUNDLE, ...) \
 	JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, BUNDLE, TABLE, \
-	JATEMPLATE_NAMES_FROM_ARGS(__VA_ARGS__), (JATParameterArray){ __VA_ARGS__ }, rx_count(__VA_ARGS__))
+	JATEMPLATE_NAMES_FROM_ARGS(__VA_ARGS__), JATEMPLATE_COERCE_PARAMETERS(__VA_ARGS__), rx_count(__VA_ARGS__))
 
 #define JATExpandWithParameters(TEMPLATE, PARAMETERS) \
 	JATExpandFromTableInBundleWithParameters(TEMPLATE, nil, nil, PARAMETERS)
@@ -438,6 +442,160 @@ NSArray *JATSplitArgumentString(NSString *string, unichar separator);
 
 @interface NSObject (JATCoercable) <JATCoercable>
 @end
+
+
+/*	Casting handlers
+	
+	These helpers are used to convert non-objects into appropriate object
+	representations for use as template expansions. The default set can be
+	used to pass Objective-C objects, C strings, all built-in number types
+	and a few common structs: {NS|CG}{Point|Size|Rect} and NSRange. (Note that
+	the struct operators are not locale-friendly.)
+	
+	The void case is needed to handle preprocessor semantics when no parameters
+	are passed.
+*/
+#if __cplusplus
+#define JATDefineCast(TYPE) \
+	inline id<JATCoercable> JATCastParameter(TYPE value)
+inline id<JATCoercable> JATCastParameter(void)
+{
+	return nil;
+}
+#else
+#define JATDefineCast(TYPE) \
+	__attribute__((overloadable)) static inline id<JATCoercable> JATCastParameter(TYPE value)
+__attribute__((overloadable)) static inline id<JATCoercable> JATCastParameter(void)
+{
+	return nil;
+}
+#endif
+
+
+JATDefineCast(id<JATCoercable>)
+{
+	return value;
+}
+
+
+JATDefineCast(const char *)
+{
+	return @(value);
+}
+
+
+JATDefineCast(char)
+{
+	return @(value);
+}
+
+
+JATDefineCast(signed char)
+{
+	return @(value);
+}
+
+
+JATDefineCast(unsigned char)
+{
+	return @(value);
+}
+
+
+JATDefineCast(signed short)
+{
+	return @(value);
+}
+
+
+JATDefineCast(unsigned short)
+{
+	return @(value);
+}
+
+
+JATDefineCast(signed int)
+{
+	return @(value);
+}
+
+
+JATDefineCast(unsigned int)
+{
+	return @(value);
+}
+
+
+JATDefineCast(signed long)
+{
+	return @(value);
+}
+
+
+JATDefineCast(unsigned long)
+{
+	return @(value);
+}
+
+
+JATDefineCast(signed long long)
+{
+	return @(value);
+}
+
+
+JATDefineCast(unsigned long long)
+{
+	return @(value);
+}
+
+
+JATDefineCast(float)
+{
+	return @(value);
+}
+
+
+JATDefineCast(double)
+{
+	return @(value);
+}
+
+
+JATDefineCast(long double)
+{
+	return [NSNumber numberWithDouble:value];
+}
+
+
+JATDefineCast(bool)
+{
+	return value ? @YES : @NO;
+}
+
+
+JATDefineCast(CGPoint)
+{
+	return NSStringFromPoint(value);
+}
+
+
+JATDefineCast(CGSize)
+{
+	return NSStringFromSize(value);
+}
+
+
+JATDefineCast(CGRect)
+{
+	return NSStringFromRect(value);
+}
+
+
+JATDefineCast(NSRange)
+{
+	return NSStringFromRange(value);
+}
 
 
 /*
