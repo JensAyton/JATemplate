@@ -454,7 +454,7 @@ JATDefineCast(const char *)
 
 
 #if __cplusplus
-JATDefineCast(std::string)
+JATDefineCast(const std::string &)
 {
 	return @(value.c_str());
 }
