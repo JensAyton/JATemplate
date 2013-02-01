@@ -401,24 +401,13 @@ NSArray *JATSplitArgumentString(NSString *string, unichar separator);
 	internationalized.)
 	
 	In Objective-C++, std::string is also supported.
-	
-	The void case is needed to handle preprocessor semantics when no parameters
-	are passed.
 */
 #if __cplusplus
 #define JATDefineCast(TYPE) \
 	inline id<JATCoercible> JATCastParameter(TYPE value)
-inline id<JATCoercible> JATCastParameter(void)
-{
-	return nil;
-}
 #else
 #define JATDefineCast(TYPE) \
 	__attribute__((overloadable)) static inline id<JATCoercible> JATCastParameter(TYPE value)
-__attribute__((overloadable)) static inline id<JATCoercible> JATCastParameter(void)
-{
-	return nil;
-}
 #endif
 
 
@@ -585,18 +574,22 @@ typedef __unsafe_unretained NSString *JATNameArray[];
 typedef __autoreleasing id<JATCoercible> JATParameterArray[];
 
 
-/*
-	JAT_DoExpandTemplateUsingMacroKeysAndValues()
+/*	JAT_DoExpandTemplateUsingMacroKeysAndValues()
 	JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues()
 	
-	Implementation details, do not call directly.
+	The actual implementations of the JATExpand() family. with and without
+	localization.
 */
 FOUNDATION_EXTERN NSString *JAT_DoExpandTemplateUsingMacroKeysAndValues(NSString *templateString, JATNameArray names, JATParameterArray objects, NSUInteger count);
 
 FOUNDATION_EXTERN NSString *JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSBundle *bundle, NSString *localizationTable, JATNameArray names, JATParameterArray objects, NSUInteger count);
 
 
-// These macros convert an argument list (foo bar baz) to a name array {@"foo", @"bar", @"baz", NULL}.
+/*	These macros convert an argument list (foo, bar, baz) to a name array
+	{@"foo", @"bar", @"baz", NULL}. Note: the zero case is {@"", NULL} rather
+	than {NULL}, which doesn’t really matter since we won’t look at any
+	element in that case.
+*/
 #define JATEMPLATE_NAMES_FROM_ARGS_ITERATOR(TAIL, ITEM)  @#ITEM, TAIL
 #define JATEMPLATE_NAMES_FROM_ARGS(...)  (JATNameArray){ rx_fold(JATEMPLATE_NAMES_FROM_ARGS_ITERATOR, __VA_ARGS__, nil) }
 
@@ -604,6 +597,7 @@ FOUNDATION_EXTERN NSString *JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValu
 #define JATEMPLATE_COERCE_PARAMETERS(...) (JATParameterArray){ rx_fold(JATEMPLATE_COERCE_PARAMETERS_ITERATOR, __VA_ARGS__, nil) }
 
 
+// The real API.
 #define JATExpand(TEMPLATE, ...) \
 	JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, nil, nil, \
 	JATEMPLATE_NAMES_FROM_ARGS(__VA_ARGS__), JATEMPLATE_COERCE_PARAMETERS(__VA_ARGS__), rx_count(__VA_ARGS__))
@@ -650,3 +644,19 @@ FOUNDATION_EXTERN NSString *JATExpandFromTableInBundleWithParameters(NSString *t
 
 #define JATAssert(CONDITION, TEMPLATE, ...)  NSAssert1(CONDITION, @"%@", JATExpandLiteral(TEMPLATE, __VA_ARGS__))
 #define JATCAssert(CONDITION, TEMPLATE, ...)  NSCAssert1(CONDITION, @"%@", JATExpandLiteral(TEMPLATE, __VA_ARGS__))
+
+
+/*	void case for JATCastParameter. This is required because of how JATExpand()
+	etc. expand when no parameters are given.
+*/
+#if __cplusplus
+inline id<JATCoercible> JATCastParameter(void)
+{
+	return nil;
+}
+#else
+__attribute__((overloadable)) static inline id<JATCoercible> JATCastParameter(void)
+{
+	return nil;
+}
+#endif
