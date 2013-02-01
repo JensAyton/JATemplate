@@ -93,13 +93,11 @@ static NSNumber *ReadPositional(const unichar characters[], NSUInteger length, N
 	JAT_DoExpandTemplateUsingMacroKeysAndValues(template, names, paddedObjectArray, expectedCount)
 	
 		- template is the string to expand - for example, @"foo = {foo}, bar = {bar}".
-		- names is the preprocessor stringification of the parameter list -
-		  for example, "foo, @(bar)". Note that the preprocessor will remove
-		  comments for us.
+		- names is an array of stringified, preprocessed arguments, for example
+		  { @"foo", @"bar" }. Note that the preprocessor will remove comments
+		  and trime whitespace from the ends for us.
 		- objects is an array of the parameter values.
-		- expectedCount is the number of parameters. This can be inferred from
-		  <names>, but we use a value calculated using the preprocessor for
-		  sanity checking.
+		- expectedCount is the number of parameters.
 */
 NSString *JAT_DoExpandTemplateUsingMacroKeysAndValues(NSString *template, JATNameArray names, JATParameterArray objects, NSUInteger expectedCount)
 {
@@ -172,6 +170,16 @@ NSArray *JATSplitArgumentString(NSString *string, unichar separator)
 static NSString *JATemplateParseOneName(NSString *name);
 
 
+/*	JATBuildParameterDictionary(names, objects, expectedCount)
+	
+	<names> is an array of (at least) <expectedCount> strings.
+	<objects> is an array of <expectedCount> objects (may contain nils).
+	
+	Given these, we construct a dictionary mapping each index from 0 to
+	<expectedCount> to the appropriate object, and each name to an object if
+	the name is a plain C identifier or an identifier wrapped in boxing syntax.
+	Nils are replaced with NSNull.
+*/
 static NSDictionary *JATBuildParameterDictionary(JATNameArray names, JATParameterArray objects, NSUInteger expectedCount)
 {
 	if (expectedCount == 0)  return @{};
