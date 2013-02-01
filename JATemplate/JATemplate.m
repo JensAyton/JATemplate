@@ -72,7 +72,7 @@ enum
 };
 
 
-static NSDictionary *JATBuildParameterDictionary(NSString *names, JATParameterArray objects, NSUInteger expectedCount);
+static NSDictionary *JATBuildParameterDictionary(JATNameArray names, JATParameterArray objects, NSUInteger expectedCount);
 static NSString *JATExpandInternal(const unichar *stringBuffer, NSUInteger length, NSDictionary *parameters, NSString *template);
 
 static NSArray *JATSplitArgumentStringInternal(NSString *string, unichar separator, const unichar *stringBuffer, NSUInteger length);
@@ -101,7 +101,7 @@ static NSNumber *ReadPositional(const unichar characters[], NSUInteger length, N
 		  <names>, but we use a value calculated using the preprocessor for
 		  sanity checking.
 */
-NSString *JAT_DoExpandTemplateUsingMacroKeysAndValues(NSString *template, NSString *names, JATParameterArray objects, NSUInteger expectedCount)
+NSString *JAT_DoExpandTemplateUsingMacroKeysAndValues(NSString *template, JATNameArray names, JATParameterArray objects, NSUInteger expectedCount)
 {
 	NSCParameterAssert(template != nil);
 	NSCParameterAssert(names != nil);
@@ -125,7 +125,7 @@ NSString *JAT_DoExpandTemplateUsingMacroKeysAndValues(NSString *template, NSStri
 	Equivalent to using one of the NSLocalizedString macro family before calling
 	JAT_DoExpandTemplateUsingMacroKeysAndValues().
 */
-NSString *JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues(NSString *template, NSBundle *bundle, NSString *localizationTable, NSString *names, JATParameterArray objects, NSUInteger count)
+NSString *JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues(NSString *template, NSBundle *bundle, NSString *localizationTable, JATNameArray names, JATParameterArray objects, NSUInteger count)
 {
 	// Perform the equivalent of NSLocalizedString*().
 	if (bundle == nil)  bundle = [NSBundle mainBundle];
@@ -169,38 +169,35 @@ NSArray *JATSplitArgumentString(NSString *string, unichar separator)
 
 #pragma mark - Name string parsing
 
-static NSDictionary *JATemplateParseNames(NSString *nameString, NSUInteger expectedCount);
-static NSDictionary *JATemplateParseNamesUncached(NSString *nameString, NSUInteger expectedCount);
 static NSString *JATemplateParseOneName(NSString *name);
 
 
-static NSDictionary *JATBuildParameterDictionary(NSString *names, JATParameterArray objects, NSUInteger expectedCount)
+static NSDictionary *JATBuildParameterDictionary(JATNameArray names, JATParameterArray objects, NSUInteger expectedCount)
 {
 	if (expectedCount == 0)  return @{};
 	
 	__strong id keys[expectedCount * 2];
 	__strong id values[expectedCount * 2];
-	NSUInteger mapIndex;
+	NSUInteger mapIndex = 0;
 	
-	// Insert NSNumber keys for positional parameters.
-	for (mapIndex = 0; mapIndex < expectedCount; mapIndex++)
+	for (NSUInteger arrayIndex = 0; arrayIndex < expectedCount; arrayIndex++)
 	{
-		keys[mapIndex] = @(mapIndex);
-		id value = objects[mapIndex];
+		// Insert NSNumber keys for positional parameters.
+		id value = objects[arrayIndex];
+		keys[mapIndex] = @(arrayIndex);
 		if (value == nil)  value = [NSNull null];
 		values[mapIndex] = value;
-	}
-	
-	// Parse <names> into an array of identifiers. This also strips boxing @() syntax.
-	NSDictionary *parameterNames = JATemplateParseNames(names, expectedCount);
-	
-	for (NSString *key in parameterNames)
-	{
-		keys[mapIndex] = key;
-		NSUInteger elementIndex = [parameterNames[key] unsignedIntegerValue];
-		NSCAssert(elementIndex < expectedCount, @"JATemplateParseNames produced an out-of-range index.");
-		values[mapIndex] = values[elementIndex];
 		mapIndex++;
+		
+		// Insert NSString keys for name parameters which are identifiers or boxed identifiers.
+		NSString *name1 = names[arrayIndex];
+		NSString *name = JATemplateParseOneName(name1);
+		if (name != nil)
+		{
+			keys[mapIndex] = name;
+			values[mapIndex] = value;
+			mapIndex++;
+		}
 	}
 	
 	// Build dictionary of parameters.
@@ -208,100 +205,9 @@ static NSDictionary *JATBuildParameterDictionary(NSString *names, JATParameterAr
 }
 
 
-/*
-	JATemplateParseNames(nameString, expectedCount)
-	
-	Convert a string produced by stringifying __VA_ARGS__ in one of the wrapper
-	macros to an array of <expectedCount> identifiers.
-	
-	The string will be a comma-separated list of expressions with comments
-	stripped, but with whitespace otherwise intact.
-	
-	If an item is wrapped in @(), this is removed, allowing boxing expressions
-	to be used directly. For example, JATExpand(@"{foo}{bar}", foo, @(bar))
-	produces @"foo, @( bar )", which is mapped to @[@"foo", @"bar"].
-	
-	It is asserted that the string contains the correct number of items and
-	that each expression is in fact a single identifier. Assertion is considered
-	sufficient since these strings come directly from source code, not data
-	files, so disabling assertions does not result in an equivalent to format
-	string attack vulnerabilities, only increased exposure to bugs in the
-	template system and client code.
-	
-	JATemplateParseNames() is not optimized. It should be significantly more
-	efficient to take the name string as a const char[] and do a singe-pass
-	scan, extracting NSStrings directly from identifier ranges. However, for
-	most practical uses cases where JATemplateParseNames() is a significant
-	cost, raising the cache limit is probably a better bet.
-*/
-static NSDictionary *JATemplateParseNames(NSString *nameString, NSUInteger expectedCount)
-{
-	NSCParameterAssert(nameString != nil);
-	
-	NSDictionary *result;
-#if JATEMPLATE_NAME_PARSE_CACHE_COUNT_LIMIT > 0
-	NSMutableDictionary *threadDictionary = NSThread.currentThread.threadDictionary;
-	NSCache *cache = threadDictionary[kJATemplateParseCacheThreadDictionaryKey];
-	result = [cache objectForKey:nameString];
-	if (result != nil)
-	{
-		return result;
-	}
-#endif
-	
-	result = JATemplateParseNamesUncached(nameString, expectedCount);
-	
-#if JATEMPLATE_NAME_PARSE_CACHE_COUNT_LIMIT > 0
-	if (cache == nil)
-	{
-		cache = [NSCache new];
-		cache.name = kJATemplateParseCacheThreadDictionaryKey;
-		cache.countLimit = JATEMPLATE_NAME_PARSE_CACHE_COUNT_LIMIT;
-		threadDictionary[kJATemplateParseCacheThreadDictionaryKey] = cache;
-	}
-	[cache setObject:result forKey:nameString];
-#endif
-	
-	return result;
-}
-
-
-static NSDictionary *JATemplateParseNamesUncached(NSString *nameString, NSUInteger expectedCount)
-{
-	if (expectedCount == 0)
-	{
-		NSCParameterAssert(nameString.length == 0);
-		return @{};
-	}
-	
-	NSArray *components = [nameString componentsSeparatedByString:@","];
-	NSCAssert(components.count == expectedCount, @"Expected %lu variable names in template expansion, got %lu. The problem name string is: \"%@\".", expectedCount, components.count, nameString);
-	
-	NSString *cleanedNames[expectedCount];
-	NSNumber *indices[expectedCount];
-	
-	NSUInteger nameIndex = 0, mapIndex = 0;
-	for (NSString *name in components)
-	{
-		NSString *cleaned = JATemplateParseOneName(name);
-		if (cleaned != nil)
-		{
-			cleanedNames[mapIndex] = cleaned;
-			indices[mapIndex] = @(nameIndex);
-			mapIndex++;
-		}
-		nameIndex++;
-	}
-	
-	return [NSDictionary dictionaryWithObjects:indices forKeys:cleanedNames count:mapIndex];
-}
-
-
 static NSString *JATemplateParseOneName(NSString *name)
 {
 	NSCharacterSet *whiteSpace = NSCharacterSet.whitespaceAndNewlineCharacterSet;
-	
-	name = [name stringByTrimmingCharactersInSet:whiteSpace];
 	
 	/*	Handle boxing expressions: "@(foo)" -> "foo".
 		Syntax note: @ (foo) is invalid, so we can treat @( as one token.

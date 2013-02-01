@@ -285,24 +285,36 @@ SOFTWARE.
 
 
 @protocol JATCoercable;
+
+/*	Types used to manage our nasty arrays. Names can be __unsafe_unretained
+	because they’ll always be string literals, unless you’re abusing the
+	secret implementation-detail functions. Don’t do that. Use
+	JATExpand[Literal]WithParameters() instead.
+*/
+typedef __unsafe_unretained NSString *JATNameArray[];
 typedef __autoreleasing id<JATCoercable> JATParameterArray[];
+
+
+// These macros convert an argument list (foo bar baz) to a name array {@"foo", @"bar", @"baz", NULL}.
+#define JATEMPLATE_NAMES_FROM_ARGS_ITERATOR(TAIL, ITEM)  @#ITEM, TAIL
+#define JATEMPLATE_NAMES_FROM_ARGS(...)  (JATNameArray){ rx_fold(JATEMPLATE_NAMES_FROM_ARGS_ITERATOR, __VA_ARGS__, NULL) }
 
 
 #define JATExpand(TEMPLATE, ...) \
 	JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, nil, nil, \
-	@#__VA_ARGS__, (JATParameterArray){ __VA_ARGS__ }, rx_count(__VA_ARGS__))
+	JATEMPLATE_NAMES_FROM_ARGS(__VA_ARGS__), (JATParameterArray){ __VA_ARGS__ }, rx_count(__VA_ARGS__))
 
 #define JATExpandLiteral(TEMPLATE, ...) \
 	JAT_DoExpandTemplateUsingMacroKeysAndValues(TEMPLATE, \
-	@#__VA_ARGS__, (JATParameterArray){ __VA_ARGS__ }, rx_count(__VA_ARGS__))
+	JATEMPLATE_NAMES_FROM_ARGS(__VA_ARGS__), (JATParameterArray){ __VA_ARGS__ }, rx_count(__VA_ARGS__))
 
 #define JATExpandFromTable(TEMPLATE, TABLE, ...) \
 	JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, nil, TABLE, \
-	@#__VA_ARGS__, (JATParameterArray){ __VA_ARGS__ }, rx_count(__VA_ARGS__))
+	JATEMPLATE_NAMES_FROM_ARGS(__VA_ARGS__), (JATParameterArray){ __VA_ARGS__ }, rx_count(__VA_ARGS__))
 
 #define JATExpandFromTableInBundle(TEMPLATE, TABLE, BUNDLE, ...) \
 	JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, BUNDLE, TABLE, \
-	@#__VA_ARGS__, (JATParameterArray){ __VA_ARGS__ }, rx_count(__VA_ARGS__))
+	JATEMPLATE_NAMES_FROM_ARGS(__VA_ARGS__), (JATParameterArray){ __VA_ARGS__ }, rx_count(__VA_ARGS__))
 
 #define JATExpandWithParameters(TEMPLATE, PARAMETERS) \
 	JATExpandFromTableInBundleWithParameters(TEMPLATE, nil, nil, PARAMETERS)
@@ -434,6 +446,6 @@ NSArray *JATSplitArgumentString(NSString *string, unichar separator);
 	
 	Implementation details, do not call directly.
 */
-FOUNDATION_EXTERN NSString *JAT_DoExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSString *names, JATParameterArray objects, NSUInteger count);
+FOUNDATION_EXTERN NSString *JAT_DoExpandTemplateUsingMacroKeysAndValues(NSString *templateString, JATNameArray names, JATParameterArray objects, NSUInteger count);
 
-FOUNDATION_EXTERN NSString *JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSBundle *bundle, NSString *localizationTable, NSString *names, JATParameterArray objects, NSUInteger count);
+FOUNDATION_EXTERN NSString *JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSBundle *bundle, NSString *localizationTable, JATNameArray names, JATParameterArray objects, NSUInteger count);
