@@ -9,7 +9,7 @@ static NSDictionary *MakeUpParameters(void);
 static NSString *GenerateTemplateExpression(NSArray *paramKeys);
 
 
-@interface JATMockParameter: NSObject <JATCoercable>
+@interface JATMockParameter: NSObject <JATCoercible>
 @end
 
 

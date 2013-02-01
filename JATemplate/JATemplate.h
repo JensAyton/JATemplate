@@ -278,8 +278,8 @@ SOFTWARE.
 */
 
 
-@protocol JATCoercable;
-typedef __autoreleasing id<JATCoercable> JATParameterArray[];
+@protocol JATCoercible;
+typedef __autoreleasing id<JATCoercible> JATParameterArray[];
 
 
 #define JATExpand(TEMPLATE, ...) \
@@ -374,7 +374,7 @@ FOUNDATION_EXTERN NSString *JATExpandFromTableInBundleWithParameters(NSString *t
 NSArray *JATSplitArgumentString(NSString *string, unichar separator);
 
 
-@protocol JATCoercable <NSObject>
+@protocol JATCoercible <NSObject>
 
 /*	- (NSNumber *) jatemplateCoerceToString
 	
@@ -418,7 +418,7 @@ NSArray *JATSplitArgumentString(NSString *string, unichar separator);
 @end
 
 
-@interface NSObject (JATCoercable) <JATCoercable>
+@interface NSObject (JATCoercible) <JATCoercible>
 @end
 
 

@@ -838,7 +838,7 @@ void JATWrapWarning(const unichar characters[], NSUInteger length, NSString *mes
 
 #pragma mark - Operators
 
-@implementation NSObject (JATCoercable)
+@implementation NSObject (JATCoercible)
 
 - (NSString *) jatemplateCoerceToString
 {
@@ -905,7 +905,7 @@ void JATWrapWarning(const unichar characters[], NSUInteger length, NSString *mes
 @end
 
 
-@implementation NSString (JATCoercable)
+@implementation NSString (JATCoercible)
 
 - (NSString *) jatemplateCoerceToString
 {
@@ -915,7 +915,7 @@ void JATWrapWarning(const unichar characters[], NSUInteger length, NSString *mes
 @end
 
 
-@implementation NSNull (JATCoercable)
+@implementation NSNull (JATCoercible)
 
 - (NSString *) jatemplateCoerceToString
 {
@@ -931,7 +931,7 @@ void JATWrapWarning(const unichar characters[], NSUInteger length, NSString *mes
 @end
 
 
-@implementation NSNumber (JATCoercable)
+@implementation NSNumber (JATCoercible)
 
 - (NSString *) jatemplateCoerceToString
 {
@@ -947,7 +947,7 @@ void JATWrapWarning(const unichar characters[], NSUInteger length, NSString *mes
 @end
 
 
-@implementation NSArray (JATCoercable)
+@implementation NSArray (JATCoercible)
 
 - (NSString *) jatemplateCoerceToString
 {
