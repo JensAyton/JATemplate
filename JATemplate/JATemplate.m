@@ -880,7 +880,7 @@ void JATWrapWarning(const unichar characters[], NSUInteger length, NSString *mes
 
 @implementation NSObject (JATOperatorSupport)
 
-- (id) jatemplatePerformOperator:(NSString *)operator withArgument:(NSString *)argument variables:(NSDictionary *)variables
+- (id<JATCoercible>) jatemplatePerformOperator:(NSString *)operator withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	// Dogfood note: it would be a bad idea to use an operator in this template.
 	NSString *opImplementationName = JATExpandLiteral(@"jatemplatePerform_{operator}_withArgument:variables:", operator);
@@ -888,7 +888,7 @@ void JATWrapWarning(const unichar characters[], NSUInteger length, NSString *mes
 	
 	if ([self respondsToSelector:selector])
 	{
-		typedef id (*OperatorIMP)(id, SEL, NSString *, NSDictionary *);
+		typedef id<JATCoercible> (*OperatorIMP)(id, SEL, NSString *, NSDictionary *);
 		OperatorIMP imp = (OperatorIMP)[self methodForSelector:selector];
 		return imp(self, selector, argument, variables);
 	}
