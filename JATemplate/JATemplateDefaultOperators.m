@@ -95,7 +95,7 @@ enum
 
 @implementation NSObject (JATDefaultOperators)
 
-- (id) jatemplatePerform_num_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+- (id<JATCoercible>) jatemplatePerform_num_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	NSNumber *value = [self jatemplateCoerceToNumber];
 	if (value == nil)  return nil;
@@ -149,7 +149,7 @@ enum
 }
 
 
-- (id) jatemplatePerform_round_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+- (id<JATCoercible>) jatemplatePerform_round_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	NSNumber *value = [self jatemplateCoerceToNumber];
 	if (value == nil)  return nil;
@@ -160,7 +160,7 @@ enum
 }
 
 
-- (id) jatemplatePerform_plur_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+- (id<JATCoercible>) jatemplatePerform_plur_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	NSNumber *value = [self jatemplateCoerceToNumber];
 	if (value == nil)  return nil;
@@ -199,7 +199,7 @@ enum
 }
 
 
-- (id) jatemplatePerform_plural_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+- (id<JATCoercible>) jatemplatePerform_plural_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	NSNumber *value = [self jatemplateCoerceToNumber];
 	if (value == nil)  return nil;
@@ -232,7 +232,7 @@ enum
 }
 
 
-- (id) jatemplatePerform_pluraz_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+- (id<JATCoercible>) jatemplatePerform_pluraz_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	NSNumber *value = [self jatemplateCoerceToNumber];
 	if (value == nil)  return nil;
@@ -265,7 +265,7 @@ enum
 }
 
 
-- (id) jatemplatePerform_not_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+- (id<JATCoercible>) jatemplatePerform_not_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	NSNumber *value = [self jatemplateCoerceToBoolean];
 	if (value == nil)  return nil;
@@ -274,7 +274,7 @@ enum
 }
 
 
-- (id) jatemplatePerform_if_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+- (id<JATCoercible>) jatemplatePerform_if_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	NSNumber *value = [self jatemplateCoerceToBoolean];
 	if (value == nil)  return nil;
@@ -295,7 +295,7 @@ enum
 }
 
 
-- (id) jatemplatePerform_select_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+- (id<JATCoercible>) jatemplatePerform_select_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	NSNumber *value = [self jatemplateCoerceToNumber];
 	if (value == nil)  return nil;
@@ -316,7 +316,7 @@ enum
 }
 
 
-- (id) jatemplatePerform_uppercase_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+- (id<JATCoercible>) jatemplatePerform_uppercase_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	NSString *value = [self jatemplateCoerceToString];
 	if (value == nil)  return nil;
@@ -325,7 +325,7 @@ enum
 }
 
 
-- (id) jatemplatePerform_lowercase_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+- (id<JATCoercible>) jatemplatePerform_lowercase_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	NSString *value = [self jatemplateCoerceToString];
 	if (value == nil)  return nil;
