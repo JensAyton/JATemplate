@@ -72,6 +72,8 @@ SOFTWARE.
 #include <string>
 #endif
 
+@protocol JATCoercible;
+
 
 #pragma mark Interface documentation – Read me first
 
@@ -320,7 +322,7 @@ SOFTWARE.
 	If no operator implementation is found, the default implementation of
 	-jatemplatePerformOperator:withArgument: returns nil.
 */
-- (id) jatemplatePerformOperator:(NSString *)op withArgument:(NSString *)argument variables:(NSDictionary *)variables;
+- (id<JATCoercible>) jatemplatePerformOperator:(NSString *)op withArgument:(NSString *)argument variables:(NSDictionary *)variables;
 
 @end
 
