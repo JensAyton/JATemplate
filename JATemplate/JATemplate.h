@@ -2,6 +2,11 @@
 
 JATemplate.h
 
+Vanilla Edition: this version minimizes the use of preprocessor tricks at the
+cost of efficiency, type-safety and expressiveness. If you’re not scared of
+macros, consider the Hairy Edition instead.
+
+
 JATemplate is a string expansion system designed for convenience of use and
 safety. In particular, it is intended to replace printf-style formatting
 (-[NSString stringWithFormat:], NSLog() etc.), and to be immune to format
@@ -63,6 +68,8 @@ SOFTWARE.
 #import <Foundation/Foundation.h>
 
 
+#pragma mark Interface documentation – Read me first
+
 /*
 	The notional interface for the expansion system is as follows. The actual
 	implementations are mostly macros as defined below.
@@ -77,6 +84,8 @@ SOFTWARE.
 		Parameters may be referenced by name if they are plain variables or
 		variables boxed using @() syntax. All parameters can also be referenced
 		by index using the form {0}, {1} etc.
+		
+		In the Vanilla Edition, all parameters must be objects.
 		
 		Parameters may be modified using operators, which are specified using
 		a vertical bar. Operators may optionally have a parameter, seperated
@@ -278,57 +287,7 @@ SOFTWARE.
 */
 
 
-@protocol JATCoercible;
-typedef __autoreleasing id<JATCoercible> JATParameterArray[];
-
-
-#define JATExpand(TEMPLATE, ...) \
-	JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, nil, nil, \
-	@#__VA_ARGS__, (JATParameterArray){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
-
-#define JATExpandLiteral(TEMPLATE, ...) \
-	JAT_DoExpandTemplateUsingMacroKeysAndValues(TEMPLATE, \
-	@#__VA_ARGS__, (JATParameterArray){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
-
-#define JATExpandFromTable(TEMPLATE, TABLE, ...) \
-	JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, nil, TABLE, \
-	@#__VA_ARGS__, (JATParameterArray){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
-
-#define JATExpandFromTableInBundle(TEMPLATE, TABLE, BUNDLE, ...) \
-	JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, BUNDLE, TABLE, \
-	@#__VA_ARGS__, (JATParameterArray){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
-
-#define JATExpandWithParameters(TEMPLATE, PARAMETERS) \
-	JATExpandFromTableInBundleWithParameters(TEMPLATE, nil, nil, PARAMETERS)
-
-FOUNDATION_EXTERN NSString *JATExpandLiteralWithParameters(NSString *templateString, NSDictionary *parameters);
-
-#define JATExpandFromTableWithParameters(TEMPLATE, TABLE, PARAMETERS) \
-	JATExpandFromTableInBundleWithParameters(TEMPLATE, TABLE, nil, PARAMETERS)
-
-FOUNDATION_EXTERN NSString *JATExpandFromTableInBundleWithParameters(NSString *templateString, NSString *localizationTable, NSBundle *bundle, NSDictionary *parameters);
-
-
-#define JATAppend(MSTRING, TEMPLATE, ...) \
-	[MSTRING appendString:JATExpand(TEMPLATE, __VA_ARGS__)]
-
-#define JATAppendLiteral(MSTRING, TEMPLATE, ...) \
-	[MSTRING appendString:JATExpandLiteral(TEMPLATE, __VA_ARGS__)]
-
-#define JATAppendFromTable(MSTRING, TEMPLATE, TABLE, ...) \
-	[MSTRING appendString:JATExpandFromTable(TEMPLATE, TABLE, __VA_ARGS__)]
-
-#define JATAppendFromTableInBundle(MSTRING, TEMPLATE, TABLE, BUNDLE, ...) \
-	[MSTRING appendString:JATExpandFromTableInBundle(TEMPLATE, TABLE, BUNDLE, __VA_ARGS__)]
-
-
-#define JATLog(TEMPLATE, ...)  NSLog(@"%@", JATExpandLiteral(TEMPLATE, __VA_ARGS__))
-#define JATLogLocalized(TEMPLATE, ...)  NSLog(@"%@", JATExpand(TEMPLATE, __VA_ARGS__))
-
-
-#define JATAssert(CONDITION, TEMPLATE, ...)  NSAssert1(CONDITION, @"%@", JATExpandLiteral(TEMPLATE, __VA_ARGS__))
-#define JATCAssert(CONDITION, TEMPLATE, ...)  NSCAssert1(CONDITION, @"%@", JATExpandLiteral(TEMPLATE, __VA_ARGS__))
-
+#pragma mark Formatting operator support
 
 @interface NSObject (JATOperatorSupport)
 
@@ -373,6 +332,8 @@ FOUNDATION_EXTERN NSString *JATExpandFromTableInBundleWithParameters(NSString *t
 */
 NSArray *JATSplitArgumentString(NSString *string, unichar separator);
 
+
+#pragma mark - JATCoercible protocol
 
 @protocol JATCoercible <NSObject>
 
@@ -422,15 +383,69 @@ NSArray *JATSplitArgumentString(NSString *string, unichar separator);
 @end
 
 
+#pragma mark - Implementation details
+
+typedef NSString *JATNameArray;
+typedef __autoreleasing id<JATCoercible> JATParameterArray[];
+
+
 /*
 	JAT_DoExpandTemplateUsingMacroKeysAndValues()
 	JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues()
 	
 	Implementation details, do not call directly.
 */
-FOUNDATION_EXTERN NSString *JAT_DoExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSString *names, JATParameterArray objects, NSUInteger count);
+FOUNDATION_EXTERN NSString *JAT_DoExpandTemplateUsingMacroKeysAndValues(NSString *templateString, JATNameArray names, JATParameterArray objects, NSUInteger count);
 
-FOUNDATION_EXTERN NSString *JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSBundle *bundle, NSString *localizationTable, NSString *names, JATParameterArray objects, NSUInteger count);
+FOUNDATION_EXTERN NSString *JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues(NSString *templateString, NSBundle *bundle, NSString *localizationTable, JATNameArray names, JATParameterArray objects, NSUInteger count);
+
+
+#define JATExpand(TEMPLATE, ...) \
+	JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, nil, nil, \
+	@#__VA_ARGS__, (JATParameterArray){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
+
+#define JATExpandLiteral(TEMPLATE, ...) \
+	JAT_DoExpandTemplateUsingMacroKeysAndValues(TEMPLATE, \
+	@#__VA_ARGS__, (JATParameterArray){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
+
+#define JATExpandFromTable(TEMPLATE, TABLE, ...) \
+	JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, nil, TABLE, \
+	@#__VA_ARGS__, (JATParameterArray){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
+
+#define JATExpandFromTableInBundle(TEMPLATE, TABLE, BUNDLE, ...) \
+	JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues(TEMPLATE, BUNDLE, TABLE, \
+	@#__VA_ARGS__, (JATParameterArray){ __VA_ARGS__ }, JATEMPLATE_ARGUMENT_COUNT(__VA_ARGS__))
+
+#define JATExpandWithParameters(TEMPLATE, PARAMETERS) \
+	JATExpandFromTableInBundleWithParameters(TEMPLATE, nil, nil, PARAMETERS)
+
+FOUNDATION_EXTERN NSString *JATExpandLiteralWithParameters(NSString *templateString, NSDictionary *parameters);
+
+#define JATExpandFromTableWithParameters(TEMPLATE, TABLE, PARAMETERS) \
+	JATExpandFromTableInBundleWithParameters(TEMPLATE, TABLE, nil, PARAMETERS)
+
+FOUNDATION_EXTERN NSString *JATExpandFromTableInBundleWithParameters(NSString *templateString, NSString *localizationTable, NSBundle *bundle, NSDictionary *parameters);
+
+
+#define JATAppend(MSTRING, TEMPLATE, ...) \
+	[MSTRING appendString:JATExpand(TEMPLATE, __VA_ARGS__)]
+
+#define JATAppendLiteral(MSTRING, TEMPLATE, ...) \
+	[MSTRING appendString:JATExpandLiteral(TEMPLATE, __VA_ARGS__)]
+
+#define JATAppendFromTable(MSTRING, TEMPLATE, TABLE, ...) \
+	[MSTRING appendString:JATExpandFromTable(TEMPLATE, TABLE, __VA_ARGS__)]
+
+#define JATAppendFromTableInBundle(MSTRING, TEMPLATE, TABLE, BUNDLE, ...) \
+	[MSTRING appendString:JATExpandFromTableInBundle(TEMPLATE, TABLE, BUNDLE, __VA_ARGS__)]
+
+
+#define JATLog(TEMPLATE, ...)  NSLog(@"%@", JATExpandLiteral(TEMPLATE, __VA_ARGS__))
+#define JATLogLocalized(TEMPLATE, ...)  NSLog(@"%@", JATExpand(TEMPLATE, __VA_ARGS__))
+
+
+#define JATAssert(CONDITION, TEMPLATE, ...)  NSAssert1(CONDITION, @"%@", JATExpandLiteral(TEMPLATE, __VA_ARGS__))
+#define JATCAssert(CONDITION, TEMPLATE, ...)  NSCAssert1(CONDITION, @"%@", JATExpandLiteral(TEMPLATE, __VA_ARGS__))
 
 
 /*
