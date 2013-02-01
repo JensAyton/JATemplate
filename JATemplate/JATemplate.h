@@ -68,6 +68,10 @@ SOFTWARE.
 #import "RXCount.h"
 #import "RXFold.h"
 
+#if __cplusplus
+#include <string>
+#endif
+
 
 #pragma mark - Interface documentation – Read me first
 
@@ -392,9 +396,12 @@ NSArray *JATSplitArgumentString(NSString *string, unichar separator);
 	
 	These helpers are used to convert non-objects into appropriate object
 	representations for use as template expansions. The default set can be
-	used to pass Objective-C objects, C strings, all built-in number types
-	and a few common structs: {NS|CG}{Point|Size|Rect} and NSRange. (Note that
-	the struct operators are not locale-friendly.)
+	used to pass Objective-C objects, C strings, all built-in number types,
+	CFString, CFNumber and CFBoolan, and a few common structs: NSRange and
+	{NS|CG}{Point|Size|Rect}. (Note that the struct operators are not
+	internationalized.)
+	
+	In Objective-C++, std::string is also supported.
 	
 	The void case is needed to handle preprocessor semantics when no parameters
 	are passed.
@@ -422,10 +429,36 @@ JATDefineCast(id<JATCoercable>)
 }
 
 
+JATDefineCast(CFStringRef)
+{
+	return (__bridge NSString *)value;
+}
+
+
+JATDefineCast(CFNumberRef)
+{
+	return (__bridge NSNumber *)value;
+}
+
+
+JATDefineCast(CFBooleanRef)
+{
+	return (__bridge NSNumber *)value;
+}
+
+
 JATDefineCast(const char *)
 {
 	return @(value);
 }
+
+
+#if __cplusplus
+JATDefineCast(std::string)
+{
+	return @(value.c_str());
+}
+#endif
 
 
 JATDefineCast(char)
