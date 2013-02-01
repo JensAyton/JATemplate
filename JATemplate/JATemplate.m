@@ -76,7 +76,7 @@ enum
 };
 
 
-static NSDictionary *JATBuildParameterDictionary(NSString *names, JATParameterArray objects, NSUInteger expectedCount);
+static NSDictionary *JATBuildParameterDictionary(NSString *names, NSArray *objects);
 static NSString *JATExpandInternal(const unichar *stringBuffer, NSUInteger length, NSDictionary *parameters, NSString *template);
 
 static NSArray *JATSplitArgumentStringInternal(NSString *string, unichar separator, const unichar *stringBuffer, NSUInteger length);
@@ -94,29 +94,25 @@ static NSNumber *ReadPositional(const unichar characters[], NSUInteger length, N
 #pragma mark - Public
 
 /*
-	JAT_DoExpandTemplateUsingMacroKeysAndValues(template, names, paddedObjectArray, expectedCount)
+	JAT_DoExpandTemplateUsingMacroKeysAndValues(template, names, objects)
 	
 		- template is the string to expand - for example, @"foo = {foo}, bar = {bar}".
 		- names is the preprocessor stringification of the parameter list -
 		  for example, "foo, @(bar)". Note that the preprocessor will remove
 		  comments for us.
 		- objects is an array of the parameter values.
-		- expectedCount is the number of parameters. This can be inferred from
-		  <names>, but we use a value calculated using the preprocessor for
-		  sanity checking.
 */
-NSString *JAT_DoExpandTemplateUsingMacroKeysAndValues(NSString *template, NSString *names, JATParameterArray objects, NSUInteger expectedCount)
+NSString *JAT_DoExpandTemplateUsingMacroKeysAndValues(NSString *template, NSString *names, NSArray *objects)
 {
 	NSCParameterAssert(template != nil);
 	NSCParameterAssert(names != nil);
-	NSCParameterAssert(objects != NULL || expectedCount == 0);
 	
 	/*	Non-optimization: it's tempting to short-circuit here if there are no
 		parameters, but that breaks if there are {{/}} escapes.
 	*/
 	
 	// Build dictionary of parametes and hand off to Boring Mode.
-	NSDictionary *parameters = JATBuildParameterDictionary(names, objects, expectedCount);
+	NSDictionary *parameters = JATBuildParameterDictionary(names, objects);
 	if (parameters == nil)  return template;
 	
 	return JATExpandLiteralWithParameters(template, parameters);
@@ -129,13 +125,13 @@ NSString *JAT_DoExpandTemplateUsingMacroKeysAndValues(NSString *template, NSStri
 	Equivalent to using one of the NSLocalizedString macro family before calling
 	JAT_DoExpandTemplateUsingMacroKeysAndValues().
 */
-NSString *JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues(NSString *template, NSBundle *bundle, NSString *localizationTable, NSString *names, JATParameterArray objects, NSUInteger count)
+NSString *JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues(NSString *template, NSBundle *bundle, NSString *localizationTable, NSString *names, NSArray *objects)
 {
 	// Perform the equivalent of NSLocalizedString*().
 	if (bundle == nil)  bundle = [NSBundle mainBundle];
 	template = [bundle localizedStringForKey:template value:@"" table:localizationTable];
 	
-	return JAT_DoExpandTemplateUsingMacroKeysAndValues(template, names, objects, count);
+	return JAT_DoExpandTemplateUsingMacroKeysAndValues(template, names, objects);
 }
 
 
@@ -178,16 +174,17 @@ static NSDictionary *JATemplateParseNamesUncached(NSString *nameString, NSUInteg
 static NSString *JATemplateParseOneName(NSString *name);
 
 
-static NSDictionary *JATBuildParameterDictionary(NSString *names, JATParameterArray objects, NSUInteger expectedCount)
+static NSDictionary *JATBuildParameterDictionary(NSString *names, NSArray *objects)
 {
-	if (expectedCount == 0)  return @{};
+	NSUInteger count = objects.count;
+	if (count == 0)  return @{};
 	
-	__strong id keys[expectedCount * 2];
-	__strong id values[expectedCount * 2];
+	__strong id keys[count * 2];
+	__strong id values[count * 2];
 	NSUInteger mapIndex;
 	
 	// Insert NSNumber keys for positional parameters.
-	for (mapIndex = 0; mapIndex < expectedCount; mapIndex++)
+	for (mapIndex = 0; mapIndex < count; mapIndex++)
 	{
 		keys[mapIndex] = @(mapIndex);
 		id value = objects[mapIndex];
@@ -196,13 +193,13 @@ static NSDictionary *JATBuildParameterDictionary(NSString *names, JATParameterAr
 	}
 	
 	// Parse <names> into an array of identifiers. This also strips boxing @() syntax.
-	NSDictionary *parameterNames = JATemplateParseNames(names, expectedCount);
+	NSDictionary *parameterNames = JATemplateParseNames(names, count);
 	
 	for (NSString *key in parameterNames)
 	{
 		keys[mapIndex] = key;
 		NSUInteger elementIndex = [parameterNames[key] unsignedIntegerValue];
-		NSCAssert(elementIndex < expectedCount, @"JATemplateParseNames produced an out-of-range index.");
+		NSCAssert(elementIndex < count, @"JATemplateParseNames produced an out-of-range index.");
 		values[mapIndex] = values[elementIndex];
 		mapIndex++;
 	}
