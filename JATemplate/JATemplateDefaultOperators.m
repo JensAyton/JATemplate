@@ -26,6 +26,10 @@ SOFTWARE.
 
 #import "JATemplate.h"
 
+#if !__has_feature(objc_arc)
+#error This file requires ARC.
+#endif
+
 
 #define OpWarn(TEMPLATE, ...)  JATWrapWarning(NULL, 0, JATExpand(TEMPLATE, __VA_ARGS__))
 void JATWrapWarning(const unichar characters[], NSUInteger length, NSString *message);
