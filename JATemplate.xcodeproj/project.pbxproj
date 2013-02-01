@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		1A304A59169E17F300DB0DF0 /* JATemplateOperatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A304A58169E17F300DB0DF0 /* JATemplateOperatorTests.m */; };
 		1A304A5A169E21B200DB0DF0 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1AF27503169CD60100831BDB /* Localizable.strings */; };
+		1A3AA4CC16BC345E00399FD5 /* JATemplateCastTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3AA4CB16BC345E00399FD5 /* JATemplateCastTests.m */; };
+		1A3AA4CE16BC350800399FD5 /* JATemplateCastTestsCpp.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A3AA4CD16BC350800399FD5 /* JATemplateCastTestsCpp.mm */; };
 		1ABDBA73169AFF0100846E17 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABDBA72169AFF0100846E17 /* Cocoa.framework */; };
 		1ABDBA7D169AFF0100846E17 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1ABDBA7B169AFF0100846E17 /* InfoPlist.strings */; };
 		1ABDBA7F169AFF0100846E17 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ABDBA7E169AFF0100846E17 /* main.m */; };
@@ -76,6 +78,9 @@
 		1A22700116BC090800682F4B /* RXPaste.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RXPaste.h; sourceTree = "<group>"; };
 		1A304A57169E17F300DB0DF0 /* JATemplateOperatorTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JATemplateOperatorTests.h; sourceTree = "<group>"; };
 		1A304A58169E17F300DB0DF0 /* JATemplateOperatorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JATemplateOperatorTests.m; sourceTree = "<group>"; };
+		1A3AA4CA16BC345E00399FD5 /* JATemplateCastTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JATemplateCastTests.h; sourceTree = "<group>"; };
+		1A3AA4CB16BC345E00399FD5 /* JATemplateCastTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JATemplateCastTests.m; sourceTree = "<group>"; };
+		1A3AA4CD16BC350800399FD5 /* JATemplateCastTestsCpp.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JATemplateCastTestsCpp.mm; sourceTree = "<group>"; };
 		1A5354E916A7FA6E008F411D /* JATemplateTests-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "JATemplateTests-Prefix.pch"; sourceTree = "<group>"; };
 		1ABDBA6E169AFF0100846E17 /* JATemplate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JATemplate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1ABDBA72169AFF0100846E17 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -236,6 +241,9 @@
 				1ABDBA9C169AFF0200846E17 /* JATemplateTests.m */,
 				1A304A57169E17F300DB0DF0 /* JATemplateOperatorTests.h */,
 				1A304A58169E17F300DB0DF0 /* JATemplateOperatorTests.m */,
+				1A3AA4CA16BC345E00399FD5 /* JATemplateCastTests.h */,
+				1A3AA4CB16BC345E00399FD5 /* JATemplateCastTests.m */,
+				1A3AA4CD16BC350800399FD5 /* JATemplateCastTestsCpp.mm */,
 				1ABDBA96169AFF0200846E17 /* Supporting Files */,
 			);
 			path = JATemplateTests;
@@ -445,6 +453,8 @@
 				1ABDBAA9169B019000846E17 /* JATemplate.m in Sources */,
 				1A304A59169E17F300DB0DF0 /* JATemplateOperatorTests.m in Sources */,
 				1AD41C1316ADDE2100E72D89 /* JATemplateDefaultOperators.m in Sources */,
+				1A3AA4CC16BC345E00399FD5 /* JATemplateCastTests.m in Sources */,
+				1A3AA4CE16BC350800399FD5 /* JATemplateCastTestsCpp.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
