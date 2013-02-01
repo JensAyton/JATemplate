@@ -234,4 +234,39 @@ JATDefineCast(CustomStruct)
 	STAssertEqualObjects(expansion, @"81", @"parameter cast from [CustomStruct] failed.");
 }
 
+
+#if __cplusplus
+enum class CustomEnumClass
+{
+	vanilla, chocolate, strawberry
+};
+
+
+JATDefineCast(CustomEnumClass)
+{
+	switch (value)
+	{
+		case CustomEnumClass::vanilla:
+			return @"vanilla";
+			
+		case CustomEnumClass::chocolate:
+			return @"chocolate";
+			
+		case CustomEnumClass::strawberry:
+			return @"strawberry";
+	}
+	
+	return @"<error>";
+}
+
+
+- (void) testCastCustomEnumClass
+{
+	CustomEnumClass value = CustomEnumClass::chocolate;
+	NSString *expansion = JATExpand(@"{value}", value);
+	
+	STAssertEqualObjects(expansion, @"chocolate", @"parameter cast from [CustomEnumClass] failed.");
+}
+#endif
+
 @end
