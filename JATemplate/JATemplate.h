@@ -73,7 +73,7 @@ SOFTWARE.
 #endif
 
 
-#pragma mark - Interface documentation – Read me first
+#pragma mark Interface documentation – Read me first
 
 /*
 	The notional interface for the expansion system is as follows. The actual
@@ -293,7 +293,6 @@ SOFTWARE.
 */
 
 
-
 #pragma mark Formatting operator support
 
 @interface NSObject (JATOperatorSupport)
@@ -340,9 +339,9 @@ SOFTWARE.
 NSArray *JATSplitArgumentString(NSString *string, unichar separator);
 
 
-#pragma mark JATCoercable protocol
+#pragma mark - JATCoercible protocol
 
-@protocol JATCoercable <NSObject>
+@protocol JATCoercible <NSObject>
 
 /*	- (NSNumber *) jatemplateCoerceToString
 	
@@ -386,7 +385,7 @@ NSArray *JATSplitArgumentString(NSString *string, unichar separator);
 @end
 
 
-@interface NSObject (JATCoercable) <JATCoercable>
+@interface NSObject (JATCoercible) <JATCoercible>
 @end
 
 
@@ -408,22 +407,22 @@ NSArray *JATSplitArgumentString(NSString *string, unichar separator);
 */
 #if __cplusplus
 #define JATDefineCast(TYPE) \
-	inline id<JATCoercable> JATCastParameter(TYPE value)
-inline id<JATCoercable> JATCastParameter(void)
+	inline id<JATCoercible> JATCastParameter(TYPE value)
+inline id<JATCoercible> JATCastParameter(void)
 {
 	return nil;
 }
 #else
 #define JATDefineCast(TYPE) \
-	__attribute__((overloadable)) static inline id<JATCoercable> JATCastParameter(TYPE value)
-__attribute__((overloadable)) static inline id<JATCoercable> JATCastParameter(void)
+	__attribute__((overloadable)) static inline id<JATCoercible> JATCastParameter(TYPE value)
+__attribute__((overloadable)) static inline id<JATCoercible> JATCastParameter(void)
 {
 	return nil;
 }
 #endif
 
 
-JATDefineCast(id<JATCoercable>)
+JATDefineCast(id<JATCoercible>)
 {
 	return value;
 }
@@ -583,7 +582,7 @@ JATDefineCast(NSRange)
 	JATExpand[Literal]WithParameters() instead.
 */
 typedef __unsafe_unretained NSString *JATNameArray[];
-typedef __autoreleasing id<JATCoercable> JATParameterArray[];
+typedef __autoreleasing id<JATCoercible> JATParameterArray[];
 
 
 /*
