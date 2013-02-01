@@ -158,7 +158,7 @@
 				1A22700116BC090800682F4B /* RXPaste.h */,
 			);
 			name = RXPreprocessing;
-			path = "../RXPreprocessing-1.0.1";
+			path = "../RXPreprocessing-1.0.2";
 			sourceTree = "<group>";
 		};
 		1ABDBA63169AFF0100846E17 = {
