@@ -139,6 +139,12 @@ static NSString *JATExpandInternal(const unichar characters[], NSUInteger length
 			{
 				NSCAssert(replaceLength != 0, @"Internal bug in JATemplate: substitution length is zero, which will lead to an infinite loop.");
 				
+				if (idx == 0 && replaceLength == length)
+				{
+					// Replacing entire template in one pop.
+					return replacement;
+				}
+				
 				if (result == nil)  result = [NSMutableString string];
 				
 				// Write the pending literal segment to result.
