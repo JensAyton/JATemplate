@@ -30,19 +30,6 @@ SOFTWARE.
 #error This file requires ARC.
 #endif
 
-
-/*
-	Cache limit.
-	
-	By default, an NSCache is used in ParseNames (per thread) to cache the
-	mapping of <names> parameters to parsed name arrays. Set
-	JATEMPLATE_NAME_PARSE_CACHE_COUNT_LIMIT to 0 at command line to disable
-	the cache.
-*/
-#ifndef JATEMPLATE_NAME_PARSE_CACHE_COUNT_LIMIT
-#define JATEMPLATE_NAME_PARSE_CACHE_COUNT_LIMIT	64
-#endif
-
 /*
 	Enable or disable syntax warnings.
 */
@@ -66,9 +53,6 @@ SOFTWARE.
 #endif
 
 void JATWrapWarning(const unichar characters[], NSUInteger length, NSString *message);
-
-
-static NSString * const kJATemplateParseCacheThreadDictionaryKey = @"se.ayton.jens JATemplate parse cache";
 
 enum
 {
