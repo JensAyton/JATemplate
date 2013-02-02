@@ -132,7 +132,6 @@ These operators coerce the receiver to a number using `-jatemplateCoerceToString
 These operators coerce the receiver to a number using `-jatemplateCoerceToBoolean`.
 
 * `if:` — Takes one or two arguments separated by a semicolon. If the receiver, as a boolean, is true, selects the first argument. Otherwise selects the second argument (or the empty string if none). The selected argument is then expanded as a template.<br>Example: `"The flag is {flag|if:set;not set}."`
-* `not` — negates the receiver. (Currently pretty useless, and liable to stay that way since I have no plan to add much more in the way of logic. Will probably be removed.)
 
 ### Non-coercing operators
 * `pointer` — Produces the address of the receiver, formatted as with `%p`. (`NSNull` is treated as `nil`, since the distinction can’t be made in an operator.)

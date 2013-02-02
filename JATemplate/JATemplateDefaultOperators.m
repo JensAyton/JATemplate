@@ -265,15 +265,6 @@ enum
 }
 
 
-- (id<JATCoercible>) jatemplatePerform_not_withArgument:(NSString *)argument variables:(NSDictionary *)variables
-{
-	NSNumber *value = [self jatemplateCoerceToBoolean];
-	if (value == nil)  return nil;
-	
-	return value.boolValue ? @NO : @YES;
-}
-
-
 - (id<JATCoercible>) jatemplatePerform_if_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	NSNumber *value = [self jatemplateCoerceToBoolean];
