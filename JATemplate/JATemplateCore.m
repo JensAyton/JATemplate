@@ -41,10 +41,6 @@ enum
 
 static NSString *JATExpandInternal(const unichar *stringBuffer, NSUInteger length, NSDictionary *parameters, NSString *template);
 
-static NSArray *JATSplitArgumentStringInternal(NSString *string, unichar separator, const unichar *stringBuffer, NSUInteger length);
-
-static void WithCharacters(NSString *string, void(^block)(const unichar characters[], NSUInteger length));
-
 static bool IsIdentifierStartChar(unichar value);
 static bool IsIdentifierChar(unichar value);
 static bool IsPositionalChar(unichar value);
@@ -57,7 +53,7 @@ static NSNumber *ReadPositional(const unichar characters[], NSUInteger length, N
 NSString *JATExpandLiteralWithParameters(NSString *template, NSDictionary *parameters)
 {
 	__block NSString *result;
-	WithCharacters(template, ^(const unichar characters[], NSUInteger length)
+	JATWithCharacters(template, ^(const unichar characters[], NSUInteger length)
 	{
 		result = JATExpandInternal(characters, length, parameters, template);
 	});
@@ -78,9 +74,9 @@ NSString *JATExpandFromTableInBundleWithParameters(NSString *template, NSString 
 NSArray *JATSplitArgumentString(NSString *string, unichar separator)
 {
 	__block NSArray *result;
-	WithCharacters(string, ^(const unichar characters[], NSUInteger length)
+	JATWithCharacters(string, ^(const unichar characters[], NSUInteger length)
 	{
-		result = JATSplitArgumentStringInternal(string, separator, characters, length);
+		result = JATSplitStringInternal(string, separator, '{', '}', characters, length, true);
 	});
 	return result;	
 }
@@ -385,7 +381,7 @@ static NSString *JATExpandOneFancyPantsSub(const unichar characters[], NSUIntege
 
 #pragma mark - Utilities
 
-static NSArray *JATSplitArgumentStringInternal(NSString *string, unichar separator, const unichar *stringBuffer, NSUInteger length)
+NSArray *JATSplitStringInternal(NSString *string, unichar separator, unichar balanceStart, unichar balanceEnd, const unichar *stringBuffer, NSUInteger length, bool printWarnings)
 {
 	NSUInteger spanStart = 0;
 	NSMutableArray *result = [NSMutableArray array];
@@ -394,12 +390,16 @@ static NSArray *JATSplitArgumentStringInternal(NSString *string, unichar separat
 	for (NSUInteger cursor = 0; cursor < length; cursor++)
 	{
 		unichar curr = stringBuffer[cursor];
-		if (curr == '{')  balanceCount++;
-		else if (curr == '}')
+		if (curr == balanceStart)  balanceCount++;
+		else if (curr == balanceEnd)
 		{
 			if (balanceCount == 0)
 			{
-				JATWarn(NULL, 0, @"Unbalanced brace in template argument string \"{string}\".", string);
+				if (printWarnings)
+				{
+					JATWarn(NULL, 0, @"Unbalanced brace in template argument string \"{string}\".", string);
+					printWarnings = false;
+				}
 			}
 			else
 			{
@@ -438,14 +438,7 @@ static void JATAppendCharacters(NSMutableString *buffer, const unichar character
 }
 
 
-/*
-	WithCharacters()
-	
-	Extract an array of unichars from an NSString and call a block to process
-	them. The buffer may not be mutated and should be assumed to be freed after
-	the block returns.
-*/
-static void WithCharacters(NSString *string, void(^block)(const unichar characters[], NSUInteger length))
+void JATWithCharacters(NSString *string, void(^block)(const unichar characters[], NSUInteger length))
 {
 	NSCAssert(sizeof(unichar) == sizeof(UniChar), @"This is a silly place.");
 	

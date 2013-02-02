@@ -207,7 +207,11 @@ static NSDictionary *JATemplateParseNamesUncached(NSString *nameString, NSUInteg
 		return @{};
 	}
 	
-	NSArray *components = [nameString componentsSeparatedByString:@","];
+	__block NSArray *components;
+	JATWithCharacters(nameString, ^(const unichar characters[], NSUInteger length)
+	{
+		components = JATSplitStringInternal(nameString, ',', '(', ')', characters, length, false);
+	});
 	NSCAssert(components.count == expectedCount, @"Expected %lu variable names in template expansion, got %lu. The problem name string is: \"%@\".", expectedCount, components.count, nameString);
 	
 	NSString *cleanedNames[expectedCount];
