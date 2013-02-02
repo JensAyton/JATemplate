@@ -232,9 +232,6 @@ SOFTWARE.
 		Example: "J’ai {gooseCount} {gooseCount|pluraz:oie;oies}.", or
 		equivalently "J’ai {gooseCount} oie{gooseCount|pluraz:s}.".
 		
-		not
-		Coerces the value to a boolean and returns its negation.
-		
 		if:
 		Takes one or two arguments separated by semicolons. If the value, as a
 		boolean, is true, selects the first argument. Otherwise selects the
