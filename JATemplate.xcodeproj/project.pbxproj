@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		1A304A59169E17F300DB0DF0 /* JATemplateOperatorTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A304A58169E17F300DB0DF0 /* JATemplateOperatorTests.m */; };
 		1A304A5A169E21B200DB0DF0 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1AF27503169CD60100831BDB /* Localizable.strings */; };
+		1A3094AA16BD82C0008DB168 /* JATemplateHairy.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3094A916BD82C0008DB168 /* JATemplateHairy.m */; };
+		1A3094AB16BD82C0008DB168 /* JATemplateHairy.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3094A916BD82C0008DB168 /* JATemplateHairy.m */; };
+		1A3094AC16BD82C0008DB168 /* JATemplateHairy.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3094A916BD82C0008DB168 /* JATemplateHairy.m */; };
+		1A3094AD16BD82C0008DB168 /* JATemplateHairy.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3094A916BD82C0008DB168 /* JATemplateHairy.m */; };
 		1A3AA4CC16BC345E00399FD5 /* JATemplateCastTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3AA4CB16BC345E00399FD5 /* JATemplateCastTests.m */; };
 		1A3AA4CE16BC350800399FD5 /* JATemplateCastTestsCpp.mm in Sources */ = {isa = PBXBuildFile; fileRef = 1A3AA4CD16BC350800399FD5 /* JATemplateCastTestsCpp.mm */; };
 		1ABDBA73169AFF0100846E17 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABDBA72169AFF0100846E17 /* Cocoa.framework */; };
@@ -21,16 +25,16 @@
 		1ABDBA92169AFF0200846E17 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABDBA72169AFF0100846E17 /* Cocoa.framework */; };
 		1ABDBA9A169AFF0200846E17 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1ABDBA98169AFF0200846E17 /* InfoPlist.strings */; };
 		1ABDBA9D169AFF0200846E17 /* JATemplateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ABDBA9C169AFF0200846E17 /* JATemplateTests.m */; };
-		1ABDBAA8169B019000846E17 /* JATemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ABDBAA7169B019000846E17 /* JATemplate.m */; };
-		1ABDBAA9169B019000846E17 /* JATemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ABDBAA7169B019000846E17 /* JATemplate.m */; };
+		1ABDBAA8169B019000846E17 /* JATemplateCore.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ABDBAA7169B019000846E17 /* JATemplateCore.m */; };
+		1ABDBAA9169B019000846E17 /* JATemplateCore.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ABDBAA7169B019000846E17 /* JATemplateCore.m */; };
 		1AD41C1216ADDE2100E72D89 /* JATemplateDefaultOperators.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AD41C1116ADDE2100E72D89 /* JATemplateDefaultOperators.m */; };
 		1AD41C1316ADDE2100E72D89 /* JATemplateDefaultOperators.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AD41C1116ADDE2100E72D89 /* JATemplateDefaultOperators.m */; };
 		1AD4298716AFE06700ED323A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AD4298616AFE06700ED323A /* Foundation.framework */; };
 		1AD4299516AFE15900ED323A /* JATConstructFuzzTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AD4299416AFE15900ED323A /* JATConstructFuzzTest.m */; };
-		1AD4299616AFE1D600ED323A /* JATemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ABDBAA7169B019000846E17 /* JATemplate.m */; };
+		1AD4299616AFE1D600ED323A /* JATemplateCore.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ABDBAA7169B019000846E17 /* JATemplateCore.m */; };
 		1AD4299716AFE1D900ED323A /* JATemplateDefaultOperators.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AD41C1116ADDE2100E72D89 /* JATemplateDefaultOperators.m */; };
 		1AD429A016B086E300ED323A /* JATConstructFuzzTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AD4299416AFE15900ED323A /* JATConstructFuzzTest.m */; };
-		1AD429A116B086E300ED323A /* JATemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ABDBAA7169B019000846E17 /* JATemplate.m */; };
+		1AD429A116B086E300ED323A /* JATemplateCore.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ABDBAA7169B019000846E17 /* JATemplateCore.m */; };
 		1AD429A216B086E300ED323A /* JATemplateDefaultOperators.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AD41C1116ADDE2100E72D89 /* JATemplateDefaultOperators.m */; };
 		1AD429A416B086E300ED323A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1AD4298616AFE06700ED323A /* Foundation.framework */; };
 		1AD429AD16B0872600ED323A /* MalignFuzzer.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AD429AC16B0872600ED323A /* MalignFuzzer.m */; };
@@ -78,6 +82,8 @@
 		1A22700116BC090800682F4B /* RXPaste.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RXPaste.h; sourceTree = "<group>"; };
 		1A304A57169E17F300DB0DF0 /* JATemplateOperatorTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JATemplateOperatorTests.h; sourceTree = "<group>"; };
 		1A304A58169E17F300DB0DF0 /* JATemplateOperatorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JATemplateOperatorTests.m; sourceTree = "<group>"; };
+		1A3094A916BD82C0008DB168 /* JATemplateHairy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JATemplateHairy.m; path = JATemplate/JATemplateHairy.m; sourceTree = SOURCE_ROOT; };
+		1A3094AE16BD82FA008DB168 /* JATemplateInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JATemplateInternal.h; sourceTree = "<group>"; };
 		1A3AA4CA16BC345E00399FD5 /* JATemplateCastTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JATemplateCastTests.h; sourceTree = "<group>"; };
 		1A3AA4CB16BC345E00399FD5 /* JATemplateCastTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JATemplateCastTests.m; sourceTree = "<group>"; };
 		1A3AA4CD16BC350800399FD5 /* JATemplateCastTestsCpp.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JATemplateCastTestsCpp.mm; sourceTree = "<group>"; };
@@ -102,7 +108,7 @@
 		1ABDBA9B169AFF0200846E17 /* JATemplateTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JATemplateTests.h; sourceTree = "<group>"; };
 		1ABDBA9C169AFF0200846E17 /* JATemplateTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JATemplateTests.m; sourceTree = "<group>"; };
 		1ABDBAA6169B019000846E17 /* JATemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JATemplate.h; sourceTree = "<group>"; };
-		1ABDBAA7169B019000846E17 /* JATemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JATemplate.m; sourceTree = "<group>"; };
+		1ABDBAA7169B019000846E17 /* JATemplateCore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JATemplateCore.m; sourceTree = "<group>"; };
 		1AD41C1116ADDE2100E72D89 /* JATemplateDefaultOperators.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JATemplateDefaultOperators.m; path = JATemplate/JATemplateDefaultOperators.m; sourceTree = SOURCE_ROOT; };
 		1AD4298416AFE06700ED323A /* JATemplateBenignFuzzer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = JATemplateBenignFuzzer; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AD4298616AFE06700ED323A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -215,7 +221,9 @@
 			children = (
 				1A226FFB16BC08C800682F4B /* RXPreprocessing */,
 				1ABDBAA6169B019000846E17 /* JATemplate.h */,
-				1ABDBAA7169B019000846E17 /* JATemplate.m */,
+				1A3094AE16BD82FA008DB168 /* JATemplateInternal.h */,
+				1A3094A916BD82C0008DB168 /* JATemplateHairy.m */,
+				1ABDBAA7169B019000846E17 /* JATemplateCore.m */,
 				1AD41C1116ADDE2100E72D89 /* JATemplateDefaultOperators.m */,
 			);
 			path = JATemplate;
@@ -440,8 +448,9 @@
 			files = (
 				1ABDBA7F169AFF0100846E17 /* main.m in Sources */,
 				1ABDBA86169AFF0100846E17 /* JATAppDelegate.m in Sources */,
-				1ABDBAA8169B019000846E17 /* JATemplate.m in Sources */,
+				1ABDBAA8169B019000846E17 /* JATemplateCore.m in Sources */,
 				1AD41C1216ADDE2100E72D89 /* JATemplateDefaultOperators.m in Sources */,
+				1A3094AA16BD82C0008DB168 /* JATemplateHairy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -450,11 +459,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				1ABDBA9D169AFF0200846E17 /* JATemplateTests.m in Sources */,
-				1ABDBAA9169B019000846E17 /* JATemplate.m in Sources */,
+				1ABDBAA9169B019000846E17 /* JATemplateCore.m in Sources */,
 				1A304A59169E17F300DB0DF0 /* JATemplateOperatorTests.m in Sources */,
 				1AD41C1316ADDE2100E72D89 /* JATemplateDefaultOperators.m in Sources */,
 				1A3AA4CC16BC345E00399FD5 /* JATemplateCastTests.m in Sources */,
 				1A3AA4CE16BC350800399FD5 /* JATemplateCastTestsCpp.mm in Sources */,
+				1A3094AB16BD82C0008DB168 /* JATemplateHairy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -463,9 +473,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				1AD4299516AFE15900ED323A /* JATConstructFuzzTest.m in Sources */,
-				1AD4299616AFE1D600ED323A /* JATemplate.m in Sources */,
+				1AD4299616AFE1D600ED323A /* JATemplateCore.m in Sources */,
 				1AD4299716AFE1D900ED323A /* JATemplateDefaultOperators.m in Sources */,
 				1AD429AE16B0897000ED323A /* BenignFuzzer.m in Sources */,
+				1A3094AC16BD82C0008DB168 /* JATemplateHairy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -474,9 +485,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				1AD429A016B086E300ED323A /* JATConstructFuzzTest.m in Sources */,
-				1AD429A116B086E300ED323A /* JATemplate.m in Sources */,
+				1AD429A116B086E300ED323A /* JATemplateCore.m in Sources */,
 				1AD429A216B086E300ED323A /* JATemplateDefaultOperators.m in Sources */,
 				1AD429AD16B0872600ED323A /* MalignFuzzer.m in Sources */,
+				1A3094AD16BD82C0008DB168 /* JATemplateHairy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

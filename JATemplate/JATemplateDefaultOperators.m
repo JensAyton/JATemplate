@@ -24,7 +24,7 @@ SOFTWARE.
  
 */
 
-#import "JATemplate.h"
+#import "JATemplateInternal.h"
 
 #if !__has_feature(objc_arc)
 #error This file requires ARC.
@@ -32,7 +32,6 @@ SOFTWARE.
 
 
 #define OpWarn(TEMPLATE, ...)  JATWrapWarning(NULL, 0, JATExpand(TEMPLATE, __VA_ARGS__))
-void JATWrapWarning(const unichar characters[], NSUInteger length, NSString *message);
 
 
 /*	Core pluralization logic used by plur: and plural: operators.
