@@ -157,9 +157,6 @@ SOFTWARE.
 	void JATLog(NSString *template, ...)
 		Equivalent to NSLog(@"%@", JATExpandLiteral(template, ...)).
 	
-	void JATLogLocalized(NSString *template, ...)
-		Equivalent to NSLog(@"%@", JATExpand(template, ...)).
-	
 	
 	JATAssert(condition, template, ...)
 		Equivalent to NSAssert1(condition, @"%@", JATExpandLiteral(template, ...)).
