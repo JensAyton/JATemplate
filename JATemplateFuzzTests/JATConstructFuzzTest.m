@@ -218,7 +218,6 @@ static OperatorDesc sOperators[] =
 	{ "plur:", PlurOperatorTestConstruct },
 	{ "plural:", PluralAndIfOperatorTestConstruct },
 	{ "pluraz:", PluralAndIfOperatorTestConstruct },
-	{ "not", BasicOperatorTestConstruct },
 	{ "if:", PluralAndIfOperatorTestConstruct },
 	{ "select:", SelectOperatorTestConstruct },
 	{ "uppercase", BasicOperatorTestConstruct },
