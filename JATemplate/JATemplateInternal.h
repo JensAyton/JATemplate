@@ -50,3 +50,17 @@ SOFTWARE.
 void JATWrapWarning(const unichar characters[], NSUInteger length, NSString *message);
 
 bool JATIsValidIdentifier(NSString *candidate);
+
+/*	JATWithCharacters()
+	
+	Extract an array of unichars from an NSString and call a block to process
+	them. The buffer may not be mutated and should be assumed to be freed after
+	the block returns.
+*/
+void JATWithCharacters(NSString *string, void(^block)(const unichar characters[], NSUInteger length));
+
+/*	JATSplitStringInternal()
+	
+	Core logic of JATSplitArgumentString().
+*/
+NSArray *JATSplitStringInternal(NSString *string, unichar separator, unichar balanceStart, unichar balanceEnd, const unichar *stringBuffer, NSUInteger length, bool printWarnings);
