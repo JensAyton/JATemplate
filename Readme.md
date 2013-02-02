@@ -45,12 +45,12 @@ NSString *message = JATExpand(@"I {intensifier|uppercase} like ice cream!", inte
 
 Multiple operators can be chained together in the obvious fashion. Operators may optionally take an argument, separated by a colon. By convention, operators that need to split the argument into parts use semicolons as a separator.
 ```objc
-NSString *message = JATExpand(@"Pi is about {0|round|num:spellout}.", @(M_PI));
+NSString *message = JATExpand(@"Pi is about {0|round|num:spellout}.", M_PI);
 // Produces “Pi is about three.”
 
 // BUG 2013-02-01: Some people’s ice cream only has one scoop. :-(
 // FIX: support pluralization.
-NSString *message = JATExpand(@"My {size} ice cream tastes of {flavor} and has {scoopCount} {scoopCount|plural:scoop.;scoops!}", flavor, size, @(scoopCount));
+NSString *message = JATExpand(@"My {size} ice cream tastes of {flavor} and has {scoopCount} {scoopCount|plural:scoop.;scoops!}", flavor, size, scoopCount);
 ```
 
 For the full set of built-in operators, see **Built-in operators** below. The `num:` operator and the pluralization operators are particularly important.
@@ -101,7 +101,8 @@ Casting handlers are used to convert parameters to Objective-C objects. They are
 JATDefineCast(const char *)
 {
     return @(value);
-}```
+}
+```
 The value to be converted is of the specified type and named `value`. The return type is `id <JATCoercible>`.
 
 (The macro is used to allow the same definition to work in Objective-C, using a clang extension, and in Objective-C++. If you don’t need the cross-language compatibility, you can copy the appropriate prototype from the header instead. There are probably good use cases for templated casting handlers in Objective-C++.)
@@ -132,8 +133,8 @@ These operators coerce the receiver to a number using `-jatemplateCoerceToNumber
 ### String operators
 These operators coerce the receiver to a number using `-jatemplateCoerceToString`.
 
-* `uppercase`, `lowercase` and `capitalize` — Locale-sensitive conversion to capitals/lower case/naïve title case using `-NSString uppercaseWithLocale:]` etc.
-* `uppercase_noloc`, `lowercase_noloc` and `capitalize_noloc` — Locale-insensitive conversion to capitals/lower case/naïve title case using `-NSString uppercase]` etc..
+* `uppercase`, `lowercase` and `capitalize` — Locale-sensitive conversion to capitals/lower case/naïve title case using `-[NSString uppercaseWithLocale:]` etc.
+* `uppercase_noloc`, `lowercase_noloc` and `capitalize_noloc` — Locale-insensitive conversion to capitals/lower case/naïve title case using `-[NSString uppercase]` etc..
 * `trim` — Removes leading and trailing whitespace and newlines.
 * `length` — Produces the length of the receiver (coerced to a string).
 * `fold:` — Locale-sensitive removal of lesser character distinctions using `-[NSString stringByFoldingWithOptions:locale:]`. The argument is a comma-separated list of options. The currently supported options are `case`, `width` and `diacritics`.
