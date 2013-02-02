@@ -122,8 +122,8 @@ These operators coerce the receiver to a number using `-jatemplateCoerceToNumber
 ### String operators
 These operators coerce the receiver to a number using `-jatemplateCoerceToString`.
 
-* `uppercase`, `lowercase` and `capitalize` — Locale-sensitive conversion to capitals/lower case/naïve title case using `-NSString uppercaseWithLocale:]` etc.
-* `uppercase_noloc`, `lowercase_noloc` and `capitalize_noloc` — Locale-insensitive conversion to capitals/lower case/naïve title case using `-NSString uppercase]` etc..
+* `uppercase`, `lowercase` and `capitalize` — Locale-sensitive conversion to capitals/lower case/naïve title case using `-[NSString uppercaseWithLocale:]` etc.
+* `uppercase_noloc`, `lowercase_noloc` and `capitalize_noloc` — Locale-insensitive conversion to capitals/lower case/naïve title case using `-[NSString uppercase]` etc..
 * `trim` — Removes leading and trailing whitespace and newlines.
 * `length` — Produces the length of the receiver (coerced to a string).
 * `fold:` — Locale-sensitive removal of lesser character distinctions using `-[NSString stringByFoldingWithOptions:locale:]`. The argument is a comma-separated list of options. The currently supported options are `case`, `width` and `diacritics`.
