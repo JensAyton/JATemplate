@@ -8,7 +8,7 @@ static void RunTests(void)
 	JATLog(@"Trivial string");
 	
 	// Test substitution.
-	id foo = @"sausage";
+	NSString *foo = @"sausage";
 	int bar = 76;
 	JATLog(@"foo: {foo}; bar: {bar}", foo, @(bar));
 	
