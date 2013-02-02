@@ -137,16 +137,6 @@
 }
 
 
-- (void) testOperatorNot
-{
-	NSNumber *yes = @YES;
-	NSNumber *no = @NO;
-	NSString *expansion = JATExpand(@"{yes} {no} {yes|not} {no|not}", yes, no);
-	
-	STAssertEqualObjects(expansion, @"1 0 0 1", @"not operator failed.");
-}
-
-
 - (void) testOperatorIf
 {
 	NSNumber *yes = @YES;
