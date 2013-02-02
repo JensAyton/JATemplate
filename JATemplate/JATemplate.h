@@ -579,7 +579,7 @@ typedef __autoreleasing id<JATCoercible> JATParameterArray[];
 /*	JAT_DoExpandTemplateUsingMacroKeysAndValues()
 	JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValues()
 	
-	The actual implementations of the JATExpand() family. with and without
+	The actual implementations of the JATExpand() family, with and without
 	localization.
 */
 FOUNDATION_EXTERN NSString *JAT_DoExpandTemplateUsingMacroKeysAndValues(NSString *templateString, JATNameArray names, JATParameterArray objects, NSUInteger count);
@@ -588,13 +588,16 @@ FOUNDATION_EXTERN NSString *JAT_DoLocalizeAndExpandTemplateUsingMacroKeysAndValu
 
 
 /*	These macros convert an argument list (foo, bar, baz) to a name array
-	{@"foo", @"bar", @"baz", NULL}. Note: the zero case is {@"", NULL} rather
-	than {NULL}, which doesn’t really matter since we won’t look at any
+	{@"foo", @"bar", @"baz", nil}. Note: the zero case is {@"", nil} rather
+	than {nil}, which doesn’t really matter since we won’t look at any
 	element in that case.
 */
 #define JATEMPLATE_NAMES_FROM_ARGS_ITERATOR(TAIL, ITEM)  @#ITEM, TAIL
 #define JATEMPLATE_NAMES_FROM_ARGS(...)  (JATNameArray){ rx_fold(JATEMPLATE_NAMES_FROM_ARGS_ITERATOR, __VA_ARGS__, nil) }
 
+/*	These macros convert an argument list (foo, bar, baz) to a parmeter
+	array with JACastParameter() calls.
+*/
 #define JATEMPLATE_COERCE_PARAMETERS_ITERATOR(TAIL, ITEM)  JATCastParameter(ITEM), TAIL
 #define JATEMPLATE_COERCE_PARAMETERS(...) (JATParameterArray){ rx_fold(JATEMPLATE_COERCE_PARAMETERS_ITERATOR, __VA_ARGS__, nil) }
 
