@@ -151,9 +151,6 @@ SOFTWARE.
 	void JATLog(NSString *template, ...)
 		Equivalent to NSLog(@"%@", JATExpandLiteral(template, ...)).
 	
-	void JATLogLocalized(NSString *template, ...)
-		Equivalent to NSLog(@"%@", JATExpand(template, ...)).
-	
 	
 	JATAssert(condition, template, ...)
 		Equivalent to NSAssert1(condition, @"%@", JATExpandLiteral(template, ...)).
@@ -436,7 +433,6 @@ FOUNDATION_EXTERN NSString *JATExpandFromTableInBundleWithParameters(NSString *t
 
 
 #define JATLog(TEMPLATE, ...)  NSLog(@"%@", JATExpandLiteral(TEMPLATE, __VA_ARGS__))
-#define JATLogLocalized(TEMPLATE, ...)  NSLog(@"%@", JATExpand(TEMPLATE, __VA_ARGS__))
 
 
 #define JATAssert(CONDITION, TEMPLATE, ...)  NSAssert1(CONDITION, @"%@", JATExpandLiteral(TEMPLATE, __VA_ARGS__))

@@ -52,7 +52,7 @@ static void RunTests(void)
 	
 	// Test localization.
 	NSString *localizationFile = @"Localizable.strings";
-	JATLogLocalized(@"This is a template in the source code, not from {localizationFile}.", localizationFile);
+	JATLog(@"{0}", JATExpand(@"This is a template in the source code, not from {localizationFile}.", localizationFile));
 	
 	// Test Boring Mode.
 	NSString *boring = JATExpandWithParameters(@"boring_mode_test", @{ @"boring": @"SUPER EXCITING!" });
