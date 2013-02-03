@@ -324,7 +324,7 @@ enum
 }
 
 
-- (id) jatemplatePerform_capitalize_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+- (id<JATCoercible>) jatemplatePerform_capitalize_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	NSString *value = [self jatemplateCoerceToString];
 	if (value == nil)  return nil;
@@ -333,7 +333,7 @@ enum
 }
 
 
-- (id) jatemplatePerform_uppercase_noloc_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+- (id<JATCoercible>) jatemplatePerform_uppercase_noloc_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	NSString *value = [self jatemplateCoerceToString];
 	if (value == nil)  return nil;
@@ -342,7 +342,7 @@ enum
 }
 
 
-- (id) jatemplatePerform_lowercase_noloc_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+- (id<JATCoercible>) jatemplatePerform_lowercase_noloc_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	NSString *value = [self jatemplateCoerceToString];
 	if (value == nil)  return nil;
@@ -351,7 +351,7 @@ enum
 }
 
 
-- (id) jatemplatePerform_capitalize_noloc_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+- (id<JATCoercible>) jatemplatePerform_capitalize_noloc_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	NSString *value = [self jatemplateCoerceToString];
 	if (value == nil)  return nil;
@@ -360,7 +360,7 @@ enum
 }
 
 
-- (id) jatemplatePerform_trim_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+- (id<JATCoercible>) jatemplatePerform_trim_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	NSString *value = [self jatemplateCoerceToString];
 	if (value == nil)  return nil;
@@ -378,7 +378,7 @@ enum
 }
 
 
-- (id) jatemplatePerform_fold_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+- (id<JATCoercible>) jatemplatePerform_fold_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	NSString *value = [self jatemplateCoerceToString];
 	if (value == nil)  return nil;
@@ -410,7 +410,7 @@ enum
 }
 
 
-- (id) jatemplatePerform_pointer_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+- (id<JATCoercible>) jatemplatePerform_pointer_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	id value = self;
 	if (self == [NSNull null])  value = nil;
@@ -419,7 +419,7 @@ enum
 }
 
 
-- (id) jatemplatePerform_basedesc_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+- (id<JATCoercible>) jatemplatePerform_basedesc_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	id value = self;
 	if (self == [NSNull null])  return [self jatemplateCoerceToString];
@@ -429,7 +429,7 @@ enum
 }
 
 
-- (id) jatemplatePerform_debugdesc_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+- (id<JATCoercible>) jatemplatePerform_debugdesc_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	if ([self respondsToSelector:@selector(debugDescription)])
 	{

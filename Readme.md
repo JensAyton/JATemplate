@@ -97,7 +97,7 @@ The receiver is the object being formatted – either one of the parameters to t
 In most cases, operators should be implemented in a category on `NSObject`, and coerce the receiver to whatever class is relevant for the operation. However, it may be reasonable to implement specialized class-specific operators as, say, a category on a model object class.
 
 ## Built-in operators
-The “built-in” operators are actually implemented in a separate file, JATemplateDefaultOperators.m. If you don’t like them, you can just exclude this file and write your own. Selecting a good set of operators is perhaps the most difficult design aspect of the library. Some that are currently missing: date formatting, hexadecimal numbers, column formatting (for command line tools and logging).
+The “built-in” operators are actually implemented in a separate file, JATemplateDefaultOperators.m. If you don’t like them, you can just exclude this file and write your own. Selecting a good set of operators is perhaps the most difficult design aspect of the library. Some that are currently missing are date formatting and hexadecimal numbers.
 
 ### Number operators
 These operators coerce the receiver to a number using `-jatemplateCoerceToNumber`.
@@ -127,6 +127,11 @@ These operators coerce the receiver to a number using `-jatemplateCoerceToString
 * `trim` — Removes leading and trailing whitespace and newlines.
 * `length` — Produces the length of the receiver (coerced to a string).
 * `fold:` — Locale-sensitive removal of lesser character distinctions using `-[NSString stringByFoldingWithOptions:locale:]`. The argument is a comma-separated list of options. The currently supported options are `case`, `width` and `diacritics`.
+* `fit:` — truncates or pads the string as necessary to fit in a particular number of characters. It is intended for column formatting in command-line tools and logging, and is of little use with variable-width fonts. It takes one to four arguments separated by semicolons:
+  * The first is the desired width, a positive integer.
+  * The second is `start`, `center` or `end`, specifying where padding will be added if necessary. The default is `end`.
+  * The third is also `start`, `center` or `end`, specifying where truncation will occur if necessary. The default is `end` (irrespective of the second argument).
+  * The fourth is a string to insert when truncating. The default is `…` (a single-character elipsis).
 
 ### Boolean operators
 These operators coerce the receiver to a number using `-jatemplateCoerceToBoolean`.
