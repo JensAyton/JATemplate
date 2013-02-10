@@ -415,7 +415,8 @@ typedef enum
 	kJATAlignModeInvalid,
 	kJATAlignModeStart,
 	kJATAlignModeCenter,
-	kJATAlignModeEnd
+	kJATAlignModeEnd,
+	kJATAlignModeNone
 } JATAlignMode;
 
 
@@ -426,6 +427,7 @@ static JATAlignMode InterpretAlignMode(NSString *string, JATAlignMode defaultVal
 	if ([string isEqualToString:@"start"])  return kJATAlignModeStart;
 	if ([string isEqualToString:@"center"])  return kJATAlignModeCenter;
 	if ([string isEqualToString:@"end"])  return kJATAlignModeEnd;
+	if ([string isEqualToString:@"none"])  return kJATAlignModeNone;
 	return kJATAlignModeInvalid;
 }
 
@@ -452,8 +454,11 @@ static NSString *TruncateString(NSString *value, NSUInteger keepLength, JATAlign
 		case kJATAlignModeEnd:
 			return [value substringToIndex:keepLength];
 			
+		case kJATAlignModeNone:
+			return value;
+			
 		case kJATAlignModeInvalid:
-			;
+			break;
 	}
 	
 	return nil;
@@ -509,10 +514,14 @@ static NSString *PadFitString(NSString *value, NSArray *arguments, NSUInteger st
 		case kJATAlignModeEnd:
 			return JATExpand(@"{value}{padCount|padding}", value, @(padCount));
 			
-		default:
-			OpWarn(@"The fit: operator does not recognize \"{0}\" as a padding mode. Try start, center or end.", modeString);
-			return nil;
-	}	
+		case kJATAlignModeNone:
+			return value;
+			
+		case kJATAlignModeInvalid:
+			break;
+	}
+	OpWarn(@"The fit: operator does not recognize \"{0}\" as a padding mode. Try start, center, end or none.", modeString);
+	return nil;
 }
 
 
@@ -548,10 +557,15 @@ static NSString *TruncateFitString(NSString *value, NSArray *arguments, NSUInteg
 			value = [value substringToIndex:keepLength];
 			return JATExpand(@"{value|trunc:{keepLength}}{truncString}", value, truncString, @(keepLength));
 			
-		default:
-			OpWarn(@"The fit: operator does not recognize \"{0}\" as a truncation mode. Try start, center or end.", modeString);
-			return nil;
+		case kJATAlignModeNone:
+			return value;
+			
+		case kJATAlignModeInvalid:
+			break;
 	}
+	
+	OpWarn(@"The fit: operator does not recognize \"{0}\" as a truncation mode. Try start, center, end or none.", modeString);
+	return nil;
 }
 
 
