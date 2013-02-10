@@ -473,7 +473,7 @@ static NSString *TruncateString(NSString *value, NSUInteger keepLength, JATAlign
 	}
 	
 	NSString *modeString = nil;
-	if (arguments.count > 1)  modeString = arguments[1];
+	if (arguments.count > 1)  modeString = JATExpandWithParameters(arguments[1], variables);
 	JATAlignMode mode = InterpretAlignMode(modeString, kJATAlignModeEnd);
 	if (mode == kJATAlignModeInvalid)
 	{
@@ -481,20 +481,19 @@ static NSString *TruncateString(NSString *value, NSUInteger keepLength, JATAlign
 		return nil;
 	}
 	
-	NSUInteger truncLength = [arguments[0] integerValue];
+	NSUInteger truncLength = [JATExpandWithParameters(arguments[0], variables) integerValue];
 	
 	return TruncateString(value, truncLength, mode);
 }
 
 
-static NSString *PadFitString(NSString *value, NSArray *arguments, NSUInteger stringLength, NSUInteger fitLength)
+static NSString *PadFitString(NSString *value, NSArray *arguments, NSUInteger stringLength, NSUInteger fitLength, NSDictionary *variables)
 {
 	NSUInteger padCount = fitLength - stringLength;
-	JATAlignMode padMode = kJATAlignModeEnd;
-	if (arguments.count >= 2)
-	{
-		padMode = InterpretAlignMode(arguments[1], kJATAlignModeEnd);
-	}
+	NSString *modeString = nil;
+	if (arguments.count >= 2)  modeString = JATExpandWithParameters(arguments[1], variables);
+	JATAlignMode padMode = InterpretAlignMode(modeString, kJATAlignModeEnd);
+	
 	switch (padMode)
 	{
 		case kJATAlignModeStart:
@@ -511,13 +510,13 @@ static NSString *PadFitString(NSString *value, NSArray *arguments, NSUInteger st
 			return JATExpand(@"{value}{padCount|padding}", value, @(padCount));
 			
 		default:
-			OpWarn(@"The fit: operator does not recognize \"{0}\" as a padding mode. Try start, center or end.", arguments[1]);
+			OpWarn(@"The fit: operator does not recognize \"{0}\" as a padding mode. Try start, center or end.", modeString);
 			return nil;
 	}	
 }
 
 
-static NSString *TruncateFitString(NSString *value, NSArray *arguments, NSUInteger stringLength, NSUInteger fitLength)
+static NSString *TruncateFitString(NSString *value, NSArray *arguments, NSUInteger stringLength, NSUInteger fitLength, NSDictionary *variables)
 {
 	NSString *truncString = @"…";
 	NSUInteger truncLength = 1;
@@ -528,11 +527,9 @@ static NSString *TruncateFitString(NSString *value, NSArray *arguments, NSUInteg
 	}
 	if (truncLength >= fitLength)  return truncString;
 	
-	JATAlignMode truncMode = kJATAlignModeEnd;
-	if (arguments.count >= 3)
-	{
-		truncMode = InterpretAlignMode(arguments[2], kJATAlignModeEnd);
-	}
+	NSString *modeString = nil;
+	if (arguments.count >= 3)  modeString = JATExpandWithParameters(arguments[2], variables);
+	JATAlignMode truncMode = InterpretAlignMode(modeString, kJATAlignModeEnd);
 	
 	NSUInteger keepLength = fitLength - truncLength;
 	switch (truncMode)
@@ -555,7 +552,7 @@ static NSString *TruncateFitString(NSString *value, NSArray *arguments, NSUInteg
 			return JATExpand(@"{value}{truncString}", value, truncString);
 			
 		default:
-			OpWarn(@"The fit: operator does not recognize \"{0}\" as a truncation mode. Try start, center or end.", arguments[2]);
+			OpWarn(@"The fit: operator does not recognize \"{0}\" as a truncation mode. Try start, center or end.", modeString);
 			return nil;
 	}
 }
@@ -574,10 +571,10 @@ static NSString *TruncateFitString(NSString *value, NSArray *arguments, NSUInteg
 	}
 	
 	NSUInteger stringLength = value.length;
-	NSUInteger fitLength = [arguments[0] integerValue];
+	NSUInteger fitLength = [JATExpandWithParameters(arguments[0], variables) integerValue];
 	
-	if (stringLength < fitLength)  return PadFitString(value, arguments, stringLength, fitLength);
-	if (stringLength > fitLength)  return TruncateFitString(value, arguments, stringLength, fitLength);
+	if (stringLength < fitLength)  return PadFitString(value, arguments, stringLength, fitLength, variables);
+	if (stringLength > fitLength)  return TruncateFitString(value, arguments, stringLength, fitLength, variables);
 	return value;
 }
 

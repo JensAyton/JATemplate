@@ -254,7 +254,8 @@
 - (void) testOperatorFitPadEnd
 {
 	NSString *foo = @"test";
-	NSString *expansion = JATExpand(@"{foo|fit:10}", foo);
+	NSUInteger length = 10;
+	NSString *expansion = JATExpand(@"{foo|fit:{length}}", foo, @(length));
 	
 	STAssertEqualObjects(expansion, @"test      ", @"fit: operator failed at end padding.");
 }
@@ -263,7 +264,9 @@
 - (void) testOperatorFitPadStart
 {
 	NSString *foo = @"test";
-	NSString *expansion = JATExpand(@"{foo|fit:10;start}", foo);
+	NSUInteger length = 10;
+	NSString *mode = @"start";
+	NSString *expansion = JATExpand(@"{foo|fit:{length};{mode}}", foo, @(length), mode);
 	
 	STAssertEqualObjects(expansion, @"      test", @"fit: operator failed at start padding.");
 }
