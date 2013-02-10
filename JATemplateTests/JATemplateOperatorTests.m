@@ -249,7 +249,7 @@
 }
 
 
-#pragma mark fit: operator
+#pragma mark fit: and trunc: operators
 
 - (void) testOperatorFitPadEnd
 {
@@ -338,6 +338,33 @@
 	NSString *expansion = JATExpand(@"{foo|fit:10;;;long replacement string is long}", foo);
 	
 	STAssertEqualObjects(expansion, @"long replacement string is long", @"fit: operator failed with overlong truncation replacement.");
+}
+
+
+- (void) testOperatorTruncEnd
+{
+	NSString *foo = @"test string";
+	NSString *expansion = JATExpand(@"{foo|trunc:6}", foo);
+	
+	STAssertEqualObjects(expansion, @"test s", @"trunc: operator failed at end truncation.");
+}
+
+
+- (void) testOperatorTruncCenter
+{
+	NSString *foo = @"test string";
+	NSString *expansion = JATExpand(@"{foo|trunc:6;center}", foo);
+	
+	STAssertEqualObjects(expansion, @"tesing", @"trunc: operator failed at center truncation.");
+}
+
+
+- (void) testOperatorTruncStart
+{
+	NSString *foo = @"test string";
+	NSString *expansion = JATExpand(@"{foo|trunc:6;start}", foo);
+	
+	STAssertEqualObjects(expansion, @"string", @"trunc: operator failed at start truncation.");
 }
 
 @end

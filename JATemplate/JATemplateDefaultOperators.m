@@ -430,7 +430,64 @@ static JATAlignMode InterpretAlignMode(NSString *string, JATAlignMode defaultVal
 }
 
 
-static NSString *PadString(NSString *value, NSArray *arguments, NSUInteger stringLength, NSUInteger fitLength)
+static NSString *TruncateString(NSString *value, NSUInteger keepLength, JATAlignMode mode)
+{
+	NSUInteger stringLength = value.length;
+	if (stringLength <= keepLength)  return value;
+	
+	switch (mode)
+	{
+		case kJATAlignModeStart:
+			return [value substringFromIndex:stringLength - keepLength];
+			
+		case kJATAlignModeCenter:
+		{
+			NSUInteger keepAfter = keepLength / 2;
+			NSUInteger keepBefore = keepLength - keepAfter;
+			NSString *before = [value substringToIndex:keepBefore];
+			NSString *after = [value substringFromIndex:stringLength - keepAfter];
+			return JATExpand(@"{before}{after}", before, after);
+		}
+		
+		case kJATAlignModeEnd:
+			return [value substringToIndex:keepLength];
+			
+		case kJATAlignModeInvalid:
+			;
+	}
+	
+	return nil;
+}
+
+
+- (id<JATCoercible>) jatemplatePerform_trunc_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+{
+	NSString *value = [self jatemplateCoerceToString];
+	if (value == nil)  return nil;
+	
+	NSArray *arguments = JATSplitArgumentString(argument, ';');
+	if (arguments.count < 1)
+	{
+		OpWarn(@"The trunc: operator reqires at least one argument (width).");
+		return nil;
+	}
+	
+	NSString *modeString = nil;
+	if (arguments.count > 1)  modeString = arguments[1];
+	JATAlignMode mode = InterpretAlignMode(modeString, kJATAlignModeEnd);
+	if (mode == kJATAlignModeInvalid)
+	{
+		OpWarn(@"The trunc: operator does not recognize \"{0}\" as a truncation mode. Try start, center or end.", modeString);
+		return nil;
+	}
+	
+	NSUInteger truncLength = [arguments[0] integerValue];
+	
+	return TruncateString(value, truncLength, mode);
+}
+
+
+static NSString *PadFitString(NSString *value, NSArray *arguments, NSUInteger stringLength, NSUInteger fitLength)
 {
 	NSUInteger padCount = fitLength - stringLength;
 	JATAlignMode padMode = kJATAlignModeEnd;
@@ -460,7 +517,7 @@ static NSString *PadString(NSString *value, NSArray *arguments, NSUInteger strin
 }
 
 
-static NSString *TruncateString(NSString *value, NSArray *arguments, NSUInteger stringLength, NSUInteger fitLength)
+static NSString *TruncateFitString(NSString *value, NSArray *arguments, NSUInteger stringLength, NSUInteger fitLength)
 {
 	NSString *truncString = @"…";
 	NSUInteger truncLength = 1;
@@ -519,8 +576,8 @@ static NSString *TruncateString(NSString *value, NSArray *arguments, NSUInteger 
 	NSUInteger stringLength = value.length;
 	NSUInteger fitLength = [arguments[0] integerValue];
 	
-	if (stringLength < fitLength)  return PadString(value, arguments, stringLength, fitLength);
-	if (stringLength > fitLength)  return TruncateString(value, arguments, stringLength, fitLength);
+	if (stringLength < fitLength)  return PadFitString(value, arguments, stringLength, fitLength);
+	if (stringLength > fitLength)  return TruncateFitString(value, arguments, stringLength, fitLength);
 	return value;
 }
 
