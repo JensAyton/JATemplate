@@ -108,7 +108,7 @@ The value to be converted is of the specified type and named `value`. The return
 (The macro is used to allow the same definition to work in Objective-C, using a clang extension, and in Objective-C++. If you don’t need the cross-language compatibility, you can copy the appropriate prototype from the header instead. There are probably good use cases for templated casting handlers in Objective-C++.)
 
 ## Built-in operators
-The “built-in” operators are actually implemented in a separate file, JATemplateDefaultOperators.m. If you don’t like them, you can just exclude this file and write your own. Selecting a good set of operators is perhaps the most difficult design aspect of the library. Some that are currently missing: date formatting, hexadecimal numbers, column formatting (for command line tools and logging).
+The “built-in” operators are actually implemented in a separate file, JATemplateDefaultOperators.m. If you don’t like them, you can just exclude this file and write your own. Selecting a good set of operators is perhaps the most difficult design aspect of the library. Some that are currently missing are date formatting and hexadecimal numbers.
 
 ### Number operators
 These operators coerce the receiver to a number using `-jatemplateCoerceToNumber`.
@@ -129,6 +129,7 @@ These operators coerce the receiver to a number using `-jatemplateCoerceToNumber
 * `plural:` – A simplified plural operator for languages that use the same numeric inflection structure as English (`plur:` rule 1). If one argument is given, the empty string is used for a singular value and the argument is used for plural. If two arguments separated by a semicolon are given, the first is singular and the second is plural.<br>Example: `"I have {gooseCount} {gooseCount|plural:goose;geese}.".`
 * `pluraz:` — Like `plural:`, except that a count of zero is treated as singular (`plur:` rule 2).<br>Example: `"J’ai {gooseCount} {gooseCount|pluraz:oie;oies}."`, or equivalently `"J’ai {gooseCount} oie{gooseCount|pluraz:s}."`.
 * `select:` – Takes any number of arguments separated by semicolons. The receiver is coerced to a number and truncated. The corresponding argument is selected (and expanded). Arguments are numbered from zero; if the value is out of range, the last item is used.<br>Example: `"Today is {weekDay|select:Mon;Tues;Wednes;Thurs;Fri;Satur;Sun}day."`
+* `padding` — Truncates the value to an integer and produces the corresponding number of spaces. Negative values are treated as 0.
 
 ### String operators
 These operators coerce the receiver to a number using `-jatemplateCoerceToString`.
@@ -138,6 +139,12 @@ These operators coerce the receiver to a number using `-jatemplateCoerceToString
 * `trim` — Removes leading and trailing whitespace and newlines.
 * `length` — Produces the length of the receiver (coerced to a string).
 * `fold:` — Locale-sensitive removal of lesser character distinctions using `-[NSString stringByFoldingWithOptions:locale:]`. The argument is a comma-separated list of options. The currently supported options are `case`, `width` and `diacritics`.
+* `fit:` — Truncates or pads the string as necessary to fit in a particular number of characters. It is intended for column formatting in command-line tools and logging, and is of little use with variable-width fonts. It takes one to four arguments separated by semicolons:
+  * The first is the desired width, a positive integer.
+  * The second is `start`, `center`, `end` or `none`, specifying where padding will be added if necessary. The default is `end`. `center` means padding will be added at both ends. `none` means no padding will be added.
+  * The third is also `start`, `center`, `end` or `none`, specifying where truncation will occur if necessary. The default is `end` (irrespective of the second argument). `none` means no truncation will occur.
+  * The fourth is a string to insert when truncating. The default is `…` (a single-character elipsis). This may be any string, including the empty string or a string longer than the fit width; in this case, truncation will return the full replacement string and nothing else.
+* `trunc:` – Truncates the string without adding a placeholder. Takes one or two arguments, the first being the desired length and the second being a mode string as for `fit:`. `trunc:x;y` is equivalent to `fit:x;none;y;`.
 
 ### Boolean operators
 These operators coerce the receiver to a number using `-jatemplateCoerceToBoolean`.
