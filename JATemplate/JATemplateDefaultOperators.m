@@ -410,6 +410,137 @@ enum
 }
 
 
+typedef enum
+{
+	kJATAlignModeInvalid,
+	kJATAlignModeStart,
+	kJATAlignModeCenter,
+	kJATAlignModeEnd
+} JATAlignMode;
+
+
+static JATAlignMode InterpretAlignMode(NSString *string, JATAlignMode defaultValue)
+{
+	if (string == nil || [string isEqualToString:@""])  return defaultValue;
+	
+	if ([string isEqualToString:@"start"])  return kJATAlignModeStart;
+	if ([string isEqualToString:@"center"])  return kJATAlignModeCenter;
+	if ([string isEqualToString:@"end"])  return kJATAlignModeEnd;
+	return kJATAlignModeInvalid;
+}
+
+
+static NSString *PadString(NSString *value, NSArray *arguments, NSUInteger stringLength, NSUInteger fitLength)
+{
+	NSUInteger padCount = fitLength - stringLength;
+	JATAlignMode padMode = kJATAlignModeEnd;
+	if (arguments.count >= 2)
+	{
+		padMode = InterpretAlignMode(arguments[1], kJATAlignModeEnd);
+	}
+	switch (padMode)
+	{
+		case kJATAlignModeStart:
+			return JATExpand(@"{padCount|padding}{value}", value, @(padCount));
+			
+		case kJATAlignModeCenter:
+		{
+			NSUInteger padBefore = padCount / 2;
+			NSUInteger padAfter = padCount - padBefore;
+			return JATExpand(@"{padBefore|padding}{value}{padAfter|padding}", value, @(padBefore), @(padAfter));
+		}
+			
+		case kJATAlignModeEnd:
+			return JATExpand(@"{value}{padCount|padding}", value, @(padCount));
+			
+		default:
+			OpWarn(@"The fit: operator does not recognize \"{0}\" as a padding mode. Try start, center or end.", arguments[1]);
+			return nil;
+	}	
+}
+
+
+static NSString *TruncateString(NSString *value, NSArray *arguments, NSUInteger stringLength, NSUInteger fitLength)
+{
+	NSString *truncString = @"…";
+	NSUInteger truncLength = 1;
+	if (arguments.count >= 4)
+	{
+		truncString = arguments[3];
+		truncLength = truncString.length;
+	}
+	if (truncLength >= fitLength)  return truncString;
+	
+	JATAlignMode truncMode = kJATAlignModeEnd;
+	if (arguments.count >= 3)
+	{
+		truncMode = InterpretAlignMode(arguments[2], kJATAlignModeEnd);
+	}
+	
+	NSUInteger keepLength = fitLength - truncLength;
+	switch (truncMode)
+	{
+		case kJATAlignModeStart:
+			value = [value substringFromIndex:stringLength - keepLength];
+			return JATExpand(@"{truncString}{value}", value, truncString);
+			
+		case kJATAlignModeCenter:
+		{
+			NSUInteger keepAfter = keepLength / 2;
+			NSUInteger keepBefore = keepLength - keepAfter;
+			NSString *before = [value substringToIndex:keepBefore];
+			NSString *after = [value substringFromIndex:stringLength - keepAfter];
+			return JATExpand(@"{before}{truncString}{after}", before, truncString, after);
+		}
+			
+		case kJATAlignModeEnd:
+			value = [value substringToIndex:keepLength];
+			return JATExpand(@"{value}{truncString}", value, truncString);
+			
+		default:
+			OpWarn(@"The fit: operator does not recognize \"{0}\" as a truncation mode. Try start, center or end.", arguments[2]);
+			return nil;
+	}
+}
+
+
+- (id<JATCoercible>) jatemplatePerform_fit_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+{
+	NSString *value = [self jatemplateCoerceToString];
+	if (value == nil)  return nil;
+	
+	NSArray *arguments = JATSplitArgumentString(argument, ';');
+	if (arguments.count < 1)
+	{
+		OpWarn(@"The fit: operator reqires at least one argument (width).");
+		return nil;
+	}
+	
+	NSUInteger stringLength = value.length;
+	NSUInteger fitLength = [arguments[0] integerValue];
+	
+	if (stringLength < fitLength)  return PadString(value, arguments, stringLength, fitLength);
+	if (stringLength > fitLength)  return TruncateString(value, arguments, stringLength, fitLength);
+	return value;
+}
+
+
+- (id<JATCoercible>) jatemplatePerform_padding_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+{
+	NSNumber *value = [self jatemplateCoerceToNumber];
+	if (value == nil)  return nil;
+	
+	NSInteger count = value.integerValue;
+	if (count <= 0)  return @"";
+	
+	char *buffer = malloc(count);
+	if (buffer == NULL)  return nil;
+	
+	memset(buffer, ' ', count);
+	return [[NSString alloc] initWithBytesNoCopy:buffer length:count encoding:NSASCIIStringEncoding freeWhenDone:true];
+}
+
+
 - (id<JATCoercible>) jatemplatePerform_pointer_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	id value = self;

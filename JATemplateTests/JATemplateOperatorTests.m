@@ -248,4 +248,96 @@
 	STAssertEqualObjects(expansion, @"frob", @"fold operator failed.");
 }
 
+
+#pragma mark fit: operator
+
+- (void) testOperatorFitPadEnd
+{
+	NSString *foo = @"test";
+	NSString *expansion = JATExpand(@"{foo|fit:10}", foo);
+	
+	STAssertEqualObjects(expansion, @"test      ", @"fit: operator failed at end padding.");
+}
+
+
+- (void) testOperatorFitPadStart
+{
+	NSString *foo = @"test";
+	NSString *expansion = JATExpand(@"{foo|fit:10;start}", foo);
+	
+	STAssertEqualObjects(expansion, @"      test", @"fit: operator failed at start padding.");
+}
+
+
+- (void) testOperatorFitPadCenter
+{
+	NSString *foo = @"test";
+	NSString *expansion = JATExpand(@"{foo|fit:10;center}", foo);
+	
+	STAssertEqualObjects(expansion, @"   test   ", @"fit: operator failed at center padding.");
+}
+
+
+- (void) testOperatorFitExactFit
+{
+	NSString *foo = @"test string";
+	NSString *expansion = JATExpand(@"{foo|fit:11}", foo);
+	
+	STAssertEqualObjects(expansion, @"test string", @"fit: operator failed with exact fit.");
+}
+
+
+- (void) testOperatorFitTruncEnd
+{
+	NSString *foo = @"test string";
+	NSString *expansion = JATExpand(@"{foo|fit:10}", foo);
+	
+	STAssertEqualObjects(expansion, @"test stri…", @"fit: operator failed at end truncation.");
+}
+
+
+- (void) testOperatorFitTruncCenter
+{
+	NSString *foo = @"test string";
+	NSString *expansion = JATExpand(@"{foo|fit:10;;center}", foo);
+	
+	STAssertEqualObjects(expansion, @"test …ring", @"fit: operator failed at center truncation.");
+}
+
+
+- (void) testOperatorFitTruncStart
+{
+	NSString *foo = @"test string";
+	NSString *expansion = JATExpand(@"{foo|fit:10;;start}", foo);
+	
+	STAssertEqualObjects(expansion, @"…st string", @"fit: operator failed at start truncation.");
+}
+
+
+- (void) testOperatorFitTruncCustom
+{
+	NSString *foo = @"test string";
+	NSString *expansion = JATExpand(@"{foo|fit:10;;;...}", foo);
+	
+	STAssertEqualObjects(expansion, @"test st...", @"fit: operator failed with custom truncation replacement.");
+}
+
+
+- (void) testOperatorFitTruncExactReplace
+{
+	NSString *foo = @"test string";
+	NSString *expansion = JATExpand(@"{foo|fit:10;;;replace me}", foo);
+	
+	STAssertEqualObjects(expansion, @"replace me", @"fit: operator failed with exact-width truncation replacement.");
+}
+
+
+- (void) testOperatorFitTruncHuge
+{
+	NSString *foo = @"test string";
+	NSString *expansion = JATExpand(@"{foo|fit:10;;;long replacement string is long}", foo);
+	
+	STAssertEqualObjects(expansion, @"long replacement string is long", @"fit: operator failed with overlong truncation replacement.");
+}
+
 @end
