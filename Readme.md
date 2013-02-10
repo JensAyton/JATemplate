@@ -128,11 +128,12 @@ These operators coerce the receiver to a number using `-jatemplateCoerceToString
 * `trim` — Removes leading and trailing whitespace and newlines.
 * `length` — Produces the length of the receiver (coerced to a string).
 * `fold:` — Locale-sensitive removal of lesser character distinctions using `-[NSString stringByFoldingWithOptions:locale:]`. The argument is a comma-separated list of options. The currently supported options are `case`, `width` and `diacritics`.
-* `fit:` — truncates or pads the string as necessary to fit in a particular number of characters. It is intended for column formatting in command-line tools and logging, and is of little use with variable-width fonts. It takes one to four arguments separated by semicolons:
+* `fit:` — Truncates or pads the string as necessary to fit in a particular number of characters. It is intended for column formatting in command-line tools and logging, and is of little use with variable-width fonts. It takes one to four arguments separated by semicolons:
   * The first is the desired width, a positive integer.
-  * The second is `start`, `center` or `end`, specifying where padding will be added if necessary. The default is `end`. `center` means padding will be added at both ends.
-  * The third is also `start`, `center` or `end`, specifying where truncation will occur if necessary. The default is `end` (irrespective of the second argument).
+  * The second is `start`, `center`, `end` or `none`, specifying where padding will be added if necessary. The default is `end`. `center` means padding will be added at both ends. `none` means no padding will be added.
+  * The third is also `start`, `center`, `end` or `none`, specifying where truncation will occur if necessary. The default is `end` (irrespective of the second argument). `none` means no truncation will occur.
   * The fourth is a string to insert when truncating. The default is `…` (a single-character elipsis). This may be any string, including the empty string or a string longer than the fit width; in this case, truncation will return the full replacement string and nothing else.
+* `trunc:` – Truncates the string without adding a placeholder. Takes one or two arguments, the first being the desired length and the second being a mode string as for `fit:`. `trunc:x;y` is equivalent to `fit:x;none;y;`.
 
 ### Boolean operators
 These operators coerce the receiver to a number using `-jatemplateCoerceToBoolean`.
