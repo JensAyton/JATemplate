@@ -535,21 +535,18 @@ static NSString *TruncateFitString(NSString *value, NSArray *arguments, NSUInteg
 	switch (truncMode)
 	{
 		case kJATAlignModeStart:
-			value = [value substringFromIndex:stringLength - keepLength];
-			return JATExpand(@"{truncString}{value}", value, truncString);
+			return JATExpand(@"{truncString}{value|trunc:{keepLength};start}", value, truncString, @(keepLength));
 			
 		case kJATAlignModeCenter:
 		{
 			NSUInteger keepAfter = keepLength / 2;
 			NSUInteger keepBefore = keepLength - keepAfter;
-			NSString *before = [value substringToIndex:keepBefore];
-			NSString *after = [value substringFromIndex:stringLength - keepAfter];
-			return JATExpand(@"{before}{truncString}{after}", before, truncString, after);
+			return JATExpand(@"{value|trunc:{keepBefore}}{truncString}{value|trunc:{keepAfter};start}", value, truncString, @(keepBefore), @(keepAfter));
 		}
 			
 		case kJATAlignModeEnd:
 			value = [value substringToIndex:keepLength];
-			return JATExpand(@"{value}{truncString}", value, truncString);
+			return JATExpand(@"{value|trunc:{keepLength}}{truncString}", value, truncString, @(keepLength));
 			
 		default:
 			OpWarn(@"The fit: operator does not recognize \"{0}\" as a truncation mode. Try start, center or end.", modeString);
