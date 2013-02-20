@@ -215,6 +215,16 @@
 }
 
 
+#if __cplusplus
+- (void) testCastCppNullPtr
+{
+	NSString *expansion = JATExpand(@"{0}", nullptr);
+	
+	STAssertEqualObjects(expansion, @"(null)", @"parameter cast from [std::nullptr_t] failed.");
+}
+#endif
+
+
 typedef struct
 {
 	int a, b, c;

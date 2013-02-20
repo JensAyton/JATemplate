@@ -559,6 +559,14 @@ JATDefineCast(NSRange)
 }
 
 
+#if __cplusplus > 201103L
+JATDefineCast(std::nullptr_t)
+{
+	return [NSNull null];
+}
+#endif
+
+
 #pragma mark - Implementation details
 
 /*	Types used to manage our nasty arrays. Names can be __unsafe_unretained
