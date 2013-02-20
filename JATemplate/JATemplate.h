@@ -540,19 +540,31 @@ JATDefineCast(bool)
 
 JATDefineCast(CGPoint)
 {
+#if TARGET_OS_IPHONE
+	return NSStringFromCGPoint(value);
+#else
 	return NSStringFromPoint(value);
+#endif
 }
 
 
 JATDefineCast(CGSize)
 {
+#if TARGET_OS_IPHONE
+	return NSStringFromCGSize(value);
+#else
 	return NSStringFromSize(value);
+#endif
 }
 
 
 JATDefineCast(CGRect)
 {
+#if TARGET_OS_IPHONE
+	return NSStringFromCGRect(value);
+#else
 	return NSStringFromRect(value);
+#endif
 }
 
 #endif
