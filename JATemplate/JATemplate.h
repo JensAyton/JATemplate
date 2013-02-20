@@ -535,6 +535,9 @@ JATDefineCast(bool)
 }
 
 
+#ifdef CGGEOMETRY_H_
+// CGGeometry types aren't available in classes that only include Foundation.
+
 JATDefineCast(CGPoint)
 {
 	return NSStringFromPoint(value);
@@ -552,6 +555,8 @@ JATDefineCast(CGRect)
 	return NSStringFromRect(value);
 }
 
+#endif
+
 
 JATDefineCast(NSRange)
 {
@@ -559,10 +564,10 @@ JATDefineCast(NSRange)
 }
 
 
-#if __cplusplus > 201103L
+#if __cplusplus >= 201103L
 JATDefineCast(std::nullptr_t)
 {
-	return [NSNull null];
+	return nil;
 }
 #endif
 
