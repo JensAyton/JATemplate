@@ -31,9 +31,9 @@ Templates can directly refer to variables by name, but they only have access to 
 
 The default behaviour for numerical parameters is to format them with `NSNumberFormatter`’s `NSNumberFormatterDecimalStyle`. If `scoopCount` is set to `1000` in the example above, it is printed as *1,000* in English locales.
 
-In JATemplate: Vanilla Edition, all parameters must be Objective-C objects. However, variables may use `@()` boxing syntax and still be referred to by name. The Hairy Edition supports additional types, and it is easy to add support for custom types (structs, unions, C++ classes and C++11 enum classes).´´
+In JATemplate: Vanilla Edition, all parameters must be Objective-C objects. However, variables may use `@()` boxing syntax and still be referred to by name. The Hairy Edition supports additional types, and it is easy to add support for custom types (structs, unions, C++ classes and C++11 enum classes).
 
-The most important feature of the design is that even though `JAExpand()` *et al.* are variadic, the number of arguments passed is fixed at compile time, and they are all known to be object pointers. If a format string that refers to a non-existent parameter, either by name or by index, it will simply not be expanded.
+The most important feature of the design is that even though `JAExpand()` *et al.* are variadic, the number of arguments passed is fixed at compile time, and they are all known to be object pointers. If a format string refers to a non-existent parameter, either by name or by index, it will simply not be expanded.
 
 ## Formatting
 The formatting of expanded parameters can be modified by appending *formatting operators*, separated by a pipe character:
@@ -74,7 +74,7 @@ There are two major ways to customize JATemplate: custom coercion methods and cu
 
 The three coercion methods in the protocol `<JATCoercible>` are used by operators and the template expansion system to interpret parameters as particular types. They are implemented on `NSObject` and a few other classes, but can be overridden to customize the treatment of your own classes.
 
-* `-jatemplateCoerceToString` returns an `NSString *`. In addition to being used by operators, it is used by the template expander to produce the final string that will be inserted into the template. The default implementation calls `-description`. It is overridden for `NSString` to return `self`, for `NSNumber` to use `NSNumberFormatterDecimalStyle`, for `NSNull` to return `@"(null)"`, for `NSArray` to return a comma-separated list.
+* `-jatemplateCoerceToString` returns an `NSString *`. In addition to being used by operators, it is used by the template expander to produce the final string that will be inserted into the template. The default implementation calls `-description`. It is overridden for `NSString` to return `self`, for `NSNumber` to use `NSNumberFormatterDecimalStyle`, for `NSNull` to return `@"(null)"`, and for `NSArray` to return a comma-separated list.
 * `-jatemplateCoerceToNumber` returns an `NSNumber *`. The default implementation will look for methods `-(double)doubleValue`, `-(float)floatValue`, `-(NSInteger)integerValue` or `-(int)intValue`, in that order. If none of these is found, it returns `nil`, which causes expansion to fail. It is overridden by `NSNumber` to return `self`.
 * `-jatemplateCoerceToBoolean` returns an `NSNumber *` which is treated as a boolean. The default implementation calls `-(BOOL)boolValue` if implemented, otherwise returns `nil`. Overridden by `NSNull` to return `@NO`.
 
