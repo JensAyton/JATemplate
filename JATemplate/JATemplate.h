@@ -407,7 +407,7 @@ NSArray *JATSplitArgumentString(NSString *string, unichar separator);
 #endif
 
 
-JATDefineCast(id<JATCoercible>)
+JATDefineCast(id)
 {
 	return value;
 }
