@@ -74,12 +74,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		1A226FFC16BC090800682F4B /* _RXFold.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _RXFold.h; sourceTree = "<group>"; };
-		1A226FFD16BC090800682F4B /* _RXInterpolation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _RXInterpolation.h; sourceTree = "<group>"; };
-		1A226FFE16BC090800682F4B /* RXCount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RXCount.h; sourceTree = "<group>"; };
-		1A226FFF16BC090800682F4B /* RXFold.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RXFold.h; sourceTree = "<group>"; };
-		1A22700016BC090800682F4B /* RXInterpolation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RXInterpolation.h; sourceTree = "<group>"; };
-		1A22700116BC090800682F4B /* RXPaste.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RXPaste.h; sourceTree = "<group>"; };
 		1A304A57169E17F300DB0DF0 /* JATemplateOperatorTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JATemplateOperatorTests.h; sourceTree = "<group>"; };
 		1A304A58169E17F300DB0DF0 /* JATemplateOperatorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JATemplateOperatorTests.m; sourceTree = "<group>"; };
 		1A3094A916BD82C0008DB168 /* JATemplateHairy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JATemplateHairy.m; path = JATemplate/JATemplateHairy.m; sourceTree = SOURCE_ROOT; };
@@ -158,20 +152,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1A226FFB16BC08C800682F4B /* RXPreprocessing */ = {
-			isa = PBXGroup;
-			children = (
-				1A226FFC16BC090800682F4B /* _RXFold.h */,
-				1A226FFD16BC090800682F4B /* _RXInterpolation.h */,
-				1A226FFE16BC090800682F4B /* RXCount.h */,
-				1A226FFF16BC090800682F4B /* RXFold.h */,
-				1A22700016BC090800682F4B /* RXInterpolation.h */,
-				1A22700116BC090800682F4B /* RXPaste.h */,
-			);
-			name = RXPreprocessing;
-			path = "../RXPreprocessing-1.0.2";
-			sourceTree = "<group>";
-		};
 		1ABDBA63169AFF0100846E17 = {
 			isa = PBXGroup;
 			children = (
@@ -219,7 +199,6 @@
 		1ABDBA78169AFF0100846E17 /* JATemplate */ = {
 			isa = PBXGroup;
 			children = (
-				1A226FFB16BC08C800682F4B /* RXPreprocessing */,
 				1ABDBAA6169B019000846E17 /* JATemplate.h */,
 				1A3094AE16BD82FA008DB168 /* JATemplateInternal.h */,
 				1A3094A916BD82C0008DB168 /* JATemplateHairy.m */,
@@ -618,6 +597,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TestApp/JATemplate-Prefix.pch";
 				INFOPLIST_FILE = "TestApp/JATemplate-Info.plist";
+				OTHER_CFLAGS = "-fmacro-backtrace-limit=0";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -630,6 +610,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TestApp/JATemplate-Prefix.pch";
 				INFOPLIST_FILE = "TestApp/JATemplate-Info.plist";
+				OTHER_CFLAGS = "-fmacro-backtrace-limit=0";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
