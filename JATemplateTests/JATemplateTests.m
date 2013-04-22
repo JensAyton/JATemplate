@@ -221,13 +221,16 @@ NSArray *JATGetWarnings(void)
 
 void JATResetWarnings(void)
 {
+#if !__has_feature(objc_arc)
+	[sWarnings release];
+#endif
 	sWarnings = nil;
 }
 
 
 void JATWarnIntercept(NSString *message)
 {
-	if (sWarnings == nil)  sWarnings = [NSMutableArray array];
+	if (sWarnings == nil)  sWarnings = [[NSMutableArray alloc] init];
 	[sWarnings addObject:message];
 	
 	NSLog(@"JAT warning: %@", message);

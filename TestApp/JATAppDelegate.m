@@ -43,6 +43,10 @@ static void RunTests(void)
 	NSUInteger weekDay = dateComponents.weekday - 1;
 	JATLog(@"Today is {weekDay|select:Sunday;Monday;Tuesday;Wednesday;Thursday;Friday;Saturday;Blarnsday}.", weekDay);
 	
+#if !__has_feature(objc_arc)
+	[calendar release];
+#endif
+	
 	// Test fold: operator.
 	NSString *blargh = @"BläÄ";
 	JATLog(@"Fold operator: {blargh|fold:case,diacritics}", blargh);

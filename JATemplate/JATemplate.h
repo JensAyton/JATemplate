@@ -73,6 +73,13 @@ SOFTWARE.
 @protocol JATCoercible;
 
 
+#if __has_feature(objc_arc)
+#define JATEMPLATE_BRIDGE_CAST __bridge
+#else
+#define JATEMPLATE_BRIDGE_CAST
+#endif
+
+
 #pragma mark Interface documentation – Read me first
 
 /*
@@ -413,19 +420,19 @@ JATDefineCast(id)
 
 JATDefineCast(CFStringRef)
 {
-	return (__bridge NSString *)value;
+	return (JATEMPLATE_BRIDGE_CAST NSString *)value;
 }
 
 
 JATDefineCast(CFNumberRef)
 {
-	return (__bridge NSNumber *)value;
+	return (JATEMPLATE_BRIDGE_CAST NSNumber *)value;
 }
 
 
 JATDefineCast(CFBooleanRef)
 {
-	return (__bridge NSNumber *)value;
+	return (JATEMPLATE_BRIDGE_CAST NSNumber *)value;
 }
 
 
