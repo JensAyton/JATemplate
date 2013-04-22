@@ -139,7 +139,7 @@
 }
 
 
-#if __cplusplus
+#if JATEMPLATE_OBJCPP
 - (void) testCastCppString
 {
 	std::string value = "stability. No civilization without social stability. No social stability without individual stability.";
@@ -215,7 +215,7 @@
 }
 
 
-#if __cplusplus
+#if JATEMPLATE_OBJCPP
 - (void) testCastCppNullPtr
 {
 	NSString *expansion = JATExpand(@"{0}", nullptr);
@@ -245,7 +245,7 @@ JATDefineCast(CustomStruct)
 }
 
 
-#if __cplusplus
+#if JATEMPLATE_OBJCPP
 enum class CustomEnumClass
 {
 	vanilla, chocolate, strawberry
@@ -266,6 +266,7 @@ JATDefineCast(CustomEnumClass)
 			return @"strawberry";
 	}
 	
+#pragma clang diagnostic ignored "-Wunreachable-code"
 	return @"<error>";
 }
 

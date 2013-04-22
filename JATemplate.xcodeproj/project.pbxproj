@@ -554,9 +554,11 @@
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx;
 				WARNING_CFLAGS = (
-					"-Wall",
-					"-Wextra",
+					"-Weverything",
+					"-Werror=all",
+					"-Werror=extra",
 					"-Wno-unused-parameter",
+					"-Wno-gnu",
 				);
 			};
 			name = Debug;
@@ -583,9 +585,11 @@
 				RUN_CLANG_STATIC_ANALYZER = YES;
 				SDKROOT = macosx;
 				WARNING_CFLAGS = (
-					"-Wall",
-					"-Wextra",
+					"-Weverything",
+					"-Werror=all",
+					"-Werror=extra",
 					"-Wno-unused-parameter",
+					"-Wno-gnu",
 				);
 			};
 			name = Release;
@@ -599,6 +603,10 @@
 				INFOPLIST_FILE = "TestApp/JATemplate-Info.plist";
 				OTHER_CFLAGS = "-fmacro-backtrace-limit=0";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				WARNING_CFLAGS = (
+					"$(inherited)",
+					"-Wno-objc-interface-ivars",
+				);
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -612,6 +620,10 @@
 				INFOPLIST_FILE = "TestApp/JATemplate-Info.plist";
 				OTHER_CFLAGS = "-fmacro-backtrace-limit=0";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				WARNING_CFLAGS = (
+					"$(inherited)",
+					"-Wno-objc-interface-ivars",
+				);
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -627,6 +639,13 @@
 				INFOPLIST_FILE = "JATemplateTests/JATemplateTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
+				WARNING_CFLAGS = (
+					"$(inherited)",
+					"-Wno-objc-interface-ivars",
+					"-Wno-unused-macros",
+					"-Wno-disabled-macro-expansion",
+					"-Wno-c++98-compat-pedantic",
+				);
 				WRAPPER_EXTENSION = octest;
 			};
 			name = Debug;
@@ -642,6 +661,13 @@
 				INFOPLIST_FILE = "JATemplateTests/JATemplateTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
+				WARNING_CFLAGS = (
+					"$(inherited)",
+					"-Wno-objc-interface-ivars",
+					"-Wno-unused-macros",
+					"-Wno-disabled-macro-expansion",
+					"-Wno-c++98-compat-pedantic",
+				);
 				WRAPPER_EXTENSION = octest;
 			};
 			name = Release;

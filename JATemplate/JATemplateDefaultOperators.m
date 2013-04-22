@@ -383,7 +383,11 @@ enum
 	NSString *value = [self jatemplateCoerceToString];
 	if (value == nil)  return nil;
 	
+	#pragma clang diagnostic push
+	#pragma clang diagnostic ignored "-Wassign-enum"
 	NSStringCompareOptions optionMask = 0;
+	#pragma clang diagnostic pop
+	
 	for (NSString *option in [argument componentsSeparatedByString:@","])
 	{
 		if ([option isEqual:@"case"])

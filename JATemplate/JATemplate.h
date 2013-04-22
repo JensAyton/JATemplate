@@ -64,13 +64,20 @@ SOFTWARE.
  
 */
 
-#import <Foundation/Foundation.h>
-
-#if __cplusplus
-#include <string>
+#if defined(__cplusplus) && __cplusplus
+#define JATEMPLATE_OBJCPP	1
+#define JATEMPLATE_CPP11	__cplusplus >= 201103L
+#else
+#define JATEMPLATE_OBJCPP	0
+#define JATEMPLATE_CPP11	0
 #endif
 
-@protocol JATCoercible;
+
+#import <Foundation/Foundation.h>
+
+#if JATEMPLATE_OBJCPP
+#include <string>
+#endif
 
 
 #if __has_feature(objc_arc)
@@ -78,6 +85,13 @@ SOFTWARE.
 #else
 #define JATEMPLATE_BRIDGE_CAST
 #endif
+
+
+/*	Hardcore warning junkies: to use JATemplate as intended, -Wgnu must be
+	disabled in client code too.
+*/
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu"
 
 
 #pragma mark Interface documentation – Read me first
@@ -296,6 +310,9 @@ SOFTWARE.
 
 #pragma mark Formatting operator support
 
+@protocol JATCoercible;
+
+
 @interface NSObject (JATOperatorSupport)
 
 /*	-jatemplatePerformOperator:argument:variables: implements formatting
@@ -403,7 +420,7 @@ NSArray *JATSplitArgumentString(NSString *string, unichar separator);
 	
 	In Objective-C++, std::string is also supported.
 */
-#if __cplusplus
+#if JATEMPLATE_OBJCPP
 #define JATDefineCast(TYPE) \
 	inline id<JATCoercible> JATCastParameter(TYPE value)
 #else
@@ -442,7 +459,7 @@ JATDefineCast(const char *)
 }
 
 
-#if __cplusplus
+#if JATEMPLATE_OBJCPP
 JATDefineCast(const std::string &)
 {
 	return @(value.c_str());
@@ -581,7 +598,7 @@ JATDefineCast(NSRange)
 }
 
 
-#if __cplusplus >= 201103L
+#if JATEMPLATE_CPP11
 JATDefineCast(std::nullptr_t)
 {
 	return nil;
@@ -669,22 +686,6 @@ FOUNDATION_EXTERN NSString *JATExpandFromTableInBundleWithParameters(NSString *t
 
 #define JATAssert(CONDITION, TEMPLATE, ...)  NSAssert1(CONDITION, @"%@", JATExpandLiteral(TEMPLATE, __VA_ARGS__))
 #define JATCAssert(CONDITION, TEMPLATE, ...)  NSCAssert1(CONDITION, @"%@", JATExpandLiteral(TEMPLATE, __VA_ARGS__))
-
-
-/*	void case for JATCastParameter. This is required because of how JATExpand()
-	etc. expand when no parameters are given.
-*/
-#if __cplusplus
-inline id<JATCoercible> JATCastParameter(void)
-{
-	return nil;
-}
-#else
-__attribute__((overloadable)) static inline id<JATCoercible> JATCastParameter(void)
-{
-	return nil;
-}
-#endif
 
 
 /*
@@ -797,3 +798,5 @@ __attribute__((overloadable)) static inline id<JATCoercible> JATCastParameter(vo
 #define JATEMPLATE_MAP_IMPL_60(F, HEAD, ...) F(HEAD), JATEMPLATE_MAP_IMPL_59(F, __VA_ARGS__)
 #define JATEMPLATE_MAP_IMPL_61(F, HEAD, ...) F(HEAD), JATEMPLATE_MAP_IMPL_60(F, __VA_ARGS__)
 #define JATEMPLATE_MAP_IMPL_62(F, HEAD, ...) F(HEAD), JATEMPLATE_MAP_IMPL_61(F, __VA_ARGS__)
+
+#pragma clang diagnostic pop
