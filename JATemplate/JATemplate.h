@@ -414,7 +414,7 @@ NSArray *JATSplitArgumentString(NSString *string, unichar separator);
 	These helpers are used to convert non-objects into appropriate object
 	representations for use as template expansions. The default set can be
 	used to pass Objective-C objects, C strings, all built-in number types,
-	CFString, CFNumber and CFBoolan, and a few common structs: NSRange and
+	CFString, CFNumber and CFBoolean, and a few common structs: NSRange and
 	{NS|CG}{Point|Size|Rect}. (Note that the struct operators are not
 	internationalized.)
 	
