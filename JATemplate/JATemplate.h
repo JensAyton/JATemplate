@@ -547,7 +547,7 @@ JATDefineCast(double)
 
 JATDefineCast(long double)
 {
-	return [NSNumber numberWithDouble:value];
+	return [NSNumber numberWithDouble:(double)value];
 }
 
 
