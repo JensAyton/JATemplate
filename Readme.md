@@ -74,7 +74,7 @@ There are three major ways to customize JATemplate: Hairy Edition – custom coe
 
 The three coercion methods in the protocol `<JATCoercible>` are used by operators and the template expansion system to interpret parameters as particular types. They are implemented on `NSObject` and a few other classes, but can be overridden to customize the treatment of your own classes.
 
-* `-jatemplateCoerceToString` returns an `NSString *`. In addition to being used by operators, it is used by the template expander to produce the final string that will be inserted into the template. The default implementation calls `-description`. It is overridden for `NSString` to return `self`, for `NSNumber` to use `NSNumberFormatterDecimalStyle`, for `NSNull` to return `@"(null)"`, for `NSArray` to return a comma-separated list.
+* `-jatemplateCoerceToString` returns an `NSString *`. In addition to being used by operators, it is used by the template expander to produce the final string that will be inserted into the template. The default implementation calls `-description`. It is overridden for `NSString` to return `self`, for `NSNumber` to use `NSNumberFormatterDecimalStyle`, for `NSNull` to return `@"(null)"`, and for `NSArray` to return a comma-separated list.
 * `-jatemplateCoerceToNumber` returns an `NSNumber *`. The default implementation will look for methods `-(double)doubleValue`, `-(float)floatValue`, `-(NSInteger)integerValue` or `-(int)intValue`, in that order. If none of these is found, it returns `nil`, which causes expansion to fail. It is overridden by `NSNumber` to return `self`.
 * `-jatemplateCoerceToBoolean` returns an `NSNumber *` which is treated as a boolean. The default implementation calls `-(BOOL)boolValue` if implemented, otherwise returns `nil`. Overridden by `NSNull` to return `@NO`.
 
@@ -115,7 +115,8 @@ These operators coerce the receiver to a number using `-jatemplateCoerceToNumber
 
 * `num:` — Format a number using one of several predefined formats, or an ICU/NSNumberFormatter format string. The predefined formats are:
   * `decimal` or `dec` — Locale-sensitive decimal formatting using `NSNumberFormatterDecimalStyle`. This is the default for `NSNumber`s.
-  * `noloc` – Non-locale-sensitive formatting using `-[NSNumber description]`. (FIXME: this should probably explicitly use `%lld` or `%f`-style formatting. Oh, the irony.)
+  * `noloc` – Non-locale-sensitive formatting using `-[NSNumber description]`.
+  * `hex` or `HEX`: unsigned hexadecimal formatting, using lowercase or uppercase characters respectively. Takes an optional argument specifying the number of digits (`"0x{foo|num:hex;8}"`). Not localized.
   * `currency` or `cur` – Locale-sensitive currency formatting using `NSNumberFormatterCurrencyStyle`.
   * `percent` or `pct` – Locale-sensitive percentage notation using `NSNumberFormatterPercentStyle`.
   * `scientific` or `sci` – Locale-sensitive scientific notation using `NSNumberFormatterScientificStyle`.
@@ -128,7 +129,7 @@ These operators coerce the receiver to a number using `-jatemplateCoerceToNumber
 * `plur:` – A powerful pluralization operator with support for many languages. It takes three to seven arguments separated by semicolons. The first is a number specifying a pluralization rule, and the others are different word forms determined by the rule. The rules are the same as used by [Mozilla’s PluralForm system](https://developer.mozilla.org/en-US/docs/Localization_and_Plurals) (except that rule 0 is not supported or needed).<br>For example, the template `"{count} minute{count|plural:s}"` might be translated to Polish as `"{count} {count|plur:9;minuta;minuty;minut}"`.<br>The selected string is also expanded as a template, so it’s possible to do things like `"{plur:1;{singularString};{pluralString}}"`. This is generally a bad idea, because handling all the different language rules this way is likely to be impossible, but it’s there if you need it. (This also works with `plural:` and `pluraz:`.)
 * `plural:` – A simplified plural operator for languages that use the same numeric inflection structure as English (`plur:` rule 1). If one argument is given, the empty string is used for a singular value and the argument is used for plural. If two arguments separated by a semicolon are given, the first is singular and the second is plural.<br>Example: `"I have {gooseCount} {gooseCount|plural:goose;geese}.".`
 * `pluraz:` — Like `plural:`, except that a count of zero is treated as singular (`plur:` rule 2).<br>Example: `"J’ai {gooseCount} {gooseCount|pluraz:oie;oies}."`, or equivalently `"J’ai {gooseCount} oie{gooseCount|pluraz:s}."`.
-* `select:` – Takes any number of arguments separated by semicolons. The receiver is coerced to a number and truncated. The corresponding argument is selected (and expanded). Arguments are numbered from zero; if the value is out of range, the last item is used.<br>Example: `"Today is {weekDay|select:Mon;Tues;Wednes;Thurs;Fri;Satur;Sun}day."`
+* `select:` – Takes any number of arguments separated by semicolons. The receiver is coerced to a number and truncated to an integer. The corresponding argument is selected (and expanded). Arguments are numbered from zero; if the value is out of range, the last item is used.<br>Example: `"Today is {weekDay|select:Mon;Tues;Wednes;Thurs;Fri;Satur;Sun}day."`
 * `padding` — Truncates the value to an integer and produces the corresponding number of spaces. Negative values are treated as 0.
 
 ### String operators

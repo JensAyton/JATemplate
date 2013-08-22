@@ -49,6 +49,42 @@
 }
 
 
+- (void) testOperatorNumHex
+{
+	int foo = 0x4a;
+	NSString *expansion = JATExpand(@"{foo|num:hex}", @(foo));
+	
+	STAssertEqualObjects(expansion, @"4a", @"num:hex operator failed.");
+}
+
+
+- (void) testOperatorNumHexArg
+{
+	int foo = 0x4a;
+	NSString *expansion = JATExpand(@"{foo|num:hex;5}", @(foo));
+	
+	STAssertEqualObjects(expansion, @"0004a", @"num:hex;5 operator failed.");
+}
+
+
+- (void) testOperatorNumHEX
+{
+	int foo = 0x4a;
+	NSString *expansion = JATExpand(@"{foo|num:HEX}", @(foo));
+	
+	STAssertEqualObjects(expansion, @"4A", @"num:HEX operator failed.");
+}
+
+
+- (void) testOperatorNumHEXArg
+{
+	int foo = 0x4a;
+	NSString *expansion = JATExpand(@"{foo|num:HEX;5}", @(foo));
+	
+	STAssertEqualObjects(expansion, @"0004A", @"num:HEX;5 operator failed.");
+}
+
+
 - (void) testOperatorNumNoloc
 {
 	double foo = 10723.056;

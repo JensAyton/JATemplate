@@ -163,6 +163,7 @@
 				1ABDBA6F169AFF0100846E17 /* Products */,
 			);
 			sourceTree = "<group>";
+			usesTabs = 1;
 		};
 		1ABDBA6F169AFF0100846E17 /* Products */ = {
 			isa = PBXGroup;
