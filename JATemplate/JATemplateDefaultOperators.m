@@ -107,6 +107,24 @@ enum
 	{
 		return [value description];
 	}
+	if ([argument isEqualToString:@"hex"])
+	{
+		return [NSString stringWithFormat:@"%llx", (unsigned long long)value.longLongValue];
+	}
+	if ([argument hasPrefix:@"hex;"])
+	{
+		int length = [[argument componentsSeparatedByString:@";"][1] intValue];
+		return [NSString stringWithFormat:@"%.*llx", length, (unsigned long long)value.longLongValue];
+	}
+	if ([argument isEqualToString:@"HEX"])
+	{
+		return [NSString stringWithFormat:@"%llX", (unsigned long long)value.longLongValue];
+	}
+	if ([argument hasPrefix:@"HEX;"])
+	{
+		int length = [[argument componentsSeparatedByString:@";"][1] intValue];
+		return [NSString stringWithFormat:@"%.*llX", length, (unsigned long long)value.longLongValue];
+	}
 	if ([argument isEqual:@"currency"] || [argument isEqual:@"cur"])
 	{
 		return [NSNumberFormatter localizedStringFromNumber:value numberStyle:NSNumberFormatterCurrencyStyle];

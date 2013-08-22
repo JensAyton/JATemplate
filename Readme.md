@@ -104,7 +104,8 @@ These operators coerce the receiver to a number using `-jatemplateCoerceToNumber
 
 * `num:` — Format a number using one of several predefined formats, or an ICU/NSNumberFormatter format string. The predefined formats are:
   * `decimal` or `dec` — Locale-sensitive decimal formatting using `NSNumberFormatterDecimalStyle`. This is the default for `NSNumber`s.
-  * `noloc` – Non-locale-sensitive formatting using `-[NSNumber description]`. (FIXME: this should probably explicitly use `%lld` or `%f`-style formatting. Oh, the irony.)
+  * `noloc` – Non-locale-sensitive formatting using `-[NSNumber description]`.
+  * `hex` or `HEX`: unsigned hexadecimal formatting, using lowercase or uppercase characters respectively. Takes an optional argument specifying the number of digits (`"0x{foo|num:hex;8}"`). Not localized.
   * `currency` or `cur` – Locale-sensitive currency formatting using `NSNumberFormatterCurrencyStyle`.
   * `percent` or `pct` – Locale-sensitive percentage notation using `NSNumberFormatterPercentStyle`.
   * `scientific` or `sci` – Locale-sensitive scientific notation using `NSNumberFormatterScientificStyle`.
