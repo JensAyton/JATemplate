@@ -67,6 +67,7 @@ The full list of string expanding functions and macros, and their notional signa
 * `NSString *JATExpandFromTableWithParameters(NSString *template, NSString *table, NSDictionary *parameters)` and `NSString *JATExpandFromTableInBundleWithParameters(NSString *template, NSString *table, NSBundle *bundle, NSDictionary *parameters)` — they exist.
 * `void JATAppend(NSMutableString *string, NSString *template, ...)`, `void JATAppendLiteral(NSMutableString *string, NSString *template, ...)`, `void JATAppendFromTable(NSMutableString *string, NSString *template, NSString *table, ...)`, `void JATAppendFromTableInBundle(NSMutableString *string, NSString *template, NSString *table, NSBundle *bundle, ...)` — append an expanded template to a mutable string; Equivalent to `[string appendString:JATExpand*(template, ...)]`.
 * `void JATLog(NSString *template, ...)` — performs non-localized expansion and sends the result to `NSLog()`.
+* `void JATPrint(NSString *template, ...)` and `void JATPrintLiteral(NSString *template, ...)` – Writes to standard out, like `printf()`.
 * `JATAssert(condition, template, ...)` and `JATCAssert(condition, template, ...)` — wrappers for `NSAssert()` and `NSCAssert()` which perform template expansion on failure.
 
 ## Customization

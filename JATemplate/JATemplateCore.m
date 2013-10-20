@@ -82,6 +82,12 @@ NSArray *JATSplitArgumentString(NSString *string, unichar separator)
 }
 
 
+void JATPrintToStdout(NSString *composedString)
+{
+	fputs([composedString UTF8String], stdout);
+}
+
+
 #pragma mark - Template parsing
 
 static NSString *JATExpandOneSub(const unichar characters[], NSUInteger length, NSUInteger idx, NSUInteger *replaceLength, NSDictionary *parameters);
