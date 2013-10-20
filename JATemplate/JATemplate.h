@@ -175,6 +175,12 @@ SOFTWARE.
 	
 	void JATLog(NSString *template, ...)
 		Equivalent to NSLog(@"%@", JATExpandLiteral(template, ...)).
+ 
+	void JATPrint(NSString *template, ...)
+		Equivalent to printf(@"%s", [JATExpand(template, ...) UTF8String]).
+ 
+	void JATPrintLiteral(NSString *template, ...)
+		Equivalent to printf(@"%s", [JATExpandLiteral(template, ...) UTF8String]).
 	
 	
 	JATAssert(condition, template, ...)
@@ -682,6 +688,10 @@ FOUNDATION_EXTERN NSString *JATExpandFromTableInBundleWithParameters(NSString *t
 
 
 #define JATLog(TEMPLATE, ...)  NSLog(@"%@", JATExpandLiteral(TEMPLATE, __VA_ARGS__))
+
+FOUNDATION_EXTERN void JATPrintToStdout(NSString *composedString);
+#define JATPrint(TEMPLATE, ...)  JATPrintToStdout(JATExpand(TEMPLATE, __VA_ARGS__))
+#define JATPrintLiteral(TEMPLATE, ...)  JATPrintToStdout(JATExpandLiteral(TEMPLATE, __VA_ARGS__))
 
 
 #define JATAssert(CONDITION, TEMPLATE, ...)  NSAssert1(CONDITION, @"%@", JATExpandLiteral(TEMPLATE, __VA_ARGS__))
