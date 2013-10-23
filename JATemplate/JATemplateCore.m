@@ -82,9 +82,9 @@ NSArray *JATSplitArgumentString(NSString *string, unichar separator)
 }
 
 
-void JATPrintToStdout(NSString *composedString)
+void JATPrintToFile(NSString *composedString, FILE *file)
 {
-	fputs([composedString UTF8String], stdout);
+	fputs([composedString UTF8String], file);
 }
 
 
