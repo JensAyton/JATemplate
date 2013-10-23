@@ -177,10 +177,18 @@ SOFTWARE.
 		Equivalent to NSLog(@"%@", JATExpandLiteral(template, ...)).
  
 	void JATPrint(NSString *template, ...)
-		Equivalent to printf(@"%s", [JATExpand(template, ...) UTF8String]).
+		Expand template (with localization) and write the result to stdout,
+        like printf().
  
 	void JATPrintLiteral(NSString *template, ...)
-		Equivalent to printf(@"%s", [JATExpandLiteral(template, ...) UTF8String]).
+		Expand template (without localization) and write the result to stdout,
+        like printf().
+ 
+	void JATErrorPrint(NSString *template, ...)
+		Expand template (with localization) and write the result to stderr
+ 
+	void JATErrorPrintLiteral(NSString *template, ...)
+		Expand template (without localization) and write the result to stderr.
 	
 	
 	JATAssert(condition, template, ...)
@@ -689,9 +697,11 @@ FOUNDATION_EXTERN NSString *JATExpandFromTableInBundleWithParameters(NSString *t
 
 #define JATLog(TEMPLATE, ...)  NSLog(@"%@", JATExpandLiteral(TEMPLATE, __VA_ARGS__))
 
-FOUNDATION_EXTERN void JATPrintToStdout(NSString *composedString);
-#define JATPrint(TEMPLATE, ...)  JATPrintToStdout(JATExpand(TEMPLATE, __VA_ARGS__))
-#define JATPrintLiteral(TEMPLATE, ...)  JATPrintToStdout(JATExpandLiteral(TEMPLATE, __VA_ARGS__))
+FOUNDATION_EXTERN void JATPrintToFile(NSString *composedString, FILE *file);
+#define JATPrint(TEMPLATE, ...)  JATPrintToFile(JATExpand(TEMPLATE, __VA_ARGS__), stdout)
+#define JATPrintLiteral(TEMPLATE, ...)  JATPrintToFile(JATExpandLiteral(TEMPLATE, __VA_ARGS__), stdout)
+#define JATErrorPrint(TEMPLATE, ...)  JATPrintToFile(JATExpand(TEMPLATE, __VA_ARGS__), stderr)
+#define JATErrorPrintLiteral(TEMPLATE, ...)  JATPrintToFile(JATExpandLiteral(TEMPLATE, __VA_ARGS__), stderr)
 
 
 #define JATAssert(CONDITION, TEMPLATE, ...)  NSAssert1(CONDITION, @"%@", JATExpandLiteral(TEMPLATE, __VA_ARGS__))
