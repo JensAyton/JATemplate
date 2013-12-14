@@ -142,6 +142,7 @@ These operators coerce the receiver to a number using `-jatemplateCoerceToString
 These operators coerce the receiver to a number using `-jatemplateCoerceToBoolean`.
 
 * `if:` — Takes one or two arguments separated by a semicolon. If the receiver, as a boolean, is true, selects the first argument. Otherwise selects the second argument (or the empty string if none). The selected argument is then expanded as a template.<br>Example: `"The flag is {flag|if:set;not set}."`
+* `or:` — If the receiver is a string, it is treated as false only if it is empty. If the receiver is considered true, the expression is expanded to the receiver. Otherwise, the argument to `or:` is expanded.<br>Example: `{foo|or:{bar}}` is equivalent to `foo` if it is truthy, and the expansion of `{bar}` otherwise.
 
 ### Non-coercing operators
 * `pointer` — Produces the address of the receiver, formatted as with `%p`. (`NSNull` is treated as `nil`, since the distinction can’t be made in an operator.)
