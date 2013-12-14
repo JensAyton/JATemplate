@@ -192,6 +192,42 @@
 }
 
 
+- (void) testOperatorOrTrueString
+{
+	NSString *value = @"foo";
+	NSString *expansion = JATExpand(@"{value|or:bar}", value);
+	
+	STAssertEqualObjects(expansion, @"foo", @"{foo|or:bar} should return foo if it is a non-empty string.");
+}
+
+
+- (void) testOperatorOrFalseString
+{
+	NSString *value = @"";
+	NSString *expansion = JATExpand(@"{value|or:bar}", value);
+	
+	STAssertEqualObjects(expansion, @"bar", @"{foo|or:bar} should return bar if foo is an empty string.");
+}
+
+
+- (void) testOperatorOrTrueNumber
+{
+	NSNumber *value = @YES;
+	NSString *expansion = JATExpand(@"{value|or:bar}", value);
+	
+	STAssertEqualObjects(expansion, @"1", @"{foo|or:bar} should return foo if it is a non-zero number.");
+}
+
+
+- (void) testOperatorOrFalseNumber
+{
+	NSNumber *value = @NO;
+	NSString *expansion = JATExpand(@"{value|or:bar}", value);
+	
+	STAssertEqualObjects(expansion, @"bar", @"{foo|or:bar} should return bar if foo is a zero number.");
+}
+
+
 - (void) testOperatorIfWithNestedTemplates
 {
 	NSNumber *yes = @YES;

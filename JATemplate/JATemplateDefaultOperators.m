@@ -324,6 +324,29 @@ enum
 }
 
 
+- (id<JATCoercible>) jatemplatePerform_or_withArgument:(NSString *)argument variables:(NSDictionary *)variables
+{
+	if (argument == nil)
+	{
+		OpWarn(@"Template operator or: used with no argument.");
+		return self;
+	}
+	
+	BOOL value = NO;
+	if ([self isKindOfClass:[NSString class]])
+	{
+		value = (((NSString *)self).length > 0);
+	}
+	else
+	{
+		value = [self jatemplateCoerceToBoolean].boolValue;
+	}
+	
+	if (value)  return self;
+	else  return JATExpandLiteralWithParameters(argument, variables);
+}
+
+
 - (id<JATCoercible>) jatemplatePerform_uppercase_withArgument:(NSString *)argument variables:(NSDictionary *)variables
 {
 	NSString *value = [self jatemplateCoerceToString];
