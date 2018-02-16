@@ -1,5 +1,9 @@
-#import "JATemplateCastTests.h"
+#import <XCTest/XCTest.h>
+
 #import "JATemplate.h"
+
+@interface JATemplateCastTests: XCTestCase
+@end
 
 
 @implementation JATemplateCastTests
@@ -9,7 +13,7 @@
 	char value = 1;
 	NSString *expansion = JATExpand(@"{value}", value);
 	
-	STAssertEqualObjects(expansion, @"1", @"parameter cast from [char] failed.");
+	XCTAssertEqualObjects(expansion, @"1", @"parameter cast from [char] failed.");
 }
 
 
@@ -18,7 +22,7 @@
 	signed char value = -2;
 	NSString *expansion = JATExpand(@"{value}", value);
 	
-	STAssertEqualObjects(expansion, @"-2", @"parameter cast from [signed char] failed.");
+	XCTAssertEqualObjects(expansion, @"-2", @"parameter cast from [signed char] failed.");
 }
 
 
@@ -27,7 +31,7 @@
 	unsigned char value = 3;
 	NSString *expansion = JATExpand(@"{value}", value);
 	
-	STAssertEqualObjects(expansion, @"3", @"parameter cast from [unsigned char] failed.");
+	XCTAssertEqualObjects(expansion, @"3", @"parameter cast from [unsigned char] failed.");
 }
 
 
@@ -36,7 +40,7 @@
 	signed short value = -4;
 	NSString *expansion = JATExpand(@"{value}", value);
 	
-	STAssertEqualObjects(expansion, @"-4", @"parameter cast from [signed short] failed.");
+	XCTAssertEqualObjects(expansion, @"-4", @"parameter cast from [signed short] failed.");
 }
 
 
@@ -45,7 +49,7 @@
 	unsigned short value = 5;
 	NSString *expansion = JATExpand(@"{value}", value);
 	
-	STAssertEqualObjects(expansion, @"5", @"parameter cast from [unsigned short] failed.");
+	XCTAssertEqualObjects(expansion, @"5", @"parameter cast from [unsigned short] failed.");
 }
 
 
@@ -54,7 +58,7 @@
 	signed int value = -6;
 	NSString *expansion = JATExpand(@"{value}", value);
 	
-	STAssertEqualObjects(expansion, @"-6", @"parameter cast from [signed int] failed.");
+	XCTAssertEqualObjects(expansion, @"-6", @"parameter cast from [signed int] failed.");
 }
 
 
@@ -63,7 +67,7 @@
 	unsigned int value = 7;
 	NSString *expansion = JATExpand(@"{value}", value);
 	
-	STAssertEqualObjects(expansion, @"7", @"parameter cast from [unsigned long] failed.");
+	XCTAssertEqualObjects(expansion, @"7", @"parameter cast from [unsigned long] failed.");
 }
 
 
@@ -72,7 +76,7 @@
 	signed long value = -8;
 	NSString *expansion = JATExpand(@"{value}", value);
 	
-	STAssertEqualObjects(expansion, @"-8", @"parameter cast from [signed int] failed.");
+	XCTAssertEqualObjects(expansion, @"-8", @"parameter cast from [signed int] failed.");
 }
 
 
@@ -81,7 +85,7 @@
 	unsigned long value = 9;
 	NSString *expansion = JATExpand(@"{value}", value);
 	
-	STAssertEqualObjects(expansion, @"9", @"parameter cast from [unsigned long] failed.");
+	XCTAssertEqualObjects(expansion, @"9", @"parameter cast from [unsigned long] failed.");
 }
 
 
@@ -90,7 +94,7 @@
 	signed long long value = -10;
 	NSString *expansion = JATExpand(@"{value}", value);
 	
-	STAssertEqualObjects(expansion, @"-10", @"parameter cast from [signed long long] failed.");
+	XCTAssertEqualObjects(expansion, @"-10", @"parameter cast from [signed long long] failed.");
 }
 
 
@@ -99,7 +103,7 @@
 	unsigned long long value = 11;
 	NSString *expansion = JATExpand(@"{value}", value);
 	
-	STAssertEqualObjects(expansion, @"11", @"parameter cast from [unsigned long long] failed.");
+	XCTAssertEqualObjects(expansion, @"11", @"parameter cast from [unsigned long long] failed.");
 }
 
 
@@ -108,7 +112,7 @@
 	float value = 12.5;
 	NSString *expansion = JATExpand(@"{value}", value);
 	
-	STAssertEqualObjects(expansion, @"12.5", @"parameter cast from [float] failed.");
+	XCTAssertEqualObjects(expansion, @"12.5", @"parameter cast from [float] failed.");
 }
 
 
@@ -117,7 +121,7 @@
 	double value = 13.75;
 	NSString *expansion = JATExpand(@"{value}", value);
 	
-	STAssertEqualObjects(expansion, @"13.75", @"parameter cast from [double] failed.");
+	XCTAssertEqualObjects(expansion, @"13.75", @"parameter cast from [double] failed.");
 }
 
 
@@ -126,7 +130,7 @@
 	long double value = 14.875;
 	NSString *expansion = JATExpand(@"{value}", value);
 	
-	STAssertEqualObjects(expansion, @"14.875", @"parameter cast from [long double] failed.");
+	XCTAssertEqualObjects(expansion, @"14.875", @"parameter cast from [long double] failed.");
 }
 
 
@@ -135,7 +139,7 @@
 	const char *value = "If you want a picture of the future, imagine a boot stamping on a human face — forever.";
 	NSString *expansion = JATExpand(@"{value}", value);
 	
-	STAssertEqualObjects(expansion, @"If you want a picture of the future, imagine a boot stamping on a human face — forever.", @"parameter cast from [const char *] failed.");
+	XCTAssertEqualObjects(expansion, @"If you want a picture of the future, imagine a boot stamping on a human face — forever.", @"parameter cast from [const char *] failed.");
 }
 
 
@@ -145,7 +149,7 @@
 	std::string value = "stability. No civilization without social stability. No social stability without individual stability.";
 	NSString *expansion = JATExpand(@"{value}", value);
 	
-	STAssertEqualObjects(expansion, @"stability. No civilization without social stability. No social stability without individual stability.", @"parameter cast from [std::string] failed.");
+	XCTAssertEqualObjects(expansion, @"stability. No civilization without social stability. No social stability without individual stability.", @"parameter cast from [std::string] failed.");
 }
 #endif
 
@@ -155,7 +159,7 @@
 	CFStringRef value = CFSTR("If they give you ruled paper, write the other way.");
 	NSString *expansion = JATExpand(@"{value}", value);
 	
-	STAssertEqualObjects(expansion, @"If they give you ruled paper, write the other way.", @"parameter cast from [CFStringRef] failed.");
+	XCTAssertEqualObjects(expansion, @"If they give you ruled paper, write the other way.", @"parameter cast from [CFStringRef] failed.");
 }
 
 
@@ -166,7 +170,7 @@
 	NSString *expansion = JATExpand(@"{value}", value);
 	CFRelease(value);
 	
-	STAssertEqualObjects(expansion, @"15", @"parameter cast from [CFNumberRef] failed.");
+	XCTAssertEqualObjects(expansion, @"15", @"parameter cast from [CFNumberRef] failed.");
 }
 
 
@@ -175,7 +179,7 @@
 	CFBooleanRef value = kCFBooleanTrue;
 	NSString *expansion = JATExpand(@"{value}", value);
 	
-	STAssertEqualObjects(expansion, @"1", @"parameter cast from [CFBooleanRef] failed.");
+	XCTAssertEqualObjects(expansion, @"1", @"parameter cast from [CFBooleanRef] failed.");
 }
 
 
@@ -184,7 +188,7 @@
 	NSPoint value = { -16, 17 };
 	NSString *expansion = JATExpand(@"{value}", value);
 	
-	STAssertTrue(NSEqualPoints(value, NSPointFromString(expansion)), @"parameter cast from [NSPoint] failed.");
+	XCTAssertTrue(NSEqualPoints(value, NSPointFromString(expansion)), @"parameter cast from [NSPoint] failed.");
 }
 
 
@@ -193,7 +197,7 @@
 	NSSize value = { 18, 19 };
 	NSString *expansion = JATExpand(@"{value}", value);
 	
-	STAssertTrue(NSEqualSizes(value, NSSizeFromString(expansion)), @"parameter cast from [NSSize] failed.");
+	XCTAssertTrue(NSEqualSizes(value, NSSizeFromString(expansion)), @"parameter cast from [NSSize] failed.");
 }
 
 
@@ -202,7 +206,7 @@
 	NSRect value = NSMakeRect(20, -21, 22, 23);
 	NSString *expansion = JATExpand(@"{value}", value);
 	
-	STAssertTrue(NSEqualRects(value, NSRectFromString(expansion)), @"parameter cast from [NSRect] failed.");
+	XCTAssertTrue(NSEqualRects(value, NSRectFromString(expansion)), @"parameter cast from [NSRect] failed.");
 }
 
 
@@ -211,7 +215,7 @@
 	NSRange value = { 24, 25 };
 	NSString *expansion = JATExpand(@"{value}", value);
 	
-	STAssertTrue(NSEqualRanges(value, NSRangeFromString(expansion)), @"parameter cast from [NSRange] failed.");
+	XCTAssertTrue(NSEqualRanges(value, NSRangeFromString(expansion)), @"parameter cast from [NSRange] failed.");
 }
 
 
@@ -220,7 +224,7 @@
 {
 	NSString *expansion = JATExpand(@"{0}", nullptr);
 	
-	STAssertEqualObjects(expansion, @"(null)", @"parameter cast from [std::nullptr_t] failed.");
+	XCTAssertEqualObjects(expansion, @"(null)", @"parameter cast from [std::nullptr_t] failed.");
 }
 #endif
 
@@ -241,7 +245,7 @@ JATDefineCast(CustomStruct)
 	CustomStruct value = { 26, 27, 28 };
 	NSString *expansion = JATExpand(@"{value}", value);
 	
-	STAssertEqualObjects(expansion, @"81", @"parameter cast from [CustomStruct] failed.");
+	XCTAssertEqualObjects(expansion, @"81", @"parameter cast from [CustomStruct] failed.");
 }
 
 
@@ -276,7 +280,7 @@ JATDefineCast(CustomEnumClass)
 	CustomEnumClass value = CustomEnumClass::chocolate;
 	NSString *expansion = JATExpand(@"{value}", value);
 	
-	STAssertEqualObjects(expansion, @"chocolate", @"parameter cast from [CustomEnumClass] failed.");
+	XCTAssertEqualObjects(expansion, @"chocolate", @"parameter cast from [CustomEnumClass] failed.");
 }
 #endif
 

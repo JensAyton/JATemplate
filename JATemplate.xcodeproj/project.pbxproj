@@ -21,7 +21,6 @@
 		1ABDBA83169AFF0100846E17 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 1ABDBA81169AFF0100846E17 /* Credits.rtf */; };
 		1ABDBA86169AFF0100846E17 /* JATAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ABDBA85169AFF0100846E17 /* JATAppDelegate.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		1ABDBA89169AFF0100846E17 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1ABDBA87169AFF0100846E17 /* MainMenu.xib */; };
-		1ABDBA91169AFF0200846E17 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABDBA90169AFF0200846E17 /* SenTestingKit.framework */; };
 		1ABDBA92169AFF0200846E17 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1ABDBA72169AFF0100846E17 /* Cocoa.framework */; };
 		1ABDBA9A169AFF0200846E17 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 1ABDBA98169AFF0200846E17 /* InfoPlist.strings */; };
 		1ABDBA9D169AFF0200846E17 /* JATemplateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1ABDBA9C169AFF0200846E17 /* JATemplateTests.m */; };
@@ -74,11 +73,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		1A304A57169E17F300DB0DF0 /* JATemplateOperatorTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JATemplateOperatorTests.h; sourceTree = "<group>"; };
 		1A304A58169E17F300DB0DF0 /* JATemplateOperatorTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JATemplateOperatorTests.m; sourceTree = "<group>"; };
 		1A3094A916BD82C0008DB168 /* JATemplateHairy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = JATemplateHairy.m; path = JATemplate/JATemplateHairy.m; sourceTree = SOURCE_ROOT; };
 		1A3094AE16BD82FA008DB168 /* JATemplateInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JATemplateInternal.h; sourceTree = "<group>"; };
-		1A3AA4CA16BC345E00399FD5 /* JATemplateCastTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JATemplateCastTests.h; sourceTree = "<group>"; };
 		1A3AA4CB16BC345E00399FD5 /* JATemplateCastTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JATemplateCastTests.m; sourceTree = "<group>"; };
 		1A3AA4CD16BC350800399FD5 /* JATemplateCastTestsCpp.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = JATemplateCastTestsCpp.mm; sourceTree = "<group>"; };
 		1A5354E916A7FA6E008F411D /* JATemplateTests-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "JATemplateTests-Prefix.pch"; sourceTree = "<group>"; };
@@ -95,8 +92,7 @@
 		1ABDBA84169AFF0100846E17 /* JATAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JATAppDelegate.h; sourceTree = "<group>"; };
 		1ABDBA85169AFF0100846E17 /* JATAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JATAppDelegate.m; sourceTree = "<group>"; };
 		1ABDBA88169AFF0100846E17 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		1ABDBA8F169AFF0200846E17 /* JATemplateTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JATemplateTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
-		1ABDBA90169AFF0200846E17 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		1ABDBA8F169AFF0200846E17 /* JATemplateTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = JATemplateTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1ABDBA97169AFF0200846E17 /* JATemplateTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "JATemplateTests-Info.plist"; sourceTree = "<group>"; };
 		1ABDBA99169AFF0200846E17 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1ABDBA9B169AFF0200846E17 /* JATemplateTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JATemplateTests.h; sourceTree = "<group>"; };
@@ -128,7 +124,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1ABDBA91169AFF0200846E17 /* SenTestingKit.framework in Frameworks */,
 				1ABDBA92169AFF0200846E17 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -169,7 +164,7 @@
 			isa = PBXGroup;
 			children = (
 				1ABDBA6E169AFF0100846E17 /* JATemplate.app */,
-				1ABDBA8F169AFF0200846E17 /* JATemplateTests.octest */,
+				1ABDBA8F169AFF0200846E17 /* JATemplateTests.xctest */,
 				1AD4298416AFE06700ED323A /* JATemplateBenignFuzzer */,
 				1AD429A916B086E300ED323A /* JATemplateMalignFuzzer */,
 			);
@@ -180,7 +175,6 @@
 			isa = PBXGroup;
 			children = (
 				1ABDBA72169AFF0100846E17 /* Cocoa.framework */,
-				1ABDBA90169AFF0200846E17 /* SenTestingKit.framework */,
 				1AD4298616AFE06700ED323A /* Foundation.framework */,
 				1ABDBA74169AFF0100846E17 /* Other Frameworks */,
 			);
@@ -227,9 +221,7 @@
 			children = (
 				1ABDBA9B169AFF0200846E17 /* JATemplateTests.h */,
 				1ABDBA9C169AFF0200846E17 /* JATemplateTests.m */,
-				1A304A57169E17F300DB0DF0 /* JATemplateOperatorTests.h */,
 				1A304A58169E17F300DB0DF0 /* JATemplateOperatorTests.m */,
-				1A3AA4CA16BC345E00399FD5 /* JATemplateCastTests.h */,
 				1A3AA4CB16BC345E00399FD5 /* JATemplateCastTests.m */,
 				1A3AA4CD16BC350800399FD5 /* JATemplateCastTestsCpp.mm */,
 				1ABDBA96169AFF0200846E17 /* Supporting Files */,
@@ -306,7 +298,6 @@
 				1ABDBA8A169AFF0200846E17 /* Sources */,
 				1ABDBA8B169AFF0200846E17 /* Frameworks */,
 				1ABDBA8C169AFF0200846E17 /* Resources */,
-				1ABDBA8D169AFF0200846E17 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -315,8 +306,8 @@
 			);
 			name = JATemplateTests;
 			productName = JATemplateTests;
-			productReference = 1ABDBA8F169AFF0200846E17 /* JATemplateTests.octest */;
-			productType = "com.apple.product-type.bundle";
+			productReference = 1ABDBA8F169AFF0200846E17 /* JATemplateTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		1AD4298316AFE06700ED323A /* JATemplateBenignFuzzer */ = {
 			isa = PBXNativeTarget;
@@ -361,6 +352,11 @@
 				CLASSPREFIX = JA;
 				LastUpgradeCheck = 0920;
 				ORGANIZATIONNAME = "Jens Ayton";
+				TargetAttributes = {
+					1ABDBA8E169AFF0200846E17 = {
+						TestTargetID = 1ABDBA6D169AFF0100846E17;
+					};
+				};
 			};
 			buildConfigurationList = 1ABDBA68169AFF0100846E17 /* Build configuration list for PBXProject "JATemplate" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -404,22 +400,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		1ABDBA8D169AFF0200846E17 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		1ABDBA6A169AFF0100846E17 /* Sources */ = {
@@ -669,7 +649,7 @@
 		1ABDBAA4169AFF0200846E17 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/JATemplate.app/Contents/MacOS/JATemplate";
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -677,7 +657,7 @@
 				INFOPLIST_FILE = "JATemplateTests/JATemplateTests-Info.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = "se.ayton.jens.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/JATemplate.app/Contents/MacOS/JATemplate";
 				WARNING_CFLAGS = (
 					"$(inherited)",
 					"-Wno-objc-interface-ivars",
@@ -685,14 +665,14 @@
 					"-Wno-disabled-macro-expansion",
 					"-Wno-c++98-compat-pedantic",
 				);
-				WRAPPER_EXTENSION = octest;
+				WRAPPER_EXTENSION = xctest;
 			};
 			name = Debug;
 		};
 		1ABDBAA5169AFF0200846E17 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/JATemplate.app/Contents/MacOS/JATemplate";
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -700,7 +680,7 @@
 				INFOPLIST_FILE = "JATemplateTests/JATemplateTests-Info.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = "se.ayton.jens.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/JATemplate.app/Contents/MacOS/JATemplate";
 				WARNING_CFLAGS = (
 					"$(inherited)",
 					"-Wno-objc-interface-ivars",
@@ -708,7 +688,7 @@
 					"-Wno-disabled-macro-expansion",
 					"-Wno-c++98-compat-pedantic",
 				);
-				WRAPPER_EXTENSION = octest;
+				WRAPPER_EXTENSION = xctest;
 			};
 			name = Release;
 		};

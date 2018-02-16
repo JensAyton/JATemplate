@@ -1,8 +1,4 @@
-#import <SenTestingKit/SenTestingKit.h>
-
-
-@interface JATemplateTests: SenTestCase
-@end
+#import <Foundation/Foundation.h>
 
 
 // Interception of warning messages.

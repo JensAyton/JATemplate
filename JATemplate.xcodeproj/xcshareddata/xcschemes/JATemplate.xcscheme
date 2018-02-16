@@ -34,7 +34,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "1ABDBA8E169AFF0200846E17"
-               BuildableName = "JATemplateTests.octest"
+               BuildableName = "JATemplateTests.xctest"
                BlueprintName = "JATemplateTests"
                ReferencedContainer = "container:JATemplate.xcodeproj">
             </BuildableReference>

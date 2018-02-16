@@ -1,6 +1,11 @@
-#import "JATemplateOperatorTests.h"
+#import <XCTest/XCTest.h>
+
 #import "JATemplateTests.h"
 #import "JATemplate.h"
+
+
+@interface JATemplateOperatorTests: XCTestCase
+@end
 
 
 @implementation JATemplateOperatorTests
@@ -27,7 +32,7 @@
 	double foo = 10723.056;
 	NSString *expansion = JATExpand(@"{foo}", @(foo));
 	
-	STAssertEqualObjects(expansion, @"10,723.056", @"number-to-string coersion failed.");
+	XCTAssertEqualObjects(expansion, @"10,723.056", @"number-to-string coersion failed.");
 }
 
 
@@ -36,7 +41,7 @@
 	double foo = 10723.056;
 	NSString *expansion = JATExpand(@"{foo|round}", @(foo));
 	
-	STAssertEqualObjects(expansion, @"10,723", @"round operator failed.");
+	XCTAssertEqualObjects(expansion, @"10,723", @"round operator failed.");
 }
 
 
@@ -45,7 +50,7 @@
 	double foo = 10723.056;
 	NSString *expansion = JATExpand(@"{foo|num:decimal}", @(foo));
 	
-	STAssertEqualObjects(expansion, @"10,723.056", @"num:decimal operator failed.");
+	XCTAssertEqualObjects(expansion, @"10,723.056", @"num:decimal operator failed.");
 }
 
 
@@ -54,7 +59,7 @@
 	int foo = 0x4a;
 	NSString *expansion = JATExpand(@"{foo|num:hex}", @(foo));
 	
-	STAssertEqualObjects(expansion, @"4a", @"num:hex operator failed.");
+	XCTAssertEqualObjects(expansion, @"4a", @"num:hex operator failed.");
 }
 
 
@@ -63,7 +68,7 @@
 	int foo = 0x4a;
 	NSString *expansion = JATExpand(@"{foo|num:hex;5}", @(foo));
 	
-	STAssertEqualObjects(expansion, @"0004a", @"num:hex;5 operator failed.");
+	XCTAssertEqualObjects(expansion, @"0004a", @"num:hex;5 operator failed.");
 }
 
 
@@ -72,7 +77,7 @@
 	int foo = 0x4a;
 	NSString *expansion = JATExpand(@"{foo|num:HEX}", @(foo));
 	
-	STAssertEqualObjects(expansion, @"4A", @"num:HEX operator failed.");
+	XCTAssertEqualObjects(expansion, @"4A", @"num:HEX operator failed.");
 }
 
 
@@ -81,7 +86,7 @@
 	int foo = 0x4a;
 	NSString *expansion = JATExpand(@"{foo|num:HEX;5}", @(foo));
 	
-	STAssertEqualObjects(expansion, @"0004A", @"num:HEX;5 operator failed.");
+	XCTAssertEqualObjects(expansion, @"0004A", @"num:HEX;5 operator failed.");
 }
 
 
@@ -90,7 +95,7 @@
 	double foo = 10723.056;
 	NSString *expansion = JATExpand(@"{foo|num:noloc}", @(foo));
 	
-	STAssertEqualObjects(expansion, @"10723.056", @"num:noloc operator failed.");
+	XCTAssertEqualObjects(expansion, @"10723.056", @"num:noloc operator failed.");
 }
 
 
@@ -99,7 +104,7 @@
 	double foo = 723.056;
 	NSString *expansion = JATExpand(@"{foo|num:currency}", @(foo));
 	
-	STAssertEqualObjects(expansion, @"$723.06", @"num:currency operator failed.");
+	XCTAssertEqualObjects(expansion, @"$723.06", @"num:currency operator failed.");
 }
 
 
@@ -108,7 +113,7 @@
 	double foo = 723.056;
 	NSString *expansion = JATExpand(@"{foo|num:percent}", @(foo));
 	
-	STAssertEqualObjects(expansion, @"72,306%", @"num:percent operator failed.");
+	XCTAssertEqualObjects(expansion, @"72,306%", @"num:percent operator failed.");
 }
 
 
@@ -117,7 +122,7 @@
 	double foo = 723.056;
 	NSString *expansion = JATExpand(@"{foo|num:scientific}", @(foo));
 	
-	STAssertEqualObjects(expansion, @"7.23056E2", @"num:scientific operator failed.");
+	XCTAssertEqualObjects(expansion, @"7.23056E2", @"num:scientific operator failed.");
 }
 
 
@@ -126,7 +131,7 @@
 	double foo = 723.056;
 	NSString *expansion = JATExpand(@"{foo|num:spellout}", @(foo));
 	
-	STAssertEqualObjects(expansion, @"seven hundred twenty-three point zero five six", @"num:spellout operator failed.");
+	XCTAssertEqualObjects(expansion, @"seven hundred twenty-three point zero five six", @"num:spellout operator failed.");
 }
 
 
@@ -135,7 +140,7 @@
 	double foo = 723056;
 	NSString *expansion = JATExpand(@"{foo|num:decimalbytes}", @(foo));
 	
-	STAssertEqualObjects(expansion, @"723 KB", @"num:decimalbytes operator failed.");
+	XCTAssertEqualObjects(expansion, @"723 KB", @"num:decimalbytes operator failed.");
 }
 
 
@@ -144,7 +149,7 @@
 	double foo = 723056;
 	NSString *expansion = JATExpand(@"{foo|num:binarybytes}", @(foo));
 	
-	STAssertEqualObjects(expansion, @"706 KB", @"num:binarybytes operator failed.");
+	XCTAssertEqualObjects(expansion, @"706 KB", @"num:binarybytes operator failed.");
 }
 
 
@@ -159,7 +164,7 @@
 	unsigned yourGooseCount = 1;
 	NSString *expansion = JATExpand(@"I have {myKittenCount|num:spellout} kitten{myKittenCount|plural:s}. You have {yourKittenCount|num:spellout} kitten{yourKittenCount|plural:s}. I have {myGooseCount|num:spellout} {myGooseCount|plural:goose;geese}. You have {yourGooseCount|num:spellout} {yourGooseCount|plural:goose;geese}.", @(myKittenCount), @(myGooseCount), @(yourKittenCount), @(yourGooseCount));
 	
-	STAssertEqualObjects(expansion, @"I have one kitten. You have three kittens. I have seven geese. You have one goose.", @"plural: operator failed.");
+	XCTAssertEqualObjects(expansion, @"I have one kitten. You have three kittens. I have seven geese. You have one goose.", @"plural: operator failed.");
 }
 
 
@@ -169,7 +174,7 @@
 	NSString *plur = @"frogs";
 	NSString *expansion = JATExpand(@"{0} {0|plural:{sing};{plur}} {1} {1|plural:{sing};{plur}} {2} {2|plural:{sing|uppercase};{plur|uppercase}}", @1, @2, @3, sing, plur);
 	
-	STAssertEqualObjects(expansion, @"1 frog 2 frogs 3 FROGS", @"plural: operator with nested expansions failed.");
+	XCTAssertEqualObjects(expansion, @"1 frog 2 frogs 3 FROGS", @"plural: operator with nested expansions failed.");
 }
 
 
@@ -179,7 +184,7 @@
 	NSNumber *no = @NO;
 	NSString *expansion = JATExpand(@"{yes|if:yep!;nope!} {no|if:yep!;nope!}", yes, no);
 	
-	STAssertEqualObjects(expansion, @"yep! nope!", @"if: operator failed.");
+	XCTAssertEqualObjects(expansion, @"yep! nope!", @"if: operator failed.");
 }
 
 
@@ -188,7 +193,7 @@
 	NSUInteger weekDay = 4;
 	NSString *expansion = JATExpand(@"Gotta get down on {weekDay|select:Monday;Tuesday;Wednesday;Thursday;Friday;Saturday;Sunday;Blarnsday}", @(weekDay));
 	
-	STAssertEqualObjects(expansion, @"Gotta get down on Friday", @"select: operator failed.");
+	XCTAssertEqualObjects(expansion, @"Gotta get down on Friday", @"select: operator failed.");
 }
 
 
@@ -197,7 +202,7 @@
 	NSString *value = @"foo";
 	NSString *expansion = JATExpand(@"{value|or:bar}", value);
 	
-	STAssertEqualObjects(expansion, @"foo", @"{foo|or:bar} should return foo if it is a non-empty string.");
+	XCTAssertEqualObjects(expansion, @"foo", @"{foo|or:bar} should return foo if it is a non-empty string.");
 }
 
 
@@ -206,7 +211,7 @@
 	NSString *value = @"";
 	NSString *expansion = JATExpand(@"{value|or:bar}", value);
 	
-	STAssertEqualObjects(expansion, @"bar", @"{foo|or:bar} should return bar if foo is an empty string.");
+	XCTAssertEqualObjects(expansion, @"bar", @"{foo|or:bar} should return bar if foo is an empty string.");
 }
 
 
@@ -215,7 +220,7 @@
 	NSNumber *value = @YES;
 	NSString *expansion = JATExpand(@"{value|or:bar}", value);
 	
-	STAssertEqualObjects(expansion, @"1", @"{foo|or:bar} should return foo if it is a non-zero number.");
+	XCTAssertEqualObjects(expansion, @"1", @"{foo|or:bar} should return foo if it is a non-zero number.");
 }
 
 
@@ -224,7 +229,7 @@
 	NSNumber *value = @NO;
 	NSString *expansion = JATExpand(@"{value|or:bar}", value);
 	
-	STAssertEqualObjects(expansion, @"bar", @"{foo|or:bar} should return bar if foo is a zero number.");
+	XCTAssertEqualObjects(expansion, @"bar", @"{foo|or:bar} should return bar if foo is a zero number.");
 }
 
 
@@ -236,7 +241,7 @@
 	NSString *noString = @"nope!";
 	NSString *expansion = JATExpand(@"{yes|if:{yesString};{noString}} {no|if:{yesString};{noString}}", yes, no, yesString, noString);
 	
-	STAssertEqualObjects(expansion, @"yep! nope!", @"if: operator failed.");
+	XCTAssertEqualObjects(expansion, @"yep! nope!", @"if: operator failed.");
 }
 
 
@@ -245,7 +250,7 @@
 	NSString *foo = @"fRoB";
 	NSString *expansion = JATExpand(@"{foo|uppercase}", foo);
 	
-	STAssertEqualObjects(expansion, @"FROB", @"uppercase operator failed.");
+	XCTAssertEqualObjects(expansion, @"FROB", @"uppercase operator failed.");
 }
 
 
@@ -254,7 +259,7 @@
 	NSString *foo = @"fRoB";
 	NSString *expansion = JATExpand(@"{foo|lowercase}", foo);
 	
-	STAssertEqualObjects(expansion, @"frob", @"lowercase operator failed.");
+	XCTAssertEqualObjects(expansion, @"frob", @"lowercase operator failed.");
 }
 
 
@@ -263,7 +268,7 @@
 	NSString *foo = @"fRoB";
 	NSString *expansion = JATExpand(@"{foo|capitalize}", foo);
 	
-	STAssertEqualObjects(expansion, @"Frob", @"capitalize operator failed.");
+	XCTAssertEqualObjects(expansion, @"Frob", @"capitalize operator failed.");
 }
 
 
@@ -272,7 +277,7 @@
 	NSString *foo = @"fRoB";
 	NSString *expansion = JATExpand(@"{foo|uppercase_noloc}", foo);
 	
-	STAssertEqualObjects(expansion, @"FROB", @"uppercase_noloc operator failed.");
+	XCTAssertEqualObjects(expansion, @"FROB", @"uppercase_noloc operator failed.");
 }
 
 
@@ -281,7 +286,7 @@
 	NSString *foo = @"fRoB";
 	NSString *expansion = JATExpand(@"{foo|lowercase_noloc}", foo);
 	
-	STAssertEqualObjects(expansion, @"frob", @"lowercase_noloc operator failed.");
+	XCTAssertEqualObjects(expansion, @"frob", @"lowercase_noloc operator failed.");
 }
 
 
@@ -290,7 +295,7 @@
 	NSString *foo = @"fRoB";
 	NSString *expansion = JATExpand(@"{foo|capitalize_noloc}", foo);
 	
-	STAssertEqualObjects(expansion, @"Frob", @"capitalize_noloc operator failed.");
+	XCTAssertEqualObjects(expansion, @"Frob", @"capitalize_noloc operator failed.");
 }
 
 
@@ -299,7 +304,7 @@
 	NSString *foo = @"  \n frob  \t ";
 	NSString *expansion = JATExpand(@"{foo|trim}", foo);
 	
-	STAssertEqualObjects(expansion, @"frob", @"trim operator failed.");
+	XCTAssertEqualObjects(expansion, @"frob", @"trim operator failed.");
 }
 
 
@@ -308,7 +313,7 @@
 	NSString *foo = @"frob";
 	NSString *expansion = JATExpand(@"{foo|length}", foo);
 	
-	STAssertEqualObjects(expansion, @"4", @"length operator failed.");
+	XCTAssertEqualObjects(expansion, @"4", @"length operator failed.");
 }
 
 
@@ -317,7 +322,7 @@
 	NSString *foo = @"FrÖｂ";
 	NSString *expansion = JATExpand(@"{foo|fold:diacritics,width,case}", foo);
 	
-	STAssertEqualObjects(expansion, @"frob", @"fold operator failed.");
+	XCTAssertEqualObjects(expansion, @"frob", @"fold operator failed.");
 }
 
 
@@ -329,7 +334,7 @@
 	NSUInteger length = 10;
 	NSString *expansion = JATExpand(@"{foo|fit:{length}}", foo, @(length));
 	
-	STAssertEqualObjects(expansion, @"test      ", @"fit: operator failed at end padding.");
+	XCTAssertEqualObjects(expansion, @"test      ", @"fit: operator failed at end padding.");
 }
 
 
@@ -340,7 +345,7 @@
 	NSString *mode = @"start";
 	NSString *expansion = JATExpand(@"{foo|fit:{length};{mode}}", foo, @(length), mode);
 	
-	STAssertEqualObjects(expansion, @"      test", @"fit: operator failed at start padding.");
+	XCTAssertEqualObjects(expansion, @"      test", @"fit: operator failed at start padding.");
 }
 
 
@@ -349,7 +354,7 @@
 	NSString *foo = @"test";
 	NSString *expansion = JATExpand(@"{foo|fit:10;center}", foo);
 	
-	STAssertEqualObjects(expansion, @"   test   ", @"fit: operator failed at center padding.");
+	XCTAssertEqualObjects(expansion, @"   test   ", @"fit: operator failed at center padding.");
 }
 
 
@@ -358,7 +363,7 @@
 	NSString *foo = @"test string";
 	NSString *expansion = JATExpand(@"{foo|fit:11}", foo);
 	
-	STAssertEqualObjects(expansion, @"test string", @"fit: operator failed with exact fit.");
+	XCTAssertEqualObjects(expansion, @"test string", @"fit: operator failed with exact fit.");
 }
 
 
@@ -367,7 +372,7 @@
 	NSString *foo = @"test string";
 	NSString *expansion = JATExpand(@"{foo|fit:10}", foo);
 	
-	STAssertEqualObjects(expansion, @"test stri…", @"fit: operator failed at end truncation.");
+	XCTAssertEqualObjects(expansion, @"test stri…", @"fit: operator failed at end truncation.");
 }
 
 
@@ -376,7 +381,7 @@
 	NSString *foo = @"test string";
 	NSString *expansion = JATExpand(@"{foo|fit:10;;center}", foo);
 	
-	STAssertEqualObjects(expansion, @"test …ring", @"fit: operator failed at center truncation.");
+	XCTAssertEqualObjects(expansion, @"test …ring", @"fit: operator failed at center truncation.");
 }
 
 
@@ -385,7 +390,7 @@
 	NSString *foo = @"test string";
 	NSString *expansion = JATExpand(@"{foo|fit:10;;start}", foo);
 	
-	STAssertEqualObjects(expansion, @"…st string", @"fit: operator failed at start truncation.");
+	XCTAssertEqualObjects(expansion, @"…st string", @"fit: operator failed at start truncation.");
 }
 
 
@@ -394,7 +399,7 @@
 	NSString *foo = @"test string";
 	NSString *expansion = JATExpand(@"{foo|fit:10;;;...}", foo);
 	
-	STAssertEqualObjects(expansion, @"test st...", @"fit: operator failed with custom truncation replacement.");
+	XCTAssertEqualObjects(expansion, @"test st...", @"fit: operator failed with custom truncation replacement.");
 }
 
 
@@ -403,7 +408,7 @@
 	NSString *foo = @"test string";
 	NSString *expansion = JATExpand(@"{foo|fit:10;;;replace me}", foo);
 	
-	STAssertEqualObjects(expansion, @"replace me", @"fit: operator failed with exact-width truncation replacement.");
+	XCTAssertEqualObjects(expansion, @"replace me", @"fit: operator failed with exact-width truncation replacement.");
 }
 
 
@@ -412,7 +417,7 @@
 	NSString *foo = @"test string";
 	NSString *expansion = JATExpand(@"{foo|fit:10;;;long replacement string is long}", foo);
 	
-	STAssertEqualObjects(expansion, @"long replacement string is long", @"fit: operator failed with overlong truncation replacement.");
+	XCTAssertEqualObjects(expansion, @"long replacement string is long", @"fit: operator failed with overlong truncation replacement.");
 }
 
 
@@ -421,7 +426,7 @@
 	NSString *foo = @"test string";
 	NSString *expansion = JATExpand(@"{foo|trunc:6}", foo);
 	
-	STAssertEqualObjects(expansion, @"test s", @"trunc: operator failed at end truncation.");
+	XCTAssertEqualObjects(expansion, @"test s", @"trunc: operator failed at end truncation.");
 }
 
 
@@ -430,7 +435,7 @@
 	NSString *foo = @"test string";
 	NSString *expansion = JATExpand(@"{foo|trunc:6;center}", foo);
 	
-	STAssertEqualObjects(expansion, @"tesing", @"trunc: operator failed at center truncation.");
+	XCTAssertEqualObjects(expansion, @"tesing", @"trunc: operator failed at center truncation.");
 }
 
 
@@ -439,7 +444,7 @@
 	NSString *foo = @"test string";
 	NSString *expansion = JATExpand(@"{foo|trunc:6;start}", foo);
 	
-	STAssertEqualObjects(expansion, @"string", @"trunc: operator failed at start truncation.");
+	XCTAssertEqualObjects(expansion, @"string", @"trunc: operator failed at start truncation.");
 }
 
 @end
