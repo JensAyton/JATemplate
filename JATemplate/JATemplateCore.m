@@ -30,9 +30,6 @@ SOFTWARE.
 #error This file requires ARC.
 #endif
 
-
-static NSString * const kJATemplateParseCacheThreadDictionaryKey = @"se.ayton.jens JATemplate parse cache";
-
 enum
 {
 	kStackStringLimit		= 1024	// Largest string length we'll allocate on the stack.
