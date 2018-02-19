@@ -451,19 +451,19 @@ JATDefineCast(id)
 
 JATDefineCast(CFStringRef)
 {
-	return (JATEMPLATE_BRIDGE_CAST NSString *)value;
+	return (JATEMPLATE_BRIDGE_CAST const NSString *)value;
 }
 
 
 JATDefineCast(CFNumberRef)
 {
-	return (JATEMPLATE_BRIDGE_CAST NSNumber *)value;
+	return (JATEMPLATE_BRIDGE_CAST const NSNumber *)value;
 }
 
 
 JATDefineCast(CFBooleanRef)
 {
-	return (JATEMPLATE_BRIDGE_CAST NSNumber *)value;
+	return (JATEMPLATE_BRIDGE_CAST const NSNumber *)value;
 }
 
 

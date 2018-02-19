@@ -455,7 +455,7 @@ void JATWithCharacters(NSString *string, void(^block)(const unichar characters[]
 	NSUInteger length = string.length;
 	
 	// Fast case: if the string is internally a single UTF-16 buffer, we can peek.
-	unichar *stringBuffer = (UniChar *)CFStringGetCharactersPtr((__bridge CFStringRef)string);
+	const unichar *stringBuffer = (const UniChar *)CFStringGetCharactersPtr((__bridge CFStringRef)string);
 	if (stringBuffer != NULL)
 	{
 		block(stringBuffer, length);
@@ -463,6 +463,7 @@ void JATWithCharacters(NSString *string, void(^block)(const unichar characters[]
 	}
 	
 	// If the string is small, convert it to UTF-16 on the stack.
+	unichar *mutableStringBuffer;
 	NSUInteger stackBufferSize = length;
 	bool useHeapAllocation = length > kStackStringLimit;
 	if (useHeapAllocation)  stackBufferSize = 1;
@@ -470,22 +471,22 @@ void JATWithCharacters(NSString *string, void(^block)(const unichar characters[]
 	if (useHeapAllocation)
 	{
 		// Otherwise, we need to do it on the heap.
-		stringBuffer = malloc(sizeof *stringBuffer * length);
+		mutableStringBuffer = malloc(sizeof *stringBuffer * length);
 		if (stringBuffer == NULL)  return;
 	}
 	else
 	{
-		stringBuffer = stackBuffer;
+		mutableStringBuffer = stackBuffer;
 	}
 	
 	@try
 	{
-		[string getCharacters:stringBuffer];
-		block(stringBuffer, length);
+		[string getCharacters:mutableStringBuffer];
+		block(mutableStringBuffer, length);
 	}
 	@finally
 	{
-		if (useHeapAllocation)  free(stringBuffer);
+		if (useHeapAllocation)  free(mutableStringBuffer);
 	}
 }
 
