@@ -352,11 +352,6 @@
 				CLASSPREFIX = JA;
 				LastUpgradeCheck = 0920;
 				ORGANIZATIONNAME = "Jens Ayton";
-				TargetAttributes = {
-					1ABDBA8E169AFF0200846E17 = {
-						TestTargetID = 1ABDBA6D169AFF0100846E17;
-					};
-				};
 			};
 			buildConfigurationList = 1ABDBA68169AFF0100846E17 /* Build configuration list for PBXProject "JATemplate" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -649,7 +644,6 @@
 		1ABDBAA4169AFF0200846E17 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -657,7 +651,6 @@
 				INFOPLIST_FILE = "JATemplateTests/JATemplateTests-Info.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = "se.ayton.jens.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/JATemplate.app/Contents/MacOS/JATemplate";
 				WARNING_CFLAGS = (
 					"$(inherited)",
 					"-Wno-objc-interface-ivars",
@@ -672,7 +665,6 @@
 		1ABDBAA5169AFF0200846E17 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -680,7 +672,6 @@
 				INFOPLIST_FILE = "JATemplateTests/JATemplateTests-Info.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = "se.ayton.jens.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/JATemplate.app/Contents/MacOS/JATemplate";
 				WARNING_CFLAGS = (
 					"$(inherited)",
 					"-Wno-objc-interface-ivars",

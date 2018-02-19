@@ -146,7 +146,7 @@
 - (void) testLocalization
 {
 	NSString *localizationFile = @"Localizable.strings";
-	NSString *expansion = JATExpand(@"This is a template in the source code, not from {localizationFile}.", localizationFile);
+	NSString *expansion = JATExpandFromTableInBundle(@"This is a template in the source code, not from {localizationFile}.", nil, [NSBundle bundleForClass:self.class], localizationFile);
 	
 	XCTAssertEqualObjects(expansion, @"This is a template from Localizable.strings, not the one in the source code.", @"Localized template lookup failed.");
 }
