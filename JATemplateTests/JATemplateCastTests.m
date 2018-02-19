@@ -127,7 +127,7 @@
 
 - (void) testCastLongDouble
 {
-	long double value = 14.875;
+	long double value = 14.875l;
 	NSString *expansion = JATExpand(@"{value}", value);
 	
 	XCTAssertEqualObjects(expansion, @"14.875", @"parameter cast from [long double] failed.");

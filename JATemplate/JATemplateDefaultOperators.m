@@ -656,7 +656,7 @@ static NSString *TruncateFitString(NSString *value, NSArray *arguments, NSUInteg
 	id value = self;
 	if (self == [NSNull null])  value = nil;
 	
-	return [NSString stringWithFormat:@"%p", value];
+	return [NSString stringWithFormat:@"%p", (void *)value];
 }
 
 

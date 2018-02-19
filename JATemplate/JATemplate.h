@@ -561,7 +561,11 @@ JATDefineCast(double)
 
 JATDefineCast(long double)
 {
+#if JATEMPLATE_OBJCPP
+	return [NSNumber numberWithDouble:static_cast<double>(value)];
+#else
 	return [NSNumber numberWithDouble:(double)value];
+#endif
 }
 
 
