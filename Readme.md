@@ -33,7 +33,7 @@ The default behaviour for numerical parameters is to format them with `NSNumberF
 
 In JATemplate: Hairy Edition, parameters may be Objective-C objects, any C number type, C strings, C++ `std::string`s (in Objective-C++), `NSPoint`s, `NSSize`s, `NSRect`s, `NSRange`s, `CFString`s, `CFNumber`s or `CFBoolean`s. Support for other types can easily be added; see **Customization** below.
 
-The most important feature of the design is that even though `JAExpand()` *et al.* are variadic, the number of arguments passed is fixed at compile time, and their types are all known. If a format string that refers to a non-existent parameter, either by name or by index, it will simply not be expanded.
+The most important feature of the design is that even though `JATExpand()` *et al.* are variadic, the number of arguments passed is fixed at compile time, and their types are all known. If a format string that refers to a non-existent parameter, either by name or by index, it will simply not be expanded.
 
 ## Formatting
 The formatting of expanded parameters can be modified by appending *formatting operators*, separated by a pipe character:
