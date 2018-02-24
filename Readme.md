@@ -1,3 +1,5 @@
+**NOTE:** The `hairy` branch is no longer maintained, use `master` instead.
+
 # Manifesto
 
 Software that communicates with users often needs to insert dynamic data into strings for presentation. Cocoa Foundation’s solution for this is `printf()`–style formatting, which is fundamentally unsuitable for the task, for two reasons:
