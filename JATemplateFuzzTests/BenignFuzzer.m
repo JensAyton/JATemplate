@@ -2,7 +2,7 @@
 #import "JATemplate.h"
 #import "JATConstructFuzzTest.h"
 
-NSString * const kJATBenignFuzzerWarningException = @"se.ayton.jens.jatemplate warning occurred";
+static NSString * const kJATBenignFuzzerWarningException = @"se.ayton.jens.jatemplate warning occurred";
 
 
 // If set, prints the first 25 templates and then exits.

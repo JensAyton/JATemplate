@@ -10,6 +10,9 @@ static NSString *GenerateTemplateExpression(NSArray *paramKeys);
 
 
 @interface JATMockParameter: NSObject <JATCoercible>
+
+@property (nonatomic) NSUInteger value;
+
 @end
 
 
@@ -72,9 +75,6 @@ NSDictionary *MakeUpParameters(void)
 
 
 @implementation JATMockParameter
-{
-	NSUInteger _value;
-}
 
 - (id) init
 {
@@ -102,25 +102,27 @@ NSDictionary *MakeUpParameters(void)
 
 - (NSString *) jatemplateCoerceToString
 {
-	return JATExpand(@"value-{_value}", @(_value));
+	NSUInteger value = self.value;
+	return JATExpand(@"value-{value}", value);
 }
 
 
 - (NSNumber *) jatemplateCoerceToNumber
 {
-	return @(_value);
+	return @(self.value);
 }
 
 
 - (NSNumber *) jatemplateCoerceToBoolean
 {
-	return [NSNumber numberWithBool:_value != 0];
+	return [NSNumber numberWithBool:self.value != 0];
 }
 
 
 - (NSString *) description
 {
-	return JATExpand(@"{self|basedesc}{{{_value}}}", self, @(_value));
+	NSUInteger value = self.value;
+	return JATExpand(@"{self|basedesc}{{{value}}}", self, value);
 }
 
 @end

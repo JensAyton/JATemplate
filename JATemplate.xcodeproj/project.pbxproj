@@ -543,6 +543,7 @@
 					"-Wno-unused-parameter",
 					"-Wno-gnu",
 					"-Wno-vla",
+					"-Wno-objc-missing-property-synthesis",
 				);
 			};
 			name = Debug;
@@ -591,6 +592,7 @@
 					"-Wno-unused-parameter",
 					"-Wno-gnu",
 					"-Wno-vla",
+					"-Wno-objc-missing-property-synthesis",
 				);
 			};
 			name = Release;
