@@ -2,9 +2,6 @@
 
 JATemplate.h
 
-Hairy Edition: this version uses fancy preprocessing to be more efficient and
-more expressive. For the faint of heart, the Vanilla Edition may be less scary.
-
 
 JATemplate is a string expansion system designed for convenience of use and
 safety. In particular, it is intended to replace printf-style formatting
@@ -111,8 +108,8 @@ SOFTWARE.
 		variables boxed using @() syntax. All parameters can also be referenced
 		by index using the form {0}, {1} etc.
 		
-		In the Hairy Edition, parameters may be of arbitrary type, as long as
-		a casting handler is defined for it. See JATDefineCast below.
+		Parameters may be of arbitrary type, as long as a casting handler is
+        defined for it. See JATDefineCast below.
 		
 		Parameters may be modified using operators, which are specified using
 		a vertical bar. Operators may optionally have a parameter, seperated

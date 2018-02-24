@@ -12,8 +12,6 @@ In short, I feel that `printf()` and `+[NSString stringWithFormat:]` should be d
 # JATemplate
 JATemplate provides a family of macros and functions for inserting variables into strings. Convenience wrappers are provided for using it in conjunction with `NSLog()`, `NSAssert()` and `-[NSMutableString stringByAppendingString:]`.
 
-This is the Hairy Edition of JATemplate. It makes heavy use of the preprocessor to do as much work as possible at compile time, improving safety and performance, and also to maximize convenience. If the thought makes you queasy, the Vanilla Edition in the `master` branch of [the repository](https://github.com/JensAyton/JATemplate/) may be more to your liking.
-
 JATemplate is currently experimental. The syntax and operators are in flux, and I’m not satisfied with the robustness of the parser. That said, fuzz testing has repeatedly found a crashing bug in CoreFoundation and/or ICU, but no crashes, assertions or unexpected warnings in JATemplate itself. It is certainly far safer than `+[NSString stringWithFormat:]`.
 
 To date, it has only been tested on Mac OS X 10.8 with ARC. Some formatting operators have known incompatibilities with Mac OS X 10.7 and iOS 5.
@@ -31,7 +29,7 @@ Templates can directly refer to variables by name, but they only have access to 
 
 The default behaviour for numerical parameters is to format them with `NSNumberFormatter`’s `NSNumberFormatterDecimalStyle`. If `scoopCount` is set to `1000` in the example above, it is printed as *1,000* in English locales.
 
-In JATemplate: Hairy Edition, parameters may be Objective-C objects, any C number type, C strings, C++ `std::string`s (in Objective-C++), `NSPoint`s, `NSSize`s, `NSRect`s, `NSRange`s, `CFString`s, `CFNumber`s or `CFBoolean`s. Support for other types can easily be added; see **Customization** below.
+Parameters may be Objective-C objects, any C number type, C strings, C++ `std::string`s (in Objective-C++), `NSPoint`s, `NSSize`s, `NSRect`s, `NSRange`s, `CFString`s, `CFNumber`s or `CFBoolean`s. Support for other types can easily be added; see **Customization** below.
 
 The most important feature of the design is that even though `JATExpand()` *et al.* are variadic, the number of arguments passed is fixed at compile time, and their types are all known. If a format string that refers to a non-existent parameter, either by name or by index, it will simply not be expanded.
 
@@ -72,7 +70,7 @@ The full list of string expanding functions and macros, and their notional signa
 * `JATAssert(condition, template, ...)` and `JATCAssert(condition, template, ...)` — wrappers for `NSAssert()` and `NSCAssert()` which perform template expansion on failure.
 
 ## Customization
-There are three major ways to customize JATemplate: Hairy Edition – custom coercion methods, custom operators, and custom casting handlers.
+There are three major ways to customize JATemplate: custom coercion methods, custom operators, and custom casting handlers.
 
 The three coercion methods in the protocol `<JATCoercible>` are used by operators and the template expansion system to interpret parameters as particular types. They are implemented on `NSObject` and a few other classes, but can be overridden to customize the treatment of your own classes.
 
