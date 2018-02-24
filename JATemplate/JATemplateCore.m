@@ -472,7 +472,7 @@ void JATWithCharacters(NSString *string, void(^block)(const unichar characters[]
 	{
 		// Otherwise, we need to do it on the heap.
 		mutableStringBuffer = malloc(sizeof *stringBuffer * length);
-		if (stringBuffer == NULL)  return;
+		if (mutableStringBuffer == NULL)  return;
 	}
 	else
 	{
