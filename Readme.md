@@ -12,7 +12,7 @@ In short, I feel that `printf()` and `+[NSString stringWithFormat:]` should be d
 # JATemplate
 JATemplate provides a family of macros and functions for inserting variables into strings. Convenience wrappers are provided for using it in conjunction with `NSLog()`, `NSAssert()` and `-[NSMutableString stringByAppendingString:]`.
 
-This is the Vanilla Edition of JATemplate. It’s designed to minimize dependence on preprocessor tricks, since many people have a quite understandable aversion to them. There is also a Hairy Edition in the `hairy` branch of [the repository](https://github.com/JensAyton/JATemplate/), which is marginally faster, technically more type safe and more expressive at the cost of some preprocessor voodoo.
+This is the Vanilla Edition of JATemplate, which is no longer maintained. It’s designed to minimize dependence on preprocessor tricks, since many people have a quite understandable aversion to them. Continued maintenance and development, to the extent it happens, is on the Hairy Edition in the `master` branch of [the repository](https://github.com/JensAyton/JATemplate/), which is marginally faster, technically more type safe and more expressive at the cost of some preprocessor voodoo.
 
 JATemplate is currently experimental. The syntax and operators are in flux, and I’m not satisfied with the robustness of the parser. That said, fuzz testing has repeatedly found a crashing bug in CoreFoundation and/or ICU, but no crashes, assertions or unexpected warnings in JATemplate itself. It is certainly far safer than `+[NSString stringWithFormat:]`.
 
