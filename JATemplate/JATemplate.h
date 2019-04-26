@@ -10,7 +10,7 @@ string attacks.
 
 *** WARNING: while it is intended to avoid designed-in vulnerabilities, this
 is prototype-level code that hasn't been extensively tested. Don’t use it with
-arbitrary format strings fresh of the interwebs. ***
+arbitrary format strings fresh off the interwebs. ***
 
 Internationalization is achieved through implicit calls of NSLocalizedString()
 (by default) and locale-sensitive formatting operations.
